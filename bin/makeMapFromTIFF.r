@@ -7,7 +7,7 @@ library(raster)
 library(leaflet)
 args <- commandArgs(trailingOnly = TRUE)
 
-makeMapFromTIFF <- function(imgPath, htmlPath, title) {
+makeMapFromTIFF <- function(imgPath, htmlPath) {
   # load raster image file
   r <- raster(imgPath)
   
@@ -22,11 +22,11 @@ makeMapFromTIFF <- function(imgPath, htmlPath, title) {
   m <- leaflet() %>%
     addTiles() %>%
     addRasterImage(r, colors=pal, opacity = 0.9, maxBytes = 123123123) %>%
-    addLegend(pal = pal, values = values(r), title = title)
+    addLegend(pal = pal, values = values(r), title = "Legend")
   
   # save the generated widget to html
   # contains the leaflet widget AND the image.
   saveWidget(m, file = htmlPath, selfcontained = FALSE, libdir = 'leafletwidget_libs')
 }
 
-makeMapFromTIFF(args[1], args[2], args[3])
+makeMapFromTIFF(args[1], args[2])
