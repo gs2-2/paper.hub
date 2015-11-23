@@ -1,12 +1,28 @@
 {
-  "name": "geotiff",
+  "name": "paper.hub",
   "version": "1.0.0",
-  "description": "",
+  "description": "webplatform to submit and read interactive scientific articles",
   "main": "index.js",
+  "dependencies": {
+    "express": "^4.13.3",
+    "mongoose": "^4.2.7",
+    "passport": "^0.3.2"
+  },
+  "devDependencies": {
+    "bower": "^1.6.5"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gs2-2/paper.hub.git"
   },
   "author": "",
-  "license": "ISC",
-  "dependencies": {}
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/gs2-2/paper.hub/issues"
+  },
+  "homepage": "https://github.com/gs2-2/paper.hub#readme"
 }
