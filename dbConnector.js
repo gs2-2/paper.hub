@@ -6,12 +6,26 @@
 
 var mongoose = require('mongoose');
 
-/* definition of data schemata */
+/* definition of publicationSchema */
+//_id attribute will be created automatically
 var publicationSchema = new mongoose.Schema({
 	title: String,
-	// ...
+	abstract: String,
+	author: String,
+	pubicationDate: Date,
+	widgets: [ObjectId]
 });
+
+/* definition of userSchema */
+//_id attribute will be created automatically
+var userSchema = new mongoose.Schema({
+	oauth_id: String,
+	oauth_token: String,
+	name: String
+});
+
 var publicationModel = mongoose.model('Publication', publicationSchema);
+var userModel = mongoose.model('User', userSchema);
 
 
 /**
@@ -32,5 +46,5 @@ exports.connect = function(dbPort, dbName, callback) {
 /* the database models, that can be accessed for queries etc */
 exports.models = {
 	publications: publicationModel,
-	// ...
+	users: userModel
 };
