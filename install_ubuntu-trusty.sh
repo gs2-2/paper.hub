@@ -31,12 +31,31 @@ curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
 
 # install required debian packages
 apt-get update # need to run update again, to fetch new versions from the foreign repos
-apt-get install -y r-base-dev libgdal-dev libproj-dev \
-                   latexml texlive-full \
-                   mongodb-org nodejs
+
+apt-get install -y \
+# R + R deps
+r-base-dev libgdal-dev libproj-dev \
+# LaTeXML deps
+libarchive-zip-perl libfile-which-perl libimage-size-perl  \
+libio-string-perl libjson-xs-perl libparse-recdescent-perl \
+liburi-perl libuuid-tiny-perl libwww-perl                  \
+libxml2 libxml-libxml-perl libxslt1.1 libxml-libxslt-perl  \
+texlive-full imagemagick libimage-magick-perl
+# all the other things
+mongodb-org nodejs
+
+# download and compile LaTeXML 0.8.1
+wget http://dlmf.nist.gov/LaTeXML/releases/LaTeXML-0.8.1.tar.gz
+tar-xzf LaTeXML-0.8.1.tar.gz
+cd LaTeXML-0.8.1/
+perl Makefile.PL
+make
+make install
+cd ..
+rm -rf LaTeXML-0.8.1*
 
 # install additional R packages
-Rscript -e "install.packages(c('rgdal', 'raster', 'leaflet', 'htmlwidgets'), lib='/usr/local/lib/R/site-library', repos='https://cran.rstudio.com')"
+Rscript -e "install.packages(c('rgdal', 'raster', 'leaflet', 'xts', 'zoo', 'sp', 'dygraphs', 'htmlwidgets'), lib='/usr/local/lib/R/site-library', repos='https://cran.rstudio.com')"
 
 # install node dependencies
 npm install
