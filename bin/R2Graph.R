@@ -6,8 +6,17 @@ library(dygraphs)
 
 args <- commandArgs(trailingOnly = TRUE)
 
+## create multi line graphs
+## use cbind and iterate over columns
+## check out how to speak to each column
+## check other dyOptions like highlighting etc.
 
-plotXTS <- function(inputPath, htmlPath)
+
+#@param inputPath  path, where the rData is stored
+#@param htmlPath   path, where created html will be stored
+#@param title      title of graph
+#@param filling    bool, if true, there will be a filling below the line
+plotXts <- function(inputPath, htmlPath, title, filling)
   # load .Rdata file
   input <- load(inputPath, verbose = FALSE)
   {
@@ -19,9 +28,12 @@ plotXTS <- function(inputPath, htmlPath)
     # convert data to xts
     convertedXts <- as.xts(input)
     
+    
     # create graph widget
-    widget <- dygraph(convertedXts) %>% 
-      dyRangeSelector(dateWindow = NULL, keepMouseZoom = TRUE)
+    widget <- dygraph(convertedXts, main=title) %>% 
+      dyRangeSelector(dateWindow = NULL, keepMouseZoom = TRUE) %>%
+      dyLegend(show = "always", hideOnMouseOut = FALSE) %>%
+      dyOptions(fillGraph = filling) 
     
     
     cat("Notice: dygraph was plotted successfully")
@@ -36,4 +48,4 @@ plotXTS <- function(inputPath, htmlPath)
   }
 }
 
-plotXTS(args[1], args[2])
+plotXts(args[1], args[2], args[3], args[4])

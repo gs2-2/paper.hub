@@ -32,6 +32,9 @@ function TIFF2Map(inPath, outPath, callback) {
 function R2Graph(inPath, outPath, callback){
 	var scriptPath = __dirname + 'bin/R2Graph.R';
 
+	//change cp.exec to fill parameters
+	//
+	//
 	cp.exec('RScript' + scriptPath + ' ' + inPath + ' ' + outPath, function(err, stdout, stderr){
 		if (err) return callback(err);
 		callback(null);
