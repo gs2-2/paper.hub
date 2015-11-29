@@ -6,7 +6,8 @@
   "dependencies": {
     "express": "^4.13.3",
     "mongoose": "^4.2.7",
-    "passport": "^0.3.2"
+    "passport": "^0.3.2",
+    "multer": "^1.1.0"
   },
   "devDependencies": {
     "bower": "^1.6.5"

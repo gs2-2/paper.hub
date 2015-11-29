@@ -7,6 +7,8 @@
 var config  = require('./config.js');
 var mongo   = require('./dbConnector.js');
 var express = require('express');
+var multer = require('multer');
+var upload = multer({dest: './public' });
 
 var app          = express();
 var publications = mongo.models.publications;
@@ -31,3 +33,14 @@ mongo.connect(
 
 /* serve everything in the folder './public/' */
 app.use(express.static(__dirname + '/public'));
+
+
+/* Provide express route for the LaTeX Code commited by the user*/
+app.post('/addPaper', upload.single('latexFile'), function(req, res) {
+	//read the file from the upload with multer
+	var latexFile = req.files;
+	//LatexML aufrufen mit latexFile
+	//geparstes Ergebnis speichern (Dateisystem)
+	//Datebankeintrag mit Verweis auf Dateipfad --> Model fuer Dateipfad
+	//Antwort an den Client mit der paperID
+})
