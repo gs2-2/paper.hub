@@ -9,6 +9,7 @@ var mongo   = require('./dbConnector.js');
 var express = require('express');
 var multer = require('multer');
 var upload = multer({dest: './public' });
+var cp = require('child_process');
 
 var app          = express();
 var publications = mongo.models.publications;
@@ -39,7 +40,12 @@ app.use(express.static(__dirname + '/public'));
 app.post('/addPaper', upload.single('latexFile'), function(req, res) {
 	//read the file from the upload with multer
 	var latexFile = req.files;
-	//LatexML aufrufen mit latexFile
+	var scriptPath = __dirname + '/bin/nicos ML script*/';
+	//call the LaTeX-ML parser as a child-process
+	cp.exec(/*COMMAND script von nico*/ , function(err, stdout, stderr) {
+		if(err) return callback(err);
+		callback(null);
+	});
 	//geparstes Ergebnis speichern (Dateisystem)
 	//Datebankeintrag mit Verweis auf Dateipfad --> Model fuer Dateipfad
 	//Antwort an den Client mit der paperID
