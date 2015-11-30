@@ -17,6 +17,10 @@ if [ "$(id -u)" != "0" ]; then
     exit 1
 fi
 
+# exit the script when an error occurs
+trap "echo AN ERROR OCCURED, STOPPING INSTALLATION!" ERR
+set -e
+set -o pipefail
 
 # installation-script dependencies
 apt-get update
