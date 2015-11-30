@@ -13,7 +13,7 @@ var publicationSchema = new mongoose.Schema({
 	abstract: String,
 	author: String,
 	publicationDate: Date,
-	widgets: [Schema.Types.ObjectId]
+	widgets: [mongoose.Schema.Types.ObjectId]
 });
 
 /* definition of userSchema */
