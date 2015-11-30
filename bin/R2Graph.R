@@ -6,9 +6,7 @@ library(dygraphs)
 
 args <- commandArgs(trailingOnly = TRUE)
 
-## create multi line graphs
-## use cbind and iterate over columns
-## check out how to speak to each column
+
 ## check other dyOptions like highlighting etc.
 
 
@@ -32,7 +30,7 @@ plotXts <- function(inputPath, htmlPath, title, filling)
     # create graph widget
     widget <- dygraph(convertedXts, main=title) %>% 
       dyRangeSelector(dateWindow = NULL, keepMouseZoom = TRUE) %>%
-      dyLegend(show = "always", hideOnMouseOut = FALSE) %>%
+      dyLegend(show = "always", hideOnMouseOut = TRUE) %>%
       dyOptions(fillGraph = filling) 
     
     
