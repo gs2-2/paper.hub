@@ -36,7 +36,7 @@ app.use('/data', express.static(__dirname + '/data'));
 
 /* test route to check on widget creation */
 app.get('/makeWidget', function(req, res) {
-	var inPaths  = [__dirname + '/cea.tif'];
+	var inPaths  = [__dirname + '/cea.tif', __dirname + '/example_01.geojson'];
 	var outPath  = __dirname + '/data/widgets/cea.html';
 
 	widgets.map(inPaths, outPath, function(err) {

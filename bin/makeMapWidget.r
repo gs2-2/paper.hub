@@ -15,13 +15,13 @@ library(R.utils)
 library(htmlwidgets)
 library(leaflet)
 library(raster)
-library(rjson)
+#library(jsonlite)
 library(sp)
 
 # adds a GeoTIFF raster image to the map
 # @param   path: the full path to the file
 # @returns the modified map object
-addGeoTIFF <- function(path) {
+geoTIFFLayer <- function(path) {
   # load the file as RasterLayer object
   img <- raster(path)
 
@@ -39,15 +39,17 @@ addGeoTIFF <- function(path) {
 # adds GeoJSON vector data file to the map
 # @param   path: the full path to the file
 # @returns the modified map object
-addGeoJSON <- function(path) {
-  # TODO
-  #map
+geoJSONLayer <- function(path) {
+  jsonString <- readLines(path) %>% paste(collapse = "\n")
+
+  map <- map %>% addGeoJSON(jsonString)
+  map
 }
 
 # adds a sp object in an RData file to the map
 # @param   path: the full path to the file
 # @returns the modified map object
-addSP <- function(path) {
+spLayer <- function(path) {
   # TODO
   #map
 }
@@ -69,15 +71,15 @@ for (i in 1:length(files)) {
   }
 
   if (fileExts[i] %in% c('tif', 'tiff', 'geotiff', 'gtiff')) {
-    map <- addGeoTIFF(files[i])
+    map <- geoTIFFLayer(files[i])
   }
 
   if (fileExts[i] %in% c('json', 'geojson', 'gjson')) {
-    map <- addGeoJSON(files[i])
+    map <- geoJSONLayer(files[i])
   }
 
   if (fileExts[i] %in% c('rdata', 'sp')) {
-    map <- addSP(files[i])
+    map <- spLayer(files[i])
   }
 }
 
