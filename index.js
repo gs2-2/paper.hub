@@ -84,19 +84,19 @@ app.post('/addPaper', upload.single('latex'), function(req, res) {
 	upload(req, res, function(err) {
 		if(err) res.send('Error uploading the file.');
 	});
-	var latexFile = req.file;
 
-	//call the LaTeX-ML parser as a child-process
-	cp.exec('latexml --dest=' + req.file + '.xml' + latexFile, function(err, stdout, stderr) {
+	var latexFile = req.file.filename;
+
+	//call the LaTeX-ML parser as a child-process, the output is saved as paperID.xml
+	cp.exec('latexml --dest=' + paperID + '.xml' + latexFile, function(err, stdout, stderr) {
 		if(err) return callback(err);
 		callback(null);
 	});
-	//xml Datei evtl. in dem HTML Ordner (zwichen-)speichern
-	cp.exec('latexmlpost --dest=irdegenwoImSYstem' + DATEINAME.xml , function(err, stdout, stderr) {
+	//convert the xml file and save the HTML file in the papers/<paperD>/ folder 
+	cp.exec('latexmlpost --dest=./data/papers/' + paperID + ' ' + paperID + '.xml' , function(err, stdout, stderr) {
 		if(err) return callback(err);
 		callback(null);
 	});
-	//geparstes Ergebnis speichern (Dateisystem)
+	//send response to the client with the ID of the new paper
 	res.send(paperID);
-	//Antwort an den Client mit der paperID
-})
+});
