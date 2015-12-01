@@ -1,26 +1,24 @@
 "use strict";
 
 /**
- * @desc provides an interface to R scripts, which create HTML widgets (maps, ..)
+ * @desc provides an interface to R scripts, which create HTML widgets (maps, timeseries)
  */
 
 var cp = require('child_process');
 
 /**
- * @desc  generates an interactive map in an html file for the specified GeoTIFF
- * @param inPath   absolute path to the image geotiff file
- * @param outPath  absolute path to the output html file
+ * @desc  generates an interactive map in an HTML file for the specified datasets
+ * @param inPaths   array of absolute paths to the datasets
+ * @param outPath  absolute path to the output HTML file
  * @param callback function that is called after execution of the script with param 'error'
  */
-function TIFF2Map(inPath, outPath, callback) {
-	var scriptPath = __dirname + '/bin/TIFF2Map.r'
+exports.map = function (inPaths, outPath, callback) {
 
-	cp.exec('Rscript ' + scriptPath + ' ' + inPath + ' ' + outPath,
-		function (err, stdout, stderr) {
-			if (err) return callback(err);
-			callback(null);
-		}
-	);
+	var cmd = 'Rscript ' + __dirname + '/bin/makeMapWidget.r'
+		+ ' --input \'' + inPaths.toString() + '\' --output ' + outPath;
+
+	cp.exec(cmd, function (err, stdout, stderr) {
+		if (err) return callback(err);
+		callback(null);
+	});
 }
-
-exports.TIFF2Map = TIFF2Map;
