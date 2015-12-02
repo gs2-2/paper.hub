@@ -15,73 +15,91 @@ library(R.utils)
 library(htmlwidgets)
 library(leaflet)
 library(raster)
-#library(jsonlite)
 library(sp)
 
-# adds a GeoTIFF raster image to the map
-# @param   path: the full path to the file
-# @returns the modified map object
-geoTIFFLayer <- function(path) {
+#' @describe generate a leaflet map widget and save it at the given location
+#' @param    inputs vector of paths to input files
+#' @param    output path to the target HTML file
+makeMap <- function(inputs, output) {
+  # extensions of each file
+  fileExts  <- tolower(file_ext(inputs))
+
+  # create map
+  map <- leaflet() %>% addTiles()
+
+  # add layers depending on file extension
+  for (i in 1:length(inputs)) {
+    # stop if file can not be accessed
+    if (!file.exists(inputs[i]))
+      stop(paste('ERROR:', inputs[i], 'not found!', separator = ' '))
+
+    if (fileExts[i] %in% c('tif', 'tiff', 'geotiff', 'gtiff'))
+      map <- geoTIFFLayer(map, inputs[i])
+    else if (fileExts[i] %in% c('json', 'geojson', 'gjson'))
+      map <- geoJSONLayer(map, inputs[i])
+    else if (fileExts[i] %in% c('rdata', 'sp'))
+      map <- spLayer(map, inputs[i])
+  }
+
+  # write leaflet map to html file, specified in CLI argument "output"
+  saveWidget(map, file = output, selfcontained = FALSE, libdir = 'mapwidget_deps')
+}
+
+#' @describe adds a GeoTIFF raster image to the map
+#' @param    path the full path to the file
+#' @return   the modified map object
+geoTIFFLayer <- function(map, path) {
   # load the file as RasterLayer object
-  img <- raster(path)
+  tif <- brick(path)
 
-  # define a greyscale color palette, which is interpolated
-  pal <- colorNumeric(c("#000000", "#7F7F7F", "#FFFFFF"),
-    values(img), na.color = "transparent")
+  # if we have less than 3 layers, use only the first layer and display it in greyscale
+  #if (tif@data@nlayers < 3) {
+    img <- tif[[1]]
+    # define a greyscale color palette, which is interpolated
+    palette <- colorNumeric(c("#000000", "#7F7F7F", "#FFFFFF"),
+      values(img), na.color = "transparent")
+  #} else {
+    # TODO
+    # merge first 3 layers into one layer, and define some RGB palette here
+    # see https://github.com/rstudio/leaflet/issues/212
+  #}
 
-  # add layer to the map
-  map <- map %>% addRasterImage(img, colors = pal, opacity = 1, maxBytes = 3*8*4096^2)
-
-  # modified map needs to be returned, as R works with pass by value only :'(
-  map
+  # add layer to the map & return the map
+  map %>% addRasterImage(img, colors = palette, opacity = 1, maxBytes = 3*8*4096^2)
 }
 
-# adds GeoJSON vector data file to the map
-# @param   path: the full path to the file
-# @returns the modified map object
-geoJSONLayer <- function(path) {
+#' @describe adds GeoJSON vector data file to the map
+#' @param    path the full path to the file
+#' @return   the modified map object
+geoJSONLayer <- function(map, path) {
   jsonString <- readLines(path) %>% paste(collapse = "\n")
-
-  map <- map %>% addGeoJSON(jsonString)
-  map
+  map %>% addGeoJSON(jsonString)
 }
 
-# adds a sp object in an RData file to the map
-# @param   path: the full path to the file
-# @returns the modified map object
-spLayer <- function(path) {
+#' @describe adds a sp object in an RData file to the map
+#' @param    path the full path to the file
+#' @return   the modified map object
+spLayer <- function(map, path) {
+  obj <- loadRDataObj(path)
+
   # TODO
-  #map
+  # switch cases: SpatialPolygon, SpatialLine, Points
+  #if (class(obj)[1] == 'SpatialPolygonsDataFrame"') {
+    return( map <- map %>% addPolygons(obj@polygons@Polygons) )
+  #}
+}
+
+#' @describe loads an RData file and returns the first object in it
+#' @param    path path to the Rdata file
+#' @return   the first object contained in the file
+loadRDataObj <- function(path) {
+  env <- new.env()
+  nm <- load(path, envir = env, verbose = TRUE)[1]
+  env[[nm]]
 }
 
 # parse CLI arguments
-args      <- commandArgs(asValues = TRUE)
-files     <- unlist(strsplit(args$input, ',')) # array of paths to input files
-fileExts  <- tolower(file_ext(files))          # extensions of each file
+args  <- commandArgs(asValues = TRUE)
+files <- unlist(strsplit(args$input, ',')) # vector of paths to input files
 
-# create map
-map <- leaflet() %>% addTiles()
-
-# add layers depending on file extension
-for (i in 1:length(files)) {
-
-  # stop if file can not be accessed
-  if (!file.exists(files[i])) {
-    stop(paste('ERROR:', files[i], 'not found!', separator = ' '))
-  }
-
-  if (fileExts[i] %in% c('tif', 'tiff', 'geotiff', 'gtiff')) {
-    map <- geoTIFFLayer(files[i])
-  }
-
-  if (fileExts[i] %in% c('json', 'geojson', 'gjson')) {
-    map <- geoJSONLayer(files[i])
-  }
-
-  if (fileExts[i] %in% c('rdata', 'sp')) {
-    map <- spLayer(files[i])
-  }
-}
-
-# write leaflet map to html file, specified in CLI argument "output"
-saveWidget(map, file = args$output, selfcontained = FALSE, libdir = 'mapwidget_deps')
+makeMap(files, args$output)

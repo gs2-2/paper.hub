@@ -36,11 +36,15 @@ app.use('/data', express.static(__dirname + '/data'));
 
 /* test route to check on widget creation */
 app.get('/makeWidget', function(req, res) {
-	var inPaths  = [__dirname + '/cea.tif', __dirname + '/example_01.geojson'];
-	var outPath  = __dirname + '/data/widgets/cea.html';
+	var inPaths  = [
+		__dirname + '/cea.tif',
+		__dirname + '/example_01.geojson',
+		//__dirname + '/fig-1E.Rdata'
+	];
+	var outPath  = __dirname + '/data/widgets/test.html';
 
 	widgets.map(inPaths, outPath, function(err) {
 		if (err) res.send('boooh! :^(<br>' + err);
-		else     res.redirect('/data/widgets/cea.html');
+		else     res.redirect('/data/widgets/test.html');
 	});
 });
