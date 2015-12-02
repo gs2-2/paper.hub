@@ -36,7 +36,7 @@ mongo.connect(
 /* serve everything in the folder './public/' */
 app.use(express.static(__dirname + '/public'));
 
-//specify the multer upload
+//specify the multer upload, destination is added in the post method
 app.use(multer({ 
 		//rename the file to avoid name conflicts
 		rename: function(fieldname, filename) {
