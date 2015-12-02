@@ -37,9 +37,7 @@ mongo.connect(
 app.use(express.static(__dirname + '/public'));
 
 //specify the multer upload
-/*muss umsortiert werden, wenn man die ID des papers hat und das DIR angelegt wurde. 
-Sonst sehe ich keine Möglichkeit die paper jeweils in das richtige dir einzuordnen.*/
-app.use(multer({dest: './data/papers/uploads', 
+app.use(multer({ 
 		//rename the file to avoid name conflicts
 		rename: function(fieldname, filename) {
 			return filename;
@@ -56,8 +54,8 @@ app.use(multer({dest: './data/papers/uploads',
 	}));
 
 
-/* Provide express route for the LaTeX Code commited by the user*/
-app.post('/addPaper', upload.single('latex'), function(req, res) {
+/* Provide express route for the LaTeX Code commited by the user. Uploaded Latex file is converted to HTML and saved in FS and DB*/
+app.post('/addPaper', upload.single('latexDocument'), function(req, res) {
 
 	//create new paper instance in the DB
 	var uploadedPaper = new dbConnector.models.publicationModel({
@@ -65,7 +63,7 @@ app.post('/addPaper', upload.single('latex'), function(req, res) {
 		abstract: req.body.abstract,
 		author: req.body.author,
 		publicationDate: new Date(),
-		widgets: [] // koennen erst eingesetzt werden, wenn die mit den anderen Scripten erstellt wurden?!?
+		widgets: [] //insert widgets, when they are generated after the upload
 	});
 
 	//save the new publication in DB
@@ -80,6 +78,19 @@ app.post('/addPaper', upload.single('latex'), function(req, res) {
 	//create a path for the new paper in the file system
 	util.newPaperDir('./data/papers/', paperID, callback); 
 	
+	//set the directory for the paper to be saved
+	var storage  = multer.diskStooreage({
+		destination: function(req, file, callback) {
+			callback(null, './data/papers' + paperID);
+		},
+		filename: function(req, file, callback) {
+			callback(null, file.fieldname + '.tex');
+		}
+	});
+
+	//set the upload for multer
+	var upload = multer({storage: storage});
+
 	//upload the file
 	upload(req, res, function(err) {
 		if(err) res.send('Error uploading the file.');
@@ -92,7 +103,7 @@ app.post('/addPaper', upload.single('latex'), function(req, res) {
 		if(err) return callback(err);
 		callback(null);
 	});
-	//convert the xml file and save the HTML file in the papers/<paperD>/ folder 
+	//convert the xml file and save the HTML file in the papers/<paperID>/ folder 
 	cp.exec('latexmlpost --dest=./data/papers/' + paperID + ' ' + paperID + '.xml' , function(err, stdout, stderr) {
 		if(err) return callback(err);
 		callback(null);
