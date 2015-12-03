@@ -10,13 +10,13 @@
 #
 # external dependencies for GeoTIFF support are: libgdal-dev libproj-dev (Ubuntu 14)
 
-library(tools)
-library(R.utils)
-library(htmlwidgets)
-library(leaflet)
-library(raster)
-library(sp)
-library(rgdal)
+library(tools)       # file_ext
+library(R.utils)     # parse cli args
+library(htmlwidgets) # save widget as html
+library(leaflet)     # create map
+library(raster)      # GeoTIFF support
+library(sp)          # SP support
+library(rgdal)       # convert SP to GeoJSON
 
 #' @describe generate a leaflet map widget and save it at the given location
 #' @param    inputs vector of paths to input files
@@ -62,40 +62,58 @@ geoTIFFLayer <- function(map, path) {
   }
 
   # if we have less than 3 layers, use only the first layer
-  if (nlayers(tif) < 3) {
-    img <- tif[[1]]
+  # else, use the first 3 layers and map them to RGB colors
+  if (nlayers(tif) < 3)
+    return(addSingleLayerRaster(map, tif, doProjection))
+  else
+    return(addMultiLayerRaster(map, tif, doProjection))
+}
+
+#' @describe adds the first laer of a  RasterBrick to the map
+#' @param    map          the map to modify
+#' @param    rasterbrick  the RasterBrick to add
+#' @param    doProjection boolean, if the file should be projected first
+#' @return   the modified map object
+addSingleLayerRaster <- function(map, rasterbrick, doProjection) {
+    img <- rasterbrick[[1]]
 
     # if the file has a color palette embedded, use it
     # if not, use a grayscale palette
-    if (length(colortable(tif)) == 0) {
-      # define a greyscale color palette, which is interpolated
-      palette <- colorNumeric(c("#000000", "#7F7F7F", "#FFFFFF"),
-        values(img), na.color = "transparent")
+    if (length(colortable(rasterbrick)) != 0) {
+      palette <- colortable(rasterbrick)
     } else {
-      palette <- colortable(tif)
-      palette <- palette[2:length(palette)] # remove first item
+      # define a greyscale color palette, which is interpolated
+      palette <- colorNumeric(c("#000000", "#FFFFFF"),
+        values(img), na.color = "transparent")
     }
 
-  } else {
+    # apply colorpalette & transform image & add layer to the map & return the map
+    map %>% addRasterImage(img, colors = palette, opacity = 1, project = doProjection)
+}
 
+#' @describe adds a RasterBrick with 3 or more layers to the map
+#' @param    map          the map to modify
+#' @param    rasterbrick  the RasterBrick to add
+#' @param    doProjection boolean, if the file should be projected first
+#' @return   the modified map object
+addMultiLayerRaster <- function(map, rasterbrick, doProjection) {
     # if we have 3 or more layers, use the first 3 and map them to RGB colors
-    maxColorValue <- maxValue(tif)
+    maxColorValue <- maxValue(rasterbrick)
     bitdepth <- log2(maxColorValue + 1)
 
     # merge the first three layers into one layer
     # values are now in the range of [0, 2^bitdepth^3 - 1]
     # layer1 is most significant, layer3 is least significant
-    img <- tif[[1]] * (maxColorValue + 1)^2 +
-           tif[[2]] * (maxColorValue + 1) +
-           tif[[3]]
+    img <- rasterbrick[[1]] * (maxColorValue + 1)^2 +
+           rasterbrick[[2]] * (maxColorValue + 1) +
+           rasterbrick[[3]]
 
     # use a precalculated (see https://github.com/rstudio/leaflet/issues/212)
     # colorpalette for the merged raster, which assigns each value an RGB color
     palette <- readRDS('./RGB_colorRamp_8bit.rds')
-  }
 
-  # apply colorpalette & transform image & add layer to the map & return the map
-  map %>% addRasterImage(img, colors = palette, opacity = 1, maxBytes = 3*8*4096^2, project = doProjection)
+    # apply colorpalette & transform image & add layer to the map & return the map
+    map %>% addRasterImage(img, colors = palette, opacity = 1, project = doProjection)
 }
 
 #' @describe adds GeoJSON vector data file to the map
@@ -110,15 +128,15 @@ geoJSONLayer <- function(map, path) {
 #' @param    path the full path to the file
 #' @return   the modified map object
 spLayer <- function(map, path) {
-  # TODO: fit to view
-  spObj <- loadRDataObj(path)
+  spObj  <- loadRDataObj(path)
+  bounds <- bbox(spObj)
 
   # we convert the SP Object to GeoJSON, so we don't have to
-  # handel the various types (SpatialLines, -Points, -Polygons)
+  # handle the various types (SpatialLines, -Points, -Polygons)
   # seperately. for conversion, alternatively use this package?
   # https://cran.r-project.org/web/packages/geojsonio/geojsonio.pdf
-  map %>% addGeoJSON(spToGeoJSON(spObj))
-
+  map %>% addGeoJSON(spToGeoJSON(spObj)) %>%
+    fitBounds(lng1 = bounds[1], lat1 = bounds[2], lng2 = bounds[3], lat2 = bounds[4])
 }
 
 #' @describe loads an RData file and returns the first object in it
