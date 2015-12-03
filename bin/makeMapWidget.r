@@ -16,6 +16,7 @@ library(htmlwidgets)
 library(leaflet)
 library(raster)
 library(sp)
+library(rgdal)
 
 #' @describe generate a leaflet map widget and save it at the given location
 #' @param    inputs vector of paths to input files
@@ -49,23 +50,52 @@ makeMap <- function(inputs, output) {
 #' @param    path the full path to the file
 #' @return   the modified map object
 geoTIFFLayer <- function(map, path) {
-  # load the file as RasterLayer object
+  # load the file as RasterBrick object
   tif <- brick(path)
 
-  # if we have less than 3 layers, use only the first layer and display it in greyscale
-  #if (tif@data@nlayers < 3) {
-    img <- tif[[1]]
-    # define a greyscale color palette, which is interpolated
-    palette <- colorNumeric(c("#000000", "#7F7F7F", "#FFFFFF"),
-      values(img), na.color = "transparent")
-  #} else {
-    # TODO
-    # merge first 3 layers into one layer, and define some RGB palette here
-    # see https://github.com/rstudio/leaflet/issues/212
-  #}
+  # if file has no projection, assume it should be WGS84, and don't project
+  # TODO: CHOOSE CORRECT "NO"-CRS..
+  doProjection <- TRUE
+  if (is.na(projection(tif))) {
+    crs(tif) <- sp::CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+    doProjection <- FALSE
+  }
 
-  # add layer to the map & return the map
-  map %>% addRasterImage(img, colors = palette, opacity = 1, maxBytes = 3*8*4096^2)
+  # if we have less than 3 layers, use only the first layer
+  if (nlayers(tif) < 3) {
+    img <- tif[[1]]
+
+    # if the file has a color palette embedded, use it
+    # if not, use a grayscale palette
+    if (length(colortable(tif)) == 0) {
+      # define a greyscale color palette, which is interpolated
+      palette <- colorNumeric(c("#000000", "#7F7F7F", "#FFFFFF"),
+        values(img), na.color = "transparent")
+    } else {
+      palette <- colortable(tif)
+      palette <- palette[2:length(palette)] # remove first item
+    }
+
+  } else {
+
+    # if we have 3 or more layers, use the first 3 and map them to RGB colors
+    maxColorValue <- maxValue(tif)
+    bitdepth <- log2(maxColorValue + 1)
+
+    # merge the first three layers into one layer
+    # values are now in the range of [0, 2^bitdepth^3 - 1]
+    # layer1 is most significant, layer3 is least significant
+    img <- tif[[1]] * (maxColorValue + 1)^2 +
+           tif[[2]] * (maxColorValue + 1) +
+           tif[[3]]
+
+    # use a precalculated (see https://github.com/rstudio/leaflet/issues/212)
+    # colorpalette for the merged raster, which assigns each value an RGB color
+    palette <- readRDS('./RGB_colorRamp_8bit.rds')
+  }
+
+  # apply colorpalette & transform image & add layer to the map & return the map
+  map %>% addRasterImage(img, colors = palette, opacity = 1, maxBytes = 3*8*4096^2, project = doProjection)
 }
 
 #' @describe adds GeoJSON vector data file to the map
@@ -80,13 +110,15 @@ geoJSONLayer <- function(map, path) {
 #' @param    path the full path to the file
 #' @return   the modified map object
 spLayer <- function(map, path) {
-  obj <- loadRDataObj(path)
+  # TODO: fit to view
+  spObj <- loadRDataObj(path)
 
-  # TODO
-  # switch cases: SpatialPolygon, SpatialLine, Points
-  #if (class(obj)[1] == 'SpatialPolygonsDataFrame"') {
-    return( map <- map %>% addPolygons(obj@polygons@Polygons) )
-  #}
+  # we convert the SP Object to GeoJSON, so we don't have to
+  # handel the various types (SpatialLines, -Points, -Polygons)
+  # seperately. for conversion, alternatively use this package?
+  # https://cran.r-project.org/web/packages/geojsonio/geojsonio.pdf
+  map %>% addGeoJSON(spToGeoJSON(spObj))
+
 }
 
 #' @describe loads an RData file and returns the first object in it
@@ -94,8 +126,22 @@ spLayer <- function(map, path) {
 #' @return   the first object contained in the file
 loadRDataObj <- function(path) {
   env <- new.env()
-  nm <- load(path, envir = env, verbose = TRUE)[1]
+  nm  <- load(path, envir = env, verbose = TRUE)[1]
   env[[nm]]
+}
+
+#' @describe converts SP objects into GeoJSON
+#' @param    spObject An Object from the SP package (e.g. SpatialPolygons)
+#' @return   a GeoJSON string
+spToGeoJSON <- function(spObject){
+  # It seems the only way to convert sp objects to geojson is
+  # to write a file with OGCGeoJSON driver and read the file back in.
+  # The R process must be allowed to write and delete temporary files.
+  tf <-tempfile()
+  writeOGR(spObject, tf,layer = "geojson", driver = "GeoJSON")
+  js <- paste(readLines(tf), collapse=" ")
+  file.remove(tf)
+  js
 }
 
 # parse CLI arguments

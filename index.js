@@ -37,9 +37,11 @@ app.use('/data', express.static(__dirname + '/data'));
 /* test route to check on widget creation */
 app.get('/makeWidget', function(req, res) {
 	var inPaths  = [
-		__dirname + '/cea.tif',
-		__dirname + '/example_01.geojson',
-		//__dirname + '/fig-1E.Rdata'
+		//__dirname + '/Riesel_kvr.tif',     // unprojected RGB GeoTIFF
+		//__dirname + '/o41078a1.tif',       // projected RGB GeoTIFF
+		//__dirname + '/cea.tif',            // grayscale GeoTIFF
+		//__dirname + '/example_01.geojson', // GeoJSON
+		__dirname + '/fig-1E.Rdata'        // SP SpatialPolygonsDataFrame
 	];
 	var outPath  = __dirname + '/data/widgets/test.html';
 
