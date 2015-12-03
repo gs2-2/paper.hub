@@ -14,8 +14,6 @@ var express = require('express');
 var multer  = require('multer');
 var fs      = require('fs-extra');
 var bodyParser = require('body-parser');
-
-
 var app = express();
 var publications = mongo.models.publications;
 var widget = mongo.models.widget;
@@ -62,6 +60,7 @@ mongo.connect(
 		});
 	}
 );
+
 
 //set the destination of the upload and the file-rename function
 var storage = multer.diskStorage({
@@ -364,3 +363,19 @@ function loggedIn(req, res, next) {
 		res.redirect('/');
     }
 }
+
+//-----------Delete-------------------------------
+app.get('/testR2Graph', function(req, res){
+	var inpath = 'C:/Users/Jan/paper.hub/delete/meto.Rdata';
+	var outpath = 'C:/Users/Jan/paper.hub/delete';
+	var mytitle = 'test';
+	var filling = 'TRUE';
+	widget.R2Graph(inpath, outpath, mytitle, filling, function(err){
+		if (err) res.send('did not work:<br>' + err);
+		else res.redirect('/data/widgets/test.html');
+	});
+});
+
+//--------------------------------------------
+
+

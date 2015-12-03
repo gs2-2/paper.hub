@@ -1,10 +1,24 @@
+# This script generates an HTML-file which contains a d3Graph, containing the passed .Rdata file.
+# Rdata of following types can be added:
+#   zoo
+#   xts
+# Datasets are expected to have the correct file format
+#
+# Run the script from the commandline as follows:
+#     RScript R2Graph.R --input <path> --output <path> --title <string> --filling <BOOL> 
+#
+
+
+
+
+
 #load libraries
 library(htmlwidgets)
 library(zoo)
 library(xts)
 library(dygraphs)
 
-args <- commandArgs(trailingOnly = TRUE)
+args <- commandArgs(trailingOnly=TRUE)
 
 
 ## check other dyOptions like highlighting etc.

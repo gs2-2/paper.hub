@@ -29,13 +29,17 @@ function TIFF2Map(inPath, outPath, callback) {
  * @param outPath  absolute path to the output html file
  * @param callback function that is called after execution of the script with param 'error'
  */
-function R2Graph(inPath, outPath, callback){
-	var scriptPath = __dirname + 'bin/R2Graph.R';
+function R2Graph(inPath, outPath, title, filling, callback){
+//	var cmd = 'Rscript ' + __dirname + '/bin/R2Graph.R'
+//					+ ' --input \'' + inPath + '\' --output' + outPath + '\' --title' + title + '\' --filling' + filling;
+
+	var cmd = 'Rscript ' + 'C:\\Users\\Jan\\paper.hub\\bin\\R2Graph.R'
+					+ ' --args' + ' ' + inPath + ' ' + outPath + ' ' + title + ' ' + filling;
 
 	//change cp.exec to fill parameters
 	//
 	//
-	cp.exec('RScript' + scriptPath + ' ' + inPath + ' ' + outPath, function(err, stdout, stderr){
+	cp.exec(cmd, function(err, stdout, stderr){
 		if (err) return callback(err);
 		callback(null);
 	});
