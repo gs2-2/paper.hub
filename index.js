@@ -6,14 +6,12 @@
 
 var config  = require('./config.js');
 var util = require('./util.js');
-var mongo   = require('./dbConnector.js');
+var mongo = require('./dbConnector.js');
 var async = require('async');
 var express = require('express');
 var multer = require('multer');
-var bodyparser = require('body-parser');
-var cp = require('child_process')
-;
-var app          = express();
+var cp = require('child_process');
+var app = express();
 var publications = mongo.models.publications;
 
 /* connect to mongoDB & launch express webserver */
@@ -53,7 +51,7 @@ app.use(multer({
 			console.log(file.fieldname + 'uploaded to ' + file.path);
 			done = true;
 		}
-	}));
+	}).single('latexDocument'));
 
 
 /* Provide express route for the LaTeX Code commited by the user. Uploaded Latex file is converted to HTML and saved in FS and DB*/
