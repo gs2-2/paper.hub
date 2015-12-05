@@ -1,0 +1,80 @@
+/**
+ * css for both (landing and publishing page)
+ */
+
+body{
+    background-color: rgba(255, 255, 255, 0.29);
+}
+
+#cssmenu {
+    width: auto;
+    height: 75px;
+    background: rgba(81, 95, 103, 0.89);
+}
+
+#cssmenu,
+#cssmenu ul,
+#cssmenu ul li,
+#cssmenu ul li {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    list-style: none;
+    line-height: 1;
+    display: block;
+    position: relative;
+}
+
+#cssmenu ul li.right {
+    float: right;
+    margin-right: 14px;
+    margin-top: 18px;
+}
+
+#cssmenu ul li.right #bcolor {
+    background: #eeeeee;
+}
+
+#cssmenu ul li.logo {
+    margin-left: 10px;
+    float: left;
+    font-size: 15px;
+    text-decoration: none;
+}
+
+
+
+
+.modalDialog {
+    position: fixed;
+    font-family: Arial, Helvetica, sans-serif;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(41, 41, 41, 0.8);
+    z-index: 99999;
+    opacity:0;
+    -webkit-transition: opacity 400ms ease-in;
+    -moz-transition: opacity 400ms ease-in;
+    transition: opacity 400ms ease-in;
+    pointer-events: none;
+}
+
+
+.modalDialog:target {
+    opacity:1;
+    pointer-events: auto;
+}
+
+.modalDialog > div {
+    width: 400px;
+    position: relative;
+    margin: 10% auto;
+    padding: 5px 20px 13px 20px;
+    border-radius: 10px;
+    background: #fff;
+
+}
+
+

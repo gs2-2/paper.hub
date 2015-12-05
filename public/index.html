@@ -2,43 +2,101 @@
 <html lang="en">
 <head>
 
-  <!-- Basic Page Needs
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta charset="utf-8">
-  <title>Your page title here :)</title>
-  <meta name="description" content="">
-  <meta name="author" content="">
+    <!-- Basic Page Needs
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <meta charset="utf-8">
+    <title>paper.hub</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-  <!-- Mobile Specific Metas
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Mobile Specific Metas
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- FONT
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+    <!-- FONT
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
 
-  <!-- CSS
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="stylesheet" href="css/normalize.css">
-  <link rel="stylesheet" href="css/skeleton.css">
+    <!-- CSS
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/skeleton.css">
+    <link rel="stylesheet" href="css/style.css">
 
-  <!-- Favicon
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="icon" type="image/png" href="img/favicon.png">
+
+    <!-- Favicon
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link rel="icon" type="image/png" href="img/paperhub_logo.png">
 
 </head>
 <body>
 
-  <!-- Primary Page Layout
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <div class="container">
-    <div class="row">
-      <div class="one-half column" style="margin-top: 25%">
-        <h4>Basic Page</h4>
-        <p>This index.html page is a placeholder with the CSS, font and favicon. It's just waiting for you to add some content! If you need some help hit up the <a href="http://www.getskeleton.com">Skeleton documentation</a>.</p>
-      </div>
+<!-- Primary Page Layout
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->
+
+<!-- Navbar -->
+
+<div id="cssmenu">
+    <ul>
+        <li class="logo"><img src="../public/img/paperhub_logo.png" width="80" height="75"></li>
+        <li class="right"> <a class='button' id="bcolor" href="#openModal">Login</a> </li>
+    </ul>
+</div>
+
+
+<div id="openModal" class="modalDialog">
+    <div>
+        <h4>Login</h4>
+        <p>This is a sample modal box that can be created using the powers of CSS3.</p>
+        <a href="#close" title="Cancel" class="button" >Cancel</a>
     </div>
-  </div>
+</div>
+
+
+<!-- todo aubout us, faq-->
+
+
+<!-- main container -->
+
+<div class="container">
+
+    <!-- introduction -->
+    <div class="row">
+        <div class="column" style="margin-top: 5%">
+            <h2 style="font-weight: 500">Welcome to paper.hub!</h2>
+            <p style="font-size:1.5em">Very nice content!!</p>
+        </div>
+    </div>
+
+
+    <!-- paper-table -->
+    <div class="row" style="margin-top: 5%">
+
+            <table class="u-full-width">
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Dave Gamache</td>
+                    <td>26</td>
+                    <td>Male</td>
+                </tr>
+                <tr>
+                    <td>Dwayne Johnson</td>
+                    <td>42</td>
+                    <td>Male</td>
+                </tr>
+                </tbody>
+            </table>
+
+    </div>
+
+</div>
 
 <!-- End Document
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
