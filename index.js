@@ -34,7 +34,7 @@ mongo.connect(
 
 
 /* serve everything in the folder './public/' */
-//app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/public'));
 
 //set up the multer specifications
 var upload = multer(
@@ -113,10 +113,7 @@ util.createPath([config.dataDir.papers, config.dataDir.widgets], function(err) {
 });
 
 /* serve the static pages of the site under '/' */
-//app.use('/', express.static(__dirname + '/public'));
-app.get('/', function(req, res) {
-	res.sendFile(__dirname + '/TESTHTML.html');
-});
+app.use('/', express.static(__dirname + '/public'));
 
 /* serve the data directory under '/data', to make the converted HTML and widgets available */
 app.use('/data', express.static(config.dataDir.path));
