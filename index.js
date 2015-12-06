@@ -7,10 +7,10 @@
 var config  = require('./config.js');
 var util = require('./util.js');
 var mongo = require('./dbConnector.js');
+var lp = require('./latexParser.js');
 var async = require('async');
 var express = require('express');
 var multer = require('multer');
-var cp = require('child_process');
 var app = express();
 var publications = mongo.models.publications;
 
@@ -34,48 +34,37 @@ mongo.connect(
 
 
 /* serve everything in the folder './public/' */
-app.use(express.static(__dirname + '/public'));
+//app.use(express.static(__dirname + '/public'));
 
-//code, which is executed on every request
-app.use(function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');    // allow CORS
-    res.header('Access-Control-Allow-Methods', 'GET, POST, DELETE');
-    next();
-});
-
-
+//set up the multer specifications
 var upload = multer(
 		//set the upload-destiantion for multer
-		{dest: './uploads'},
+		{dest: './uploads',
 		//rename the file to avoid name conflicts
-		{rename: function(fieldname, filename) {
+		rename: function(fieldname, filename) {
 			return filename;
-			}
-		},
+			},
 		//log the start of the upload process
-		{onFileUploadStart: function(file) {
+		onFileUploadStart: function(file) {
 			console.log(file.originalname + 'upload started');
-			}
-		},
+			},
 		//log completed upload status
-		{onFileUploadComplete: function(file) {
+		onFileUploadComplete: function(file) {
 			console.log(file.fieldname + 'uploaded to ' + file.path);
 			done = true;
 			}
 		});
 
 
-var uploadFile = upload.fields([{name: 'latexDocument', maxCount: 1}]);
+var uploadFile = upload.single('latexDocument');
 
 
 /* Provide express route for the LaTeX Code commited by the user. Uploaded Latex file is converted to HTML and saved in FS and DB*/
 app.post('/addPaper', uploadFile, function(req, res) {
 
-	console.log(req.body);
-	console.log(req.files[0]);
 	//create new paper instance in the DB
 	var uploadedPaper = new publications({
-		title: req.bodytitle,
+		title: req.body.title,
 		abstract: req.body.abstract,
 		author: req.body.author,
 		publicationDate: new Date(),
@@ -86,7 +75,7 @@ app.post('/addPaper', uploadFile, function(req, res) {
 	uploadedPaper.save(function(error) {
 		var message = error ? 'failed to save paper: ' + error 
                             : 'paper saved: ' + uploadedPaper._id;
-        console.log(message + ' from ' + req.connection.remoteAddress);
+        console.log(message);
 	});
 
 	var paperID = uploadedPaper._id;
@@ -96,18 +85,21 @@ app.post('/addPaper', uploadFile, function(req, res) {
 		if(err) console.log(err);
 	}); 
 
-	var latexFile = req.files[0].filename;
+	var latexFile = req.file.filename;
 
 	//call the LaTeX-ML parser as a child-process, the output is saved as paperID.xml
-	cp.exec('latexml --dest=' + paperID + '.xml' + latexFile, function(err, stdout, stderr) {
-		if(err) return callback(err);
-		callback(null);
+	lp.latex2xml('uploads/' + latexFile, './data/papers/' + paperID + '/' + paperID + '.xml ', function(err) {
+		if(err) console.log(err);
+		//convert the xml file and save the HTML file in the papers/<paperID>/ folder 
+		lp.xml2html('data/papers/' + paperID + '/' + paperID, './data/papers/' + paperID + '/html/' + paperID + '.html ', function(err){
+			if(err) console.log(err)});
+			console.log('Successfully parsed');
+			lp.moveFile('uploads/' + latexFile, 'data/papers/' + paperID + '/tex/', function(err, succ) {
+				if(err) console.log(err);
+				console.log(succ);
+			});
 	});
-	//convert the xml file and save the HTML file in the papers/<paperID>/ folder 
-	cp.exec('latexmlpost --dest=./data/papers/' + paperID + ' ' + paperID + '.xml' , function(err, stdout, stderr) {
-		if(err) return callback(err);
-		callback(null);
-	});
+
 	//send response to the client with the ID of the new paper
 	res.send(paperID);
 });
@@ -121,7 +113,10 @@ util.createPath([config.dataDir.papers, config.dataDir.widgets], function(err) {
 });
 
 /* serve the static pages of the site under '/' */
-app.use('/', express.static(__dirname + '/public'));
+//app.use('/', express.static(__dirname + '/public'));
+app.get('/', function(req, res) {
+	res.sendFile(__dirname + '/TESTHTML.html');
+});
 
 /* serve the data directory under '/data', to make the converted HTML and widgets available */
 app.use('/data', express.static(config.dataDir.path));

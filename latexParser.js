@@ -32,4 +32,14 @@ exports.latex2xml = function (inPath, outPath, callback) {
 		if(err) return callback(err);
 		callback(null);
 	});
+};
+
+exports.moveFile = function (inPath, outPath, callback) {
+
+	var cmd = 'mv ' + inPath + ' ' + outPath;
+
+	cp.exec(cmd, function(err, succ) {
+		if(err) return callback(err);
+		return callback(succ);
+	}) 
 }
