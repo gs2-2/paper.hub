@@ -36,30 +36,46 @@ mongo.connect(
 /* serve everything in the folder './public/' */
 app.use(express.static(__dirname + '/public'));
 
-//specify the multer upload, destination is added in the post method
-app.use(multer({ 
+//code, which is executed on every request
+app.use(function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');    // allow CORS
+    res.header('Access-Control-Allow-Methods', 'GET, POST, DELETE');
+    next();
+});
+
+
+var upload = multer(
+		//set the upload-destiantion for multer
+		{dest: './uploads'},
 		//rename the file to avoid name conflicts
-		rename: function(fieldname, filename) {
+		{rename: function(fieldname, filename) {
 			return filename;
+			}
 		},
 		//log the start of the upload process
-		onFileUploadStart: function(file) {
+		{onFileUploadStart: function(file) {
 			console.log(file.originalname + 'upload started');
+			}
 		},
 		//log completed upload status
-		onFileUploadComplete: function(file) {
+		{onFileUploadComplete: function(file) {
 			console.log(file.fieldname + 'uploaded to ' + file.path);
 			done = true;
-		}
-	}).single('latexDocument'));
+			}
+		});
+
+
+var uploadFile = upload.fields([{name: 'latexDocument', maxCount: 1}]);
 
 
 /* Provide express route for the LaTeX Code commited by the user. Uploaded Latex file is converted to HTML and saved in FS and DB*/
-app.post('/addPaper', upload.single('latexDocument'), function(req, res) {
+app.post('/addPaper', uploadFile, function(req, res) {
 
+	console.log(req.body);
+	console.log(req.files[0]);
 	//create new paper instance in the DB
-	var uploadedPaper = new dbConnector.models.publicationModel({
-		title: req.body.title,
+	var uploadedPaper = new publications({
+		title: req.bodytitle,
 		abstract: req.body.abstract,
 		author: req.body.author,
 		publicationDate: new Date(),
@@ -76,27 +92,11 @@ app.post('/addPaper', upload.single('latexDocument'), function(req, res) {
 	var paperID = uploadedPaper._id;
 
 	//create a path for the new paper in the file system
-	util.newPaperDir('./data/papers/', paperID, callback); 
-	
-	//set the directory for the paper to be saved
-	var storage  = multer.diskStooreage({
-		destination: function(req, file, callback) {
-			callback(null, './data/papers' + paperID);
-		},
-		filename: function(req, file, callback) {
-			callback(null, file.fieldname + '.tex');
-		}
-	});
+	util.newPaperDir('./data/papers/', paperID, function(err) {
+		if(err) console.log(err);
+	}); 
 
-	//set the upload for multer
-	var upload = multer({storage: storage});
-
-	//upload the file
-	upload(req, res, function(err) {
-		if(err) res.send('Error uploading the file.');
-	});
-
-	var latexFile = req.file.filename;
+	var latexFile = req.files[0].filename;
 
 	//call the LaTeX-ML parser as a child-process, the output is saved as paperID.xml
 	cp.exec('latexml --dest=' + paperID + '.xml' + latexFile, function(err, stdout, stderr) {
