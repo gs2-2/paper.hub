@@ -7,10 +7,11 @@
 var config  = require('./config.js');
 var util    = require('./util.js');
 var mongo   = require('./dbConnector.js');
-var async = require('async');
+var widgets = require('./widget_generator/widgetGenerator.js');
+var async   = require('async');
 var express = require('express');
 
-var app          = express();
+var app = express();
 var publications = mongo.models.publications;
 
 /* connect to mongoDB & launch express webserver */
@@ -30,6 +31,9 @@ mongo.connect(
 		});
 	}
 );
+
+/* serve everything in the folder './public/' */
+app.use(express.static(__dirname + '/public'));
 
 /* check if the datadir exists & create it if necessary */
 util.createPath([config.dataDir.papers, config.dataDir.widgets], function(err) {
