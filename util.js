@@ -1,11 +1,11 @@
 "use strict";
 
-var mkdirp = require('mkdirp');
-var async  = require('async');
-
 /**
  * @desc various utility functions needed by the server
  */
+
+var fs    = require('fs-extra');
+var async = require('async');
 
 /**
  * @desc  checks if a path exists, and creates it if not
@@ -14,9 +14,9 @@ var async  = require('async');
  */
 exports.createPath = function(path, callback) {
 	if (path instanceof Array)
-		async.map(path, mkdirp, callback);
+		async.map(path, fs.mkdirs, callback);
 	else
-		mkdirp(path, callback);
+		fs.mkdirs(path, callback);
 };
 
 /**
@@ -32,4 +32,4 @@ exports.newPaperDir = function(parentPath, UID, callback) {
 		parentPath + '/' + UID + '/datasets'
 	];
 	exports.createPath(paths, callback);
-}
+};
