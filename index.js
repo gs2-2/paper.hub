@@ -37,23 +37,14 @@ mongo.connect(
 app.use(express.static(__dirname + '/public'));
 
 //set up the multer specifications
-var upload = multer(
-		//set the upload-destiantion for multer
-		{dest: './uploads',
-		//rename the file to avoid name conflicts
-		rename: function(fieldname, filename) {
-			return filename;
-			},
-		//log the start of the upload process
-		onFileUploadStart: function(file) {
-			console.log(file.originalname + 'upload started');
-			},
-		//log completed upload status
-		onFileUploadComplete: function(file) {
-			console.log(file.fieldname + 'uploaded to ' + file.path);
-			done = true;
-			}
-		});
+var upload = multer({
+	//set the upload-destiantion for multer
+	dest: './uploads',
+	//rename the file to avoid name conflicts
+	rename: function(fieldname, filename) {
+		return filename;
+	}
+});
 
 
 var uploadFile = upload.single('latexDocument');
@@ -79,25 +70,12 @@ app.post('/addPaper', uploadFile, function(req, res) {
 	});
 
 	var paperID = uploadedPaper._id;
+	var latexFile = req.file.filename;
 
 	//create a path for the new paper in the file system
 	util.newPaperDir('./data/papers/', paperID, function(err) {
 		if(err) console.log(err);
-	}); 
-
-	var latexFile = req.file.filename;
-
-	//call the LaTeX-ML parser as a child-process, the output is saved as paperID.xml
-	lp.latex2xml('uploads/' + latexFile, './data/papers/' + paperID + '/' + paperID + '.xml ', function(err) {
-		if(err) console.log(err);
-		//convert the xml file and save the HTML file in the papers/<paperID>/ folder 
-		lp.xml2html('data/papers/' + paperID + '/' + paperID, './data/papers/' + paperID + '/html/' + paperID + '.html ', function(err){
-			if(err) console.log(err)});
-			console.log('Successfully parsed');
-			lp.moveFile('uploads/' + latexFile, 'data/papers/' + paperID + '/tex/', function(err, succ) {
-				if(err) console.log(err);
-				console.log(succ);
-			});
+		lp.latexParsing(paperID, latexFile);
 	});
 
 	//send response to the client with the ID of the new paper
