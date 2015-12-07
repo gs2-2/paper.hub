@@ -45,14 +45,15 @@ var latex2xml = function (inPath, outPath, callback) {
  */
 exports.latex2html = function (paperID, file, callback) {
 	var uploadPath = __dirname + '/upload_tmp/' + file;
-	var xmlPath  = config.dataDir.papers + '/' + paperID + '/' + paperID + '.xml';
+	var xmlPath  = config.dataDir.papers + '/' + paperID + '/'      + paperID + '.xml';
 	var htmlPath = config.dataDir.papers + '/' + paperID + '/html/' + paperID + '.html';
-	var texPath  = config.dataDir.papers + '/' + paperID + '/tex/' + file;
+	var texPath  = config.dataDir.papers + '/' + paperID + '/tex/'  + file;
 
 	async.series([
-		async.apply(latex2xml, uploadPath, xmlPath),
-		async.apply(xml2html,  xmlPath,    htmlPath),
-		async.apply(fs.move,   uploadPath, texPath)
+		async.apply(latex2xml, uploadPath, xmlPath),  // convert tex -> xml
+		async.apply(xml2html,  xmlPath,    htmlPath), // convert xml -> html
+		async.apply(fs.move,   uploadPath, texPath),  // move tex file to paper dir
+		async.apply(fs.remove, xmlPath)               // remove temporary xml file
 	], function(err, results) {
 		if (err) return callback(err);
 		callback(null);

@@ -65,7 +65,7 @@ app.post('/addPaper', uploadFile, function(req, res) {
 	});
 
 	var paperID = uploadedPaper._id;
-	var latexFile = req.file.filename;*/
+	var latexFile = req.file.filename;
 
 	async.series([
 		// save the paper metadata to the DB
@@ -77,7 +77,6 @@ app.post('/addPaper', uploadFile, function(req, res) {
 	],
 	function(err, results) {
 		if (err) return console.error('could not save the new paper:\n%s', err);
-
 		res.send(paperID)
 		console.log('paper %s (%s) successfully uploaded and converted!',
 			latexFile, paperID);
