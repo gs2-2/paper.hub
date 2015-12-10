@@ -22,11 +22,12 @@
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/skeleton.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/index.css">
 
 
     <!-- Favicon
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <link rel="icon" type="image/png" href="img/paperhub_favicon.svg">
+    <link rel="icon" type="image/png" href="img/paperhub_favicon.svg"><!-- todo: anders exportieren -->
 
 </head>
 <body>
@@ -38,7 +39,7 @@
 
 <div id="cssmenu">
     <ul>
-        <li class="logo"><a href="aboutUs.html" ><img src="../public/img/paperhub_logo2.svg" width="300" height="65"></a></li>
+        <li class="logo"><img src="img/paperhub_logo2.svg" width="300" height="65"></li>
         <li class="right"> <a class='button' id="bcolor" href="#openModal">Login</a> </li> <!-- todo: still authorized? -->
     </ul>
 </div>
@@ -65,40 +66,36 @@
     <!-- introduction -->
     <div class="row">
         <div class="column" style="margin-top: 5%">
-            <h2 style="font-weight: 500">Welcome to paper.hub!</h2>
-            <p style="font-size:1.5em">Very nice content!!</p>
+            <h2>Welcome to paper.hub!</h2>
+            <p>Very nice content!!</p>
         </div>
     </div>
 
 
     <!-- paper table -->
     <div class="row" style="margin-top: 5%">
-
-            <table class="u-full-width">
-                <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Author</th>
-                    <th>Date</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>Dave Gamache</td>
-                    <td>26</td>
-                    <td>Male</td>
-                </tr>
-                <tr>
-                    <td>Dwayne Johnson</td>
-                    <td>42</td>
-                    <td>Male</td>
-                </tr>
-                </tbody>
-            </table>
-
+        <table class="u-full-width">
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Publication Date</th>
+            </tr>
+            </thead>
+            <tbody id="paper-table"></tbody>
+        </table>
     </div>
 
 </div>
+
+
+<!-- baseboard -->
+<div class="baseboard">
+    <div class="container">
+        <a href="aboutUs.html">About us</a>
+    </div>
+</div>
+
 
 <!-- End Document
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->

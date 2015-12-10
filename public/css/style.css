@@ -6,15 +6,23 @@ body{
     background-color: rgba(255, 255, 255, 0.29);
 }
 
+
+/** nav bar **/
 #cssmenu {
     width: auto;
-    height: 75px;
-    background: rgba(23, 24, 73, 0.98);
+    height: 70px;
+    background: rgba(106, 110, 112, 0.98);
+}
+
+@media (max-width: 429px) {
+    #cssmenu{
+        width: auto;
+        height: 150px;
+    }
 }
 
 #cssmenu,
 #cssmenu ul,
-#cssmenu ul li,
 #cssmenu ul li {
     margin: 0;
     padding: 0;
@@ -37,11 +45,10 @@ body{
 
 #cssmenu ul li.logo {
     margin-left: 10px;
-    margin-top: 5px;
+    margin-right: 5px;
+    margin-top: 3px;
     float: left;
-    font-size: 15px;
 }
-
 
 /** Modal**/
 
@@ -79,3 +86,18 @@ body{
     margin-top: 10px;
 }
 
+
+/** baseboard **/
+.baseboard {
+    border-top-style: solid;
+    border-width: 2px;
+    border-color: #6a6e70;
+    width: 100%;
+    position : absolute;
+    bottom : 0;
+    height : 40px;
+}
+
+.baseboard .container > a{
+    color: black;
+}
