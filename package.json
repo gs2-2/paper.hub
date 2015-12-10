@@ -9,6 +9,7 @@
     "mkdirp": "^0.5.1",
     "mongoose": "^4.2.7",
     "passport": "^0.3.2",
+    "passport-github2": "^0.1.9",
     "multer": "^1.1.0",
     "fs-extra": "^0.26.2"
   },
