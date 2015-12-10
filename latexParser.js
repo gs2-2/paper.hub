@@ -44,11 +44,11 @@ var latex2xml = function (inPath, outPath, callback) {
  * @param callback node style callback
  */
 exports.latex2html = function (paperID, file, callback) {
-	var uploadPath = __dirname + '/upload_tmp/' + file;
+	var uploadPath = config.uploadDir + file;
 	var xmlPath  = config.dataDir.papers + '/' + paperID + '/'      + paperID + '.xml';
 	var htmlPath = config.dataDir.papers + '/' + paperID + '/html/' + paperID + '.html';
 	var texPath  = config.dataDir.papers + '/' + paperID + '/tex/';
-	var movePath = __dirname + '/upload_tmp';
+	var movePath = config.uploadDir;
 
 	async.series([
 		async.apply(latex2xml, uploadPath, uploadPath),  // convert tex -> xml

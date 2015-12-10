@@ -46,7 +46,7 @@ mongo.connect(
 //set the destination of the upload and the file-rename function
 var storage = multer.diskStorage({
 	destination: function(req, file, cb) {
-		cb(null, __dirname + '/upload_tmp')
+		cb(null, config.uploadDir)
 	},
 	filename: function(req, file, cb) {
 		cb(null, file.originalname)
