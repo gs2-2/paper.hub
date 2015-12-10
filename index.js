@@ -17,7 +17,7 @@ var app = express();
 var publications = mongo.models.publications;
 
 /* check if the all required paths exist & create them if necessary */
-util.createPath([config.dataDir.papers, config.dataDir.widgets], function(err) {
+util.createPath([config.dataDir.papers, config.dataDir.widgets, config.uploadDir], function(err) {
 	if (err) {
 		console.error('couldnt find nor create data directory: ' + err);
 		process.exit(2);
@@ -42,15 +42,21 @@ mongo.connect(
 	}
 );
 
-//set up the multer specifications
-var upload = multer({
-	// target folder for uploads, automatically created
-	dest: __dirname + '/upload_tmp',
-	//rename the file to avoid name conflicts
-	rename:  function (originalname, filename, req, res) { 
-		return originalname;
+
+//set the destination of the upload and the file-rename function
+var storage = multer.diskStorage({
+	destination: function(req, file, cb) {
+		cb(null, __dirname + '/upload_tmp')
+	},
+	filename: function(req, file, cb) {
+		cb(null, file.originalname)
 	}
 });
+
+//set up the multer specifications
+var upload = multer({ storage: storage });
+
+//set multer for multiple file uploads
 var latexUpload = upload.fields([{
 	name: 'latexDocument',
 	maxCount: 1
@@ -74,8 +80,6 @@ app.post('/addPaper', latexUpload, function(req, res) {
 
 	var paperID = uploadedPaper._id;
 	var latexFile = req.files['latexDocument'][0].filename;
-	console.log(req.files['latexDocument'][0].originalname);
-	//var addFiles = req.files['files'];
 
 	async.series([
 		// save the paper metadata to the DB
@@ -94,10 +98,8 @@ app.post('/addPaper', latexUpload, function(req, res) {
 });
 
 /* serve the static pages of the site under '/' */
-//app.use('/', express.static(__dirname + '/public'));
-app.get('/', function(req, res) {
-	res.sendFile(__dirname + '/TESTHTML.html');
-});
+app.use('/', express.static(__dirname + '/public'));
+
 /* serve the data directory under '/data',
    to make the converted HTML and widgets available */
 app.use('/data', express.static(config.dataDir.path));

@@ -47,12 +47,13 @@ exports.latex2html = function (paperID, file, callback) {
 	var uploadPath = __dirname + '/upload_tmp/' + file;
 	var xmlPath  = config.dataDir.papers + '/' + paperID + '/'      + paperID + '.xml';
 	var htmlPath = config.dataDir.papers + '/' + paperID + '/html/' + paperID + '.html';
-	var texPath  = config.dataDir.papers + '/' + paperID + '/tex/'  + file;
+	var texPath  = config.dataDir.papers + '/' + paperID + '/tex/';
+	var movePath = __dirname + '/upload_tmp';
 
 	async.series([
 		async.apply(latex2xml, uploadPath, uploadPath),  // convert tex -> xml
 		async.apply(xml2html,  uploadPath,    htmlPath), // convert xml -> html
-		async.apply(fs.move,   uploadPath, texPath),  // move tex file to paper dir
+		async.apply(fs.move,   movePath, texPath, {clobber: true}),  // move tex file to paper dir
 		async.apply(fs.remove, xmlPath)               // remove temporary xml file
 	], function(err, results) {
 		if (err) return callback(err);
