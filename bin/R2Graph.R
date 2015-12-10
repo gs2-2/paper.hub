@@ -29,9 +29,10 @@ args <- commandArgs(trailingOnly=TRUE)
 #@param title      title of graph
 #@param filling    bool, if true, there will be a filling below the line
 plotXts <- function(inputPath, htmlPath, title, filling)
+{
   # load .Rdata file
   input <- load(inputPath, verbose = FALSE)
-  {
+  
     
   # check if Rdata is of zoo or xts
   if (xtsible(input))
@@ -60,4 +61,5 @@ plotXts <- function(inputPath, htmlPath, title, filling)
   }
 }
 
-plotXts(args[1], args[2], args[3], args[4])
+#plotXts(args[1], args[2], args[3], args[4])
+plotXts("C:/Users/Jan/paper.hub/delete/fig-8-zoo.Rdata", "C:/Users/Jan/paper.hub/delete/test.html", "Hello", TRUE)
