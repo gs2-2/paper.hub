@@ -17,6 +17,10 @@ if [ "$(id -u)" != "0" ]; then
     exit 1
 fi
 
+# exit the script when an error occurs
+trap "echo AN ERROR OCCURED, STOPPING INSTALLATION!" ERR
+set -e
+set -o pipefail
 
 # installation-script dependencies
 apt-get update
@@ -55,7 +59,7 @@ cd ..
 rm -rf LaTeXML-0.8.1*
 
 # install additional R packages
-Rscript -e "install.packages(c('rgdal', 'raster', 'leaflet', 'xts', 'zoo', 'sp', 'dygraphs', 'htmlwidgets'), lib='/usr/local/lib/R/site-library', repos='https://cran.rstudio.com')"
+Rscript -e "install.packages(c('rgdal', 'raster', 'leaflet', 'raster', 'xts', 'zoo', 'sp', 'dygraphs', 'htmlwidgets', 'R.utils', ), lib='/usr/local/lib/R/site-library', repos='https://cran.rstudio.com')"
 
 # install node dependencies
 npm install
