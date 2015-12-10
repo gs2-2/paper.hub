@@ -36,13 +36,28 @@
 
 <!-- Navbar -->
 
-<div id="cssmenu">
-    <ul>
-        <li class="logo"><a href="index.html" ><img src="img/paperhub_logo2.svg" width="300" height="65"></a></li>
-        <li class="right"> <a class='button' id="bcolor" href="#openModal">Login</a> </li> <!-- todo: still authorized?-->
-    </ul>
+<div class="navbar">
+    <div style="overflow:auto;">
+        <div class="logo">
+            <a href="index.html"><img src="img/paperhub_logo2.svg" width="auto" height="47"></a>
+        </div>
+        <div class='button' >
+            <a href="#openModal">Login</a> <!-- todo: login-functionality /modal - see index.html -->
+        </div>
+    </div>
 </div>
 
+
+<!-- Modal -->
+
+<div id="openModal" class="modalDialog">
+    <div>
+        <h4>Login</h4>
+        <p>This is a sample modal box that can be created using the powers of CSS3.
+            <a href="#close" title="Cancel" class="button" >Cancel</a>
+        </p>
+    </div>
+</div>
 
 
 <!-- main container -->
@@ -50,14 +65,18 @@
 <div class="container">
 
     <!-- Metadaten-->
-    <div class="row" style="margin-top: 5%">
-        <h4 style="font-weight: 500">"Titel"</h4>
-        <p style="font-size:1em">"Metadaten"</p>
+    <div class="row">
+        <div class="column" style="margin-top: 75px">
+            <h4 style="font-weight: 500">"Titel"</h4>
+            <p style="font-size:1em">"Metadaten"</p>
+        </div>
     </div>
 
     <!-- Paper -->
     <div class="row">
-        <!-- todo: paper einladen -->
+        <div class="column">
+            <!-- todo: paper einladen -->
+        </div>
     </div>
 
 </div>

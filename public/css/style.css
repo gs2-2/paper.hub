@@ -7,48 +7,40 @@ body{
 }
 
 
+table{
+    border-bottom: 1px solid #acacac;
+}
+
+
+
 /** nav bar **/
-#cssmenu {
-    width: auto;
-    height: 70px;
-    background: rgba(106, 110, 112, 0.98);
+.navbar {
+    position: fixed;
+    z-index: 1;
+    background-color: rgba(106, 110, 112, 0.98);
+    width: 100%;
+    padding: 6px 6px 0 10px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12) !important;
 }
 
-@media (max-width: 429px) {
-    #cssmenu{
-        width: auto;
-        height: 150px;
-    }
+.logo{
+    float:left;
+    overflow:hidden;
 }
 
-#cssmenu,
-#cssmenu ul,
-#cssmenu ul li {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    list-style: none;
-    line-height: 1;
-    display: block;
-    position: relative;
-}
-
-#cssmenu ul li.right {
-    float: right;
-    margin-right: 14px;
-    margin-top: 18px;
-}
-
-#cssmenu ul li.right #bcolor {
+.button{
+    float:right;
+    margin-top: 5px;
+    margin-right: 25px;
+    color: rgba(106, 110, 112, 0.98);
     background: #eeeeee;
 }
 
-#cssmenu ul li.logo {
-    margin-left: 10px;
-    margin-right: 5px;
-    margin-top: 3px;
-    float: left;
+.button > a{
+    color: rgba(106, 110, 112, 0.98);
+    text-decoration: none;
 }
+
 
 /** Modal**/
 

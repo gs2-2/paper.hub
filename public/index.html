@@ -37,11 +37,15 @@
 
 <!-- Navbar -->
 
-<div id="cssmenu">
-    <ul>
-        <li class="logo"><img src="img/paperhub_logo2.svg" width="300" height="65"></li>
-        <li class="right"> <a class='button' id="bcolor" href="#openModal">Login</a> </li> <!-- todo: still authorized? -->
-    </ul>
+<div class="navbar">
+    <div style="overflow:auto;">
+        <div class="logo">
+            <img src="img/paperhub_logo2.svg" width="auto" height="47">
+        </div>
+        <div class='button' >
+            <a href="#openModal">Login</a> <!-- todo: login-functionality -->
+        </div>
+    </div>
 </div>
 
 
@@ -50,8 +54,9 @@
 <div id="openModal" class="modalDialog">
     <div>
         <h4>Login</h4>
-        <p>This is a sample modal box that can be created using the powers of CSS3.</p>
-        <a href="#close" title="Cancel" class="button" >Cancel</a>
+        <p>This is a sample modal box that can be created using the powers of CSS3.
+            <a href="#close" title="Cancel" class="button" >Cancel</a>
+        </p>
     </div>
 </div>
 
@@ -63,14 +68,14 @@
 
     <!-- introduction -->
     <div class="row">
-        <div class="column" style="margin-top: 5%">
-            <h2>Welcome to paper.hub!</h2>
-            <p>Very nice content!!</p>
+        <div class="column" style="margin-top: 80px"><!-- todo: bei umbruch muss margin größer -->
+            <h2 style="font-weight: 500;">Welcome to paper.hub!</h2>
+            <p style="font-size: 1.5em">Very nice content!!</p>
         </div>
     </div>
 
       <!-- paper table -->
-    <div class="row" style="margin-top: 5%">
+    <div class="row" style="margin-top: 3%">
         <table class="u-full-width">
             <thead><tr>
                 <th>Title</th>

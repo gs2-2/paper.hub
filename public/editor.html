@@ -37,13 +37,16 @@
 
 <!-- Navbar -->
 
-<div id="cssmenu">
-    <ul>
-        <li class="logo"><img src="img/paperhub_logo2.svg" width="300" height="65"></li>
-        <li class="right"> <a class='button' id="bcolor">Logout</a> </li> <!-- todo: logout-functionality -->
-    </ul>
+<div class="navbar">
+    <div style="overflow:auto;">
+        <div class="logo">
+            <img src="img/paperhub_logo2.svg" width="auto" height="47">
+        </div>
+        <div class='button' >
+            <a>Logout</a> <!-- todo: logout-functionality -->
+        </div>
+    </div>
 </div>
-
 
 <!-- main container -->
 
@@ -51,17 +54,16 @@
     <div class="row">
 
         <!-- paper-html -->
-        <div class="two-thirds column" style="margin-top: 5%">
-            <iframe id="paperFrame" style="width: 100%" src=""></iframe>
+        <div class="two-thirds column" id="paper"><!-- todo: bei umbruch muss margin größer -->
+            <iframe id="paperFrame" src=""></iframe> <!-- todo: resize when content uploaded-->
         </div>
 
-        <!-- side content --><!-- todo: sidecontent über ganze Seite -> fixed position und wenn zu klein ausblenden-->
-        <div class="one-third column sideContent" >
+        <!-- side content --><!-- todo: bei umbruch muss margin größer -->
+        <div class="one-third column" id="sideContent">
             lksjlf
         </div>
+
     </div>
-
-
 </div>
 
 
