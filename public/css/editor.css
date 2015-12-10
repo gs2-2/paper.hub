@@ -1,0 +1,12 @@
+/**
+ * css landing page
+ */
+
+.container{
+    max-width: 1754px;
+}
+
+.sideContent{
+    background-color: #e0ded5;
+    height: 100%;
+}
