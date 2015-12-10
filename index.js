@@ -53,6 +53,16 @@ var upload = multer({
 
 var uploadFile = upload.single('latexDocument');
 
+/* return metadata about all stored journeys */
+app.get('/getPaperList', function(req, res) {
+	publications
+		.find({}, '_id title author publicationDate')
+		.sort({publicationDate: -1})
+		.exec(function(err, papers) {
+			if (err) return console.error('could not get stored papers: ' + err);
+			res.json(papers);
+		});
+});
 
 /* Provide express route for the LaTeX Code commited by the user. Uploaded Latex file is converted to HTML and saved in FS and DB*/
 app.post('/addPaper', uploadFile, function(req, res) {
@@ -68,7 +78,7 @@ app.post('/addPaper', uploadFile, function(req, res) {
 
 	//save the new publication in DB
 	uploadedPaper.save(function(error) {
-		var message = error ? 'failed to save paper: ' + error 
+		var message = error ? 'failed to save paper: ' + error
                             : 'paper saved: ' + uploadedPaper._id;
         console.log(message);
 	});
