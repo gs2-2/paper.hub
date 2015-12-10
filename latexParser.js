@@ -44,17 +44,18 @@ var latex2xml = function (inPath, outPath, callback) {
  * @param callback node style callback
  */
 exports.latex2html = function (paperID, file, callback) {
-	var uploadPath = config.uploadDir + file;
+	var uploadPath = config.uploadDir + '/' + file;
 	var xmlPath  = config.dataDir.papers + '/' + paperID + '/'      + paperID + '.xml';
 	var htmlPath = config.dataDir.papers + '/' + paperID + '/html/' + paperID + '.html';
 	var texPath  = config.dataDir.papers + '/' + paperID + '/tex/';
-	var movePath = config.uploadDir;
 
 	async.series([
 		async.apply(latex2xml, uploadPath, uploadPath),  // convert tex -> xml
 		async.apply(xml2html,  uploadPath,    htmlPath), // convert xml -> html
-		async.apply(fs.move,   movePath, texPath, {clobber: true}),  // move tex file to paper dir
-		async.apply(fs.remove, xmlPath)               // remove temporary xml file
+		// move tex files to paper dir, so they can be downloaded later
+		async.apply(fs.move,   config.uploadDir, texPath, {clobber: true}),
+		async.apply(fs.mkdirs, config.uploadDir),  // recreate the upload dir
+		async.apply(fs.remove, xmlPath)            // remove temporary xml file
 	], function(err, results) {
 		if (err) return callback(err);
 		callback(null);
