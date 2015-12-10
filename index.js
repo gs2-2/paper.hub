@@ -47,13 +47,21 @@ var upload = multer({
 	// target folder for uploads, automatically created
 	dest: __dirname + '/upload_tmp',
 	//rename the file to avoid name conflicts
-	rename: function(fieldname, filename) { return filename; }
+	rename:  function (originalname, filename, req, res) { 
+		return originalname;
+	}
 });
-var uploadFile = upload.single('latexDocument');
+var latexUpload = upload.fields([{
+	name: 'latexDocument',
+	maxCount: 1
+},
+{
+	name: 'files'
+}]);
 
 /* Provide express route for the LaTeX Code commited by the user.
    Uploaded Latex file is converted to HTML and saved in FS and DB */
-app.post('/addPaper', uploadFile, function(req, res) {
+app.post('/addPaper', latexUpload, function(req, res) {
 
 	//create new paper instance in the DB
 	var uploadedPaper = new publications({
@@ -65,7 +73,9 @@ app.post('/addPaper', uploadFile, function(req, res) {
 	});
 
 	var paperID = uploadedPaper._id;
-	var latexFile = req.file.filename;
+	var latexFile = req.files['latexDocument'][0].filename;
+	console.log(req.files['latexDocument'][0].originalname);
+	//var addFiles = req.files['files'];
 
 	async.series([
 		// save the paper metadata to the DB
@@ -84,8 +94,10 @@ app.post('/addPaper', uploadFile, function(req, res) {
 });
 
 /* serve the static pages of the site under '/' */
-app.use('/', express.static(__dirname + '/public'));
-
+//app.use('/', express.static(__dirname + '/public'));
+app.get('/', function(req, res) {
+	res.sendFile(__dirname + '/TESTHTML.html');
+});
 /* serve the data directory under '/data',
    to make the converted HTML and widgets available */
 app.use('/data', express.static(config.dataDir.path));

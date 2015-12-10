@@ -50,8 +50,8 @@ exports.latex2html = function (paperID, file, callback) {
 	var texPath  = config.dataDir.papers + '/' + paperID + '/tex/'  + file;
 
 	async.series([
-		async.apply(latex2xml, uploadPath, xmlPath),  // convert tex -> xml
-		async.apply(xml2html,  xmlPath,    htmlPath), // convert xml -> html
+		async.apply(latex2xml, uploadPath, uploadPath),  // convert tex -> xml
+		async.apply(xml2html,  uploadPath,    htmlPath), // convert xml -> html
 		async.apply(fs.move,   uploadPath, texPath),  // move tex file to paper dir
 		async.apply(fs.remove, xmlPath)               // remove temporary xml file
 	], function(err, results) {
