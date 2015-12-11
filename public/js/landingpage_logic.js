@@ -18,7 +18,9 @@ $(document).ready(function() {
 				$('#paper-table').append(rowHtml);
 			}
 			if (papers.length === 0) {
-				$('#paper-table').append('<tr><td>No Papers uploaded yet. Please create one first!</td></tr>');
+// 				$('#paper-table').append('<tr><td>No Papers uploaded yet. Please create one first!</td></tr>');
+// 				Alternativ, falls Button zum Upload direkt auf der Startseite angezeigt werden soll. Öffnet dann ein Modal was in der index.html auskommentiert ist.
+				$('#paper-table').append('<tr><td>No Papers uploaded yet. Want to create one? <a class="button" href="#openUploadModal">Upload new paper</a></td></tr>');
 			}
 		},
 		error: function(xhr, textStatus, errorThrown) {
@@ -37,3 +39,4 @@ function loadPaper(tablerow) {
 	var url = 'http://' + window.location.host + '/paper.html?id=';
 	window.location = url + $(tablerow).data('id');
 }
+

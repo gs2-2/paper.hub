@@ -42,11 +42,12 @@ table{
 }
 
 
+
 /** Modal**/
 
 .modalDialog {
     position: fixed;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Helvetica, Arial, sans-serif;
     top: 0;
     right: 0;
     bottom: 0;
@@ -78,7 +79,9 @@ table{
     margin-top: 10px;
 }
 
-
+.cancel{
+	float: none;
+}
 /** baseboard **/
 .baseboard {
     border-top-style: solid;

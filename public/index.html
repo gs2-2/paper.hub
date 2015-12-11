@@ -42,21 +42,33 @@
         <div class="logo">
             <img src="img/paperhub_logo2.svg" width="auto" height="47">
         </div>
-        <div class='button' >
-            <a href="#openModal">Login</a> <!-- todo: login-functionality -->
-        </div>
+            <a class='button 'href="#openLoginModal">Login</a>
     </div>
 </div>
 
 
 <!-- Modal -->
 
-<div id="openModal" class="modalDialog">
+<div id="openLoginModal" class="modalDialog">
     <div>
         <h4>Login</h4>
-        <p>This is a sample modal box that can be created using the powers of CSS3.
-            <a href="#close" title="Cancel" class="button" >Cancel</a>
-        </p>
+        <p>Please choose a service you want to log in with:</p></br>
+        
+        <a href="/auth/github"><p>Github</p></a>
+	         
+            <a href="#close" title="Cancel" class="button cancel">Cancel</a>
+    </div>
+</div>
+
+
+<div id="openUploadModal" class="modalDialog">
+    <div>
+        <h4>Upload</h4>
+        <p>You want to upload a Paper? Just select your TeX files!</p>
+        <form action="/addPaper" method="post" enctype="multipart/form-data">
+		<input type="file" value="" name="data" multiple> <!-- liegt am Ende im data Feld -->
+		<button type="submit" class="button">Upload</button>
+        <a href="#close" title="Cancel" class="button cancel">Cancel</a>
     </div>
 </div>
 
