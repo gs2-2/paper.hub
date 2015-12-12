@@ -42,7 +42,7 @@
         <div class="logo">
             <img src="img/paperhub_logo2.svg" width="auto" height="47">
         </div>
-            <a class='button 'href="#openLoginModal">Login</a>
+            <a class='button' href="#openLoginModal">Login</a>
     </div>
 </div>
 
@@ -56,24 +56,38 @@
         
         <a href="/auth/github"><p>Github</p></a>
 	         
-            <a href="#close" title="Cancel" class="button cancel">Cancel</a>
-    </div>
-</div>
-
-
-<div id="openUploadModal" class="modalDialog">
-    <div>
-        <h4>Upload</h4>
-        <p>You want to upload a Paper? Just select your TeX files!</p>
-        <form action="/addPaper" method="post" enctype="multipart/form-data">
-		<input type="file" value="" name="data" multiple> <!-- liegt am Ende im data Feld -->
-		<button type="submit" class="button">Upload</button>
         <a href="#close" title="Cancel" class="button cancel">Cancel</a>
     </div>
 </div>
 
 
-<!-- todo faq?-->
+<div id="openUploadModal" class="modalDialog"> <!-- todo: für kleinere Auflösungen anpassen-->
+    <div>
+        <h4>Upload</h4>
+       <!-- <p>You want to upload a Paper? Just select your TeX files!</p>
+        <form action="/addPaper" method="post" enctype="multipart/form-data">
+		<input type="file" value="" name="data" multiple> <!-- liegt am Ende im data Feld -->
+		<!--<button type="submit" class="button">Upload</button>
+        <a href="#close" title="Cancel" class="button cancel">Cancel</a>-->
+        <p><b>
+            You want to upload a Paper?
+            Just select your files for static data!
+        </b></p>
+        <form class="input-group" method="POST" enctype="multipart/form-data" action="/addPaper">
+            <p>TeX file: &emsp; <input id="latexDocument" name="latexDocument" type="file" accept=".tex" />
+            Other files:  <input id="latexDocument" name="files" type="file" multiple="" /></p>
+
+            <b>Add the metadata:</b><br><br>
+            Title: <input id="title" name="title"/><br>
+            Abstract: <input id="ab" name="abstract"/><br>
+            Author: <input id="author" name="author"/><br>
+            <br>
+            <a href="#close" title="Cancel" class="button cancel" style="background-color: white">Cancel</a>
+            <input class="button" type="submit" value="Upload" style="float:right; background-color: #eeeeee"/>
+        </form>
+    </div>
+</div>
+
 
 <!-- main container -->
 <div class="container">
@@ -108,10 +122,14 @@
 </div>
 
 
+<!-- todo: faq?-->
+
+
 <!-- JS includes
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 <script src="vendor/jquery/dist/jquery.min.js" charset="utf-8"></script>
 <script src="js/landingpage_logic.js" charset="utf-8"></script>
+<!-- todo: script von lasse einbinden -->
 
 </body>
 </html>
