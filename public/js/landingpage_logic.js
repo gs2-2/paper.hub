@@ -11,7 +11,7 @@ $(document).ready(function() {
 			// fill the table with publications
 			for (var i = 0; i < papers.length; i++) {
 				var rowHtml = '<tr onclick="loadPaper(this)" data-id="'
-					+ papers[i].id + '"><td>'
+					+ papers[i]._id + '"><td>'
 					+ papers[i].title + '</td><td>'
 					+ papers[i].author + '</td><td>'
 					+ papers[i].publicationDate + '</td><tr>';
