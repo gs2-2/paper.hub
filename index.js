@@ -14,7 +14,7 @@ var express = require('express');
 var multer = require('multer');
 var app = express();
 var publications = mongo.models.publications;
-require('./pass.js')(app);
+require('./pass.js')(app, mongo);
 
 /* connect to mongoDB & launch express webserver */
 mongo.connect(
