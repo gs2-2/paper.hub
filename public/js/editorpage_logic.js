@@ -2,15 +2,13 @@
 
 
 /**
- * @desc fit the size of the paperFrame
+ * @desc fit the height of the paperFrame
  * @param id
  */
-
-
 function autoResize(id){
-    var newheight;
+    var newHeight;
     if(document.getElementById){
-        newheight = document.getElementById(id).contentWindow.document .body.scrollHeight;
+        newHeight = document.getElementById(id).contentWindow.document .body.scrollHeight;
     }
-    document.getElementById(id).height = (newheight) + "px";
+    document.getElementById(id).height = (newHeight) + "px";
 }

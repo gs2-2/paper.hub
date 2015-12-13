@@ -40,15 +40,15 @@
 <div class="navbar">
     <div style="overflow:auto;">
         <div class="logo">
-            <img src="img/paperhub_logo2.svg" width="auto" height="47">
+            <img src="img/paperhub_logo2.svg" width="auto" height="47px">
         </div>
             <a class='button' href="#openLoginModal">Login</a>
     </div>
 </div>
 
 
-<!-- Modal -->
-
+<!-- Modals -->
+<!-- Login-modal-->
 <div id="openLoginModal" class="modalDialog">
     <div>
         <h4>Login</h4>
@@ -60,11 +60,12 @@
     </div>
 </div>
 
-
+<!-- Upload-modal -->
 <div id="openUploadModal" class="modalDialog"> <!-- todo: für kleinere Auflösungen anpassen-->
     <div>
         <h4>Upload</h4>
-       <!-- <p>You want to upload a Paper? Just select your TeX files!</p>
+        <!-- Old upload-modal by nico  todo: remove?-->
+        <!-- <p>You want to upload a Paper? Just select your TeX files!</p>
         <form action="/addPaper" method="post" enctype="multipart/form-data">
 		<input type="file" value="" name="data" multiple> <!-- liegt am Ende im data Feld -->
 		<!--<button type="submit" class="button">Upload</button>
@@ -94,7 +95,7 @@
 
     <!-- introduction -->
     <div class="row">
-        <div class="column" style="margin-top: 80px"><!-- todo: bei umbruch muss margin größer -->
+        <div class="column" id="intro">
             <h2 style="font-weight: 500;">Welcome to paper.hub!</h2>
             <p style="font-size: 1.5em">Very nice content!!</p>
         </div>
@@ -118,6 +119,7 @@
 <div class="baseboard">
     <div class="container">
         <a href="aboutUs.html">About us</a>
+        <!-- todo: copyright -->
     </div>
 </div>
 

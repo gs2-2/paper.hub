@@ -1,65 +1,51 @@
 /**
- * css landing page
+ * css editor page
  */
 
+/* wider container on the editor page*/
 .container{
     max-width: 1754px;
 }
 
 nav{
-    /* kein margin-right oder width verwenden!*/
+    /* dp not use margin-right or width!*/
     background-color: #f5f3ea;
     position:fixed;
     height: 100%;
     margin-top: 60px;
-    padding: 10px;
+    padding: 20px 10px 10px 10px;
     right: 3%;
     -webkit-box-shadow: 0 0 3px 5px rgba(238, 236, 226, 0.71);
     -moz-box-shadow: 0 0 3px 5px rgba(238, 236, 226, 0.64);
     box-shadow: 0 0 3px 5px rgba(238, 236, 226, 0.6);
 }
 
-
 #paper{
     padding-top: 75px;
 }
 
 
+/** media queries **/
+
+/* fitting the nav-bar on the right for smaller displays */
 @media (max-width: 1200px) {
     nav{
-        background-color: #f5f3ea;
-        position:fixed;
-        height: 100%;
-        margin-top: 60px;
-        padding: 10px;
         right: 0;
         max-width: 200px;
-        -webkit-box-shadow: 0 0 3px 5px rgba(238, 236, 226, 0.71);
-        -moz-box-shadow: 0 0 3px 5px rgba(238, 236, 226, 0.64);
-        box-shadow: 0 0 3px 5px rgba(238, 236, 226, 0.6);
     }
 }
 
-
+/* fitting the nav-bar on the right for small displays */
 @media (max-width: 800px) {
     nav{
-        background-color: #f5f3ea;
-        position:fixed;
-        height: 100%;
-        margin-top: 60px;
-        padding: 10px;
         right: 0;
         max-width: 150px;
-        -webkit-box-shadow: 0 0 3px 5px rgba(238, 236, 226, 0.71);
-        -moz-box-shadow: 0 0 3px 5px rgba(238, 236, 226, 0.64);
-        box-shadow: 0 0 3px 5px rgba(238, 236, 226, 0.6);
     }
 }
 
-/* Show hint on small displays */
+/* show hint on small displays */
 @media (max-width: 550px) {
     #paper{
-        background-color: green;
         display: none;
     }
     nav{
@@ -73,10 +59,10 @@ nav{
         -moz-box-shadow: 0 0 3px 5px rgba(139, 0, 0, 0.63);
         box-shadow: 0 0 3px 5px rgba(139, 0, 0, 0.63);
     }
-    /* Show saveChanges-button?? */
+    /* todo: show saveChanges-button?? */
 }
 
-/* Hide hint on larger displays */
+/* hide hint on larger displays */
 @media (min-width: 550px){
     #smallDisplay{
         display: none;

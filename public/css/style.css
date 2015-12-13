@@ -1,5 +1,5 @@
 /**
- * css for both (landing and publishing page)
+ * css for all pages
  */
 
 body{
@@ -12,6 +12,7 @@ table{
 
 
 /** nav bar **/
+
 .navbar {
     position: fixed;
     z-index: 1;
@@ -80,6 +81,7 @@ table{
 .cancel{
 	float: none;
 }
+
 
 
 /** baseboard **/
