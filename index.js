@@ -8,12 +8,21 @@ var config  = require('./config.js');
 var util    = require('./util.js');
 var mongo   = require('./dbConnector.js');
 var widgets = require('./widget_generator/widgetGenerator.js');
-var lp = require('./latexParser.js');
+var latex   = require('./latexParser.js');
 var async   = require('async');
 var express = require('express');
-var multer = require('multer');
+var multer  = require('multer');
+
 var app = express();
 var publications = mongo.models.publications;
+
+/* check if the all required paths exist & create them if necessary */
+util.createPath([config.dataDir.papers, config.dataDir.widgets, config.uploadDir], function(err) {
+	if (err) {
+		console.error('couldnt find nor create data directory: ' + err);
+		process.exit(2);
+	}
+});
 
 /* connect to mongoDB & launch express webserver */
 mongo.connect(
@@ -33,70 +42,64 @@ mongo.connect(
 	}
 );
 
-/* serve everything in the folder './public/' */
-app.use(express.static(__dirname + '/public'));
 
-
-/* serve everything in the folder './public/' */
-app.use(express.static(__dirname + '/public'));
-
-//set up the multer specifications
-var upload = multer({
-	//set the upload-destiantion for multer
-	dest: './uploads',
-	//rename the file to avoid name conflicts
-	rename: function(fieldname, filename) {
-		return filename;
+//set the destination of the upload and the file-rename function
+var storage = multer.diskStorage({
+	destination: function(req, file, cb) {
+		cb(null, config.uploadDir)
+	},
+	filename: function(req, file, cb) {
+		cb(null, file.originalname)
 	}
 });
 
+//set up the multer specifications
+var upload = multer({ storage: storage });
 
-var uploadFile = upload.single('latexDocument');
+//set multer for multiple file uploads
+var latexUpload = upload.fields([{
+	name: 'latexDocument',
+	maxCount: 1
+},
+{
+	name: 'files'
+}]);
 
-
-/* Provide express route for the LaTeX Code commited by the user. Uploaded Latex file is converted to HTML and saved in FS and DB*/
-app.post('/addPaper', uploadFile, function(req, res) {
+/* Provide express route for the LaTeX Code commited by the user.
+   Uploaded Latex file is converted to HTML and saved in FS and DB */
+app.post('/addPaper', latexUpload, function(req, res) {
 
 	//create new paper instance in the DB
 	var uploadedPaper = new publications({
-		title: req.body.title,
+		title:    req.body.title,
 		abstract: req.body.abstract,
-		author: req.body.author,
+		author:   req.body.author,
 		publicationDate: new Date(),
 		widgets: [] //insert widgets, when they are generated after the upload
 	});
 
-	//save the new publication in DB
-	uploadedPaper.save(function(error) {
-		var message = error ? 'failed to save paper: ' + error 
-                            : 'paper saved: ' + uploadedPaper._id;
-        console.log(message);
-	});
-
 	var paperID = uploadedPaper._id;
-	var latexFile = req.file.filename;
+	var latexFile = req.files['latexDocument'][0].filename;
 
-	//create a path for the new paper in the file system
-	util.newPaperDir('./data/papers/', paperID, function(err) {
-		if(err) console.log(err);
-		lp.latexParsing(paperID, latexFile);
+	async.series([
+		// save the paper metadata to the DB
+		async.apply(uploadedPaper.save),
+		// create directory structure for the paper
+		async.apply(util.newPaperDir, config.dataDir.papers, paperID),
+		// convert the tex document to HTML
+		async.apply(latex.latex2html, paperID, latexFile)
+	],
+	function(err, results) {
+		if (err) return console.error('could not save the new paper:\n%s', err);
+		res.send(paperID)
+		console.log('paper %s (%s) successfully uploaded and converted!',
+			latexFile, paperID);
 	});
-
-	//send response to the client with the ID of the new paper
-	res.send(paperID);
-});
-
-
-/* check if the datadir exists & create it if necessary */
-util.createPath([config.dataDir.papers, config.dataDir.widgets], function(err) {
-	if (err) {
-		console.error('couldnt find nor create data directory: ' + err);
-		process.exit(2);
-	}
 });
 
 /* serve the static pages of the site under '/' */
 app.use('/', express.static(__dirname + '/public'));
 
-/* serve the data directory under '/data', to make the converted HTML and widgets available */
+/* serve the data directory under '/data',
+   to make the converted HTML and widgets available */
 app.use('/data', express.static(config.dataDir.path));

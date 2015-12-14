@@ -5,17 +5,17 @@
 */
 
 var config = require('./config.js');
-var cp = require('child_process');
-var fs = require('fs-extra');
+var cp     = require('child_process');
+var fs     = require('fs-extra');
+var async  = require('async');
 
 /**
-* @desc generates a html file out of an xml file
-* @param inPath path of the file, that shall be parsed
+* @desc  generates a html file out of an xml file
+* @param inPath  path of the file, that shall be parsed
 * @param outPath path, where to save the new file
 */
 var xml2html = function (inPath, outPath, callback) {
-
-	var cmd = 'latexmlpost --dest=' + outPath + inPath;
+	var cmd = 'latexmlpost --dest=' + outPath + ' ' + inPath;
 
 	cp.exec(cmd, function(err, stdout, stderr) {
 		if(err) return callback(err);
@@ -23,15 +23,13 @@ var xml2html = function (inPath, outPath, callback) {
 	});
 };
 
-
 /**
-* @desc generate a xml file out of the .tex input file
-* @param inPath path of the file, that shall be parsed
+* @desc  generate a xml file out of the .tex input file
+* @param inPath  path of the file, that shall be parsed
 * @param outPath path, where to save the new file
 */
 var latex2xml = function (inPath, outPath, callback) {
-
-	var cmd = 'latexml --dest=' + outPath + inPath;
+	var cmd = 'latexml --dest=' + outPath + ' ' + inPath;
 
 	cp.exec(cmd, function(err, stdout, stderr) {
 		if(err) return callback(err);
@@ -40,20 +38,26 @@ var latex2xml = function (inPath, outPath, callback) {
 };
 
 /**
-* @desc Call functions that parse the latex file to html
-*/
-exports.latexParsing = function (paperID, file) {
-	//call the LaTeX-ML parser function, the output is saved as paperID.xml
-	latex2xml('uploads/' + file, config.dataDir.papers + '/' + paperID + '/' + paperID + '.xml ', function(err) {
-		if(err) console.log(err);
-		//convert the xml file and save the HTML file in the papers/<paperID>/ folder 
-		xml2html(config.dataDir.papers + '/' + paperID + '/' + paperID, config.dataDir.papers + '/' + paperID + '/html/' + paperID + '.html ', function(err) {
-			if(err) console.log(err);
-			console.log('Successfully parsed');
-			//move the tex file from the upload folder to the paper-dir
-			fs.move('uploads/' + file, config.dataDir.papers + '/' + paperID + '/tex/' + file, function(err) {
-				if(err) return console.error(err);
-				console.log('Success with moving');
-			});
-		})
-})};
+ * @desc converts a given Latex document to HTML
+ * @param paperID  ID of the associated paper in the DB
+ * @param file     filename of the .tex file, located in ./uploads
+ * @param callback node style callback
+ */
+exports.latex2html = function (paperID, file, callback) {
+	var uploadPath = config.uploadDir + '/' + file;
+	var xmlPath  = config.dataDir.papers + '/' + paperID + '/'      + paperID + '.xml';
+	var htmlPath = config.dataDir.papers + '/' + paperID + '/html/' + paperID + '.html';
+	var texPath  = config.dataDir.papers + '/' + paperID + '/tex/';
+
+	async.series([
+		async.apply(latex2xml, uploadPath, uploadPath),  // convert tex -> xml
+		async.apply(xml2html,  uploadPath,    htmlPath), // convert xml -> html
+		// move tex files to paper dir, so they can be downloaded later
+		async.apply(fs.move,   config.uploadDir, texPath, {clobber: true}),
+		async.apply(fs.mkdirs, config.uploadDir),  // recreate the upload dir
+		async.apply(fs.remove, xmlPath)            // remove temporary xml file
+	], function(err, results) {
+		if (err) return callback(err);
+		callback(null);
+	});
+};
