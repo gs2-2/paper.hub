@@ -40,3 +40,22 @@ function loadPaper(tablerow) {
 	window.location = url + $(tablerow).data('id');
 }
 
+
+$.ajax({
+		type: 'GET',
+		url: '/getAuthStatus',
+		success: function(data) {
+			
+			console.log(data);
+			
+			if(data == 'Auth successful'){
+				
+				//HIER BUTTON TEXT UND LINK UMSCHREIBEN
+				
+			}
+			
+		}
+	
+	});
+
+

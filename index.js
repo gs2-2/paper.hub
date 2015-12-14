@@ -14,7 +14,7 @@ var express = require('express');
 var multer = require('multer');
 var app = express();
 var publications = mongo.models.publications;
-require('./pass.js')(app, mongo);
+require('./pass.js')(app, mongo, express);
 
 /* connect to mongoDB & launch express webserver */
 mongo.connect(
@@ -33,10 +33,6 @@ mongo.connect(
 		});
 	}
 );
-
-/* serve everything in the folder './public/' */
-app.use(express.static(__dirname + '/public'));
-
 
 /* serve everything in the folder './public/' */
 app.use(express.static(__dirname + '/public'));
@@ -111,3 +107,19 @@ app.use('/', express.static(__dirname + '/public'));
 
 /* serve the data directory under '/data', to make the converted HTML and widgets available */
 app.use('/data', express.static(config.dataDir.path));
+
+
+function loggedIn(req, res, next) {
+    if (req.user) {
+        next();
+    } else {
+		res.sendfile('/index.html')
+//         res.redirect('/');
+    }
+}
+
+app.use('/editor', loggedIn, function(req,res,next){
+	
+	res.sendfile('/editor.html');	
+
+});

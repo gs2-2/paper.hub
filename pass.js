@@ -1,15 +1,19 @@
 "use strict";
 
-module.exports = function(app, mongo){
+module.exports = function(app, mongo, express){
 	
 
 	
 	/* OAuth Key-File */
 	var oauth_keys = require('./oauth_keys.js');
-	
+	var session = require('express-session');
+	app.use(session(oauth_keys.session_secret));
+
+
 	/* Passport & Login Strategies */
 	var passport = require('passport');
 	var GitHubStrategy = require('passport-github2').Strategy;
+
 	app.use(passport.initialize());
 	app.use(passport.session());
 	
@@ -90,9 +94,18 @@ module.exports = function(app, mongo){
 	  req.logout();
 	  res.redirect('/');
 	});                              
-	                                      
-	                                      
-	    
+	     
+	// GET /getAuthStatus
+	// Can be used to check for the Login status of the current user  	                                      
+	app.get('/getAuthStatus', function(req,res){
+		
+		if(req.user){
+			res.send('Auth successful');
+		}else{	
+			res.send('Auth unsuccessful');
+		}
+	});                                    
+	   	 
 	    
 	/* Passport needs some functions for serialization */
 	
