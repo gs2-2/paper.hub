@@ -1,3 +1,13 @@
+# This Script takes a zoo object and creates a JSON Object for each Column
+#
+# Structe of Object:
+#   "Index": "ColValue"
+#
+
+
+
+
+
 require(RJSONIO)
 
 
