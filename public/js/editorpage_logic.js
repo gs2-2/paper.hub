@@ -1,13 +1,18 @@
 "use strict";
 
+// get the paperid from the URL query (slice(4) for '?id=')
+var paperID = window.location.search.slice(4);
+
+$(document).ready(function() {
+	// load the paper into the iframe
+	var paperHtmlUrl = '/data/papers/' + paperID + '/html/' + paperID + '.html';
+	$('#paper-frame').attr('src', paperHtmlUrl);
+});
+
 /**
  * @desc fit the height of the paperFrame to its inner dimensions
- * @param id
+ * @param iframe: the iframe dom object
  */
-function autoResize(id){
-	var newHeight;
-	if(document.getElementById){
-		newHeight = document.getElementById(id).contentWindow.document.body.scrollHeight;
-	}
-	document.getElementById(id).height = (newHeight) + "px";
+function iframeResize(iframe){
+	iframe.height = iframe.contentWindow.document.body.scrollHeight + "px";
 }
