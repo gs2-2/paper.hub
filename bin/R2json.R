@@ -13,7 +13,7 @@
 # Parameters:
 # objectpath = path, where .Rdata is stored
 
-# Problem: File does not store Object Values, only Object Name
+# Problem: line26, need to find a way to get the variablename of loaded .Rdata file
 # ToDo: Change RegEx for paths
 require(RJSONIO)
 
@@ -21,7 +21,10 @@ require(RJSONIO)
 createJSON <- function(objectpath){
   
   # load .Rdata file given in parameter
-  object <- load(objectpath)
+  load(objectpath)
+  
+  # object <- loaded data
+  
   
   # debug
   print(objectpath)
