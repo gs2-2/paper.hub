@@ -36,8 +36,7 @@ $(document).ready(function() {
 			if(data === 'Auth successful'){
 				// transform the loginbutton to an "logout" button
 				$('#login-btn').text('Log Out');
-				$('#login-btn').attr('href', '#');
-				$('#login-btn').attr('onclick', 'logout()');
+				$('#login-btn').attr('href', '/logout');
 				// add an "add paper" button
 				$('#login-btn').after('<a id="addpaper-btn"'
 					+ 'class="button" href="#openUploadModal">Add Paper</a>');
@@ -54,13 +53,4 @@ $(document).ready(function() {
 function loadPaper(tablerow) {
 	var url = 'http://' + window.location.host + '/paper.html?id=';
 	window.location = url + $(tablerow).data('id');
-}
-
-/**
- * @desc  log the user out by removing the session cookie
- *        & reloading the index page
- */
-function logout() {
-	// TODO: remove cookie?
-	window.location.reload();
 }
