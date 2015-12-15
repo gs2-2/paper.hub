@@ -1,13 +1,7 @@
-# This Script takes a zoo object and converts it into a JSON Object
-# The JSON Object is structured as followed:
-#   {
-#     "X": ["Value1", "Value2", ..., "ValueN"],
-#     "Col1": ["Value1", "Value2", ..., "ValueN"],
-#     "Col2": ["Value1", "Value2", ..., "ValueN"],
-#     "ColN": ["Value1", "Value2", ..., "ValueN"],
-#   }
+# This Script takes a zoo object and converts it into a .csv File
 #
-# Created .csv and .json will get the same name as .Rdata
+#
+# Created .csv will get the same name as .Rdata
 #
 # Parameters:
 # objectpath = path, where .Rdata is stored
@@ -25,7 +19,7 @@ loadRDataObj <- function(path) {
   env[[nm]]
 }
 
-createJSON <- function(objectpath){
+createCSV <- function(objectpath){
   # load object in given path
   object <- loadRDataObj(objectpath)
 
@@ -54,18 +48,7 @@ createJSON <- function(objectpath){
   # save <filename>.csv
   write.csv(object, path, row.names=TRUE)
 
-  # load created <filename>.csv
-  csv <- read.csv(path, header=TRUE, sep=",", quote="\"", dec=".", fill=TRUE)
-
-  # convert loaded <filename>.csv to JSON
-  json <- toJSON(csv)
-
-  # create path for saving <filename>.json
-  jsonpath <- paste(sep="",filepath, filename, ".json")
-
-  # save <filename>.json
-  write(json, jsonpath)
 
 }
 
-createJSON("/home/jan/Dokumente/paper.hub/delete/fig-8-zoo.Rdata")
+createCSV("/home/jan/Dokumente/paper.hub/delete/fig-8-zoo.Rdata")
