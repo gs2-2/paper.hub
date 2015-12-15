@@ -8,9 +8,14 @@
 module.exports = function(app, mongo, express){
 
 	/* OAuth Key-File */
+	var config = require('./config.js');
 	var oauth_keys = require('./oauth_keys.js');
 	var session = require('express-session');
-	app.use(session(oauth_keys.session_secret));
+	app.use(session({
+		secret: oauth_keys.session_secret,
+		resave: false,
+		saveUninitialized: false
+	}));
 
 	/* Passport & Login Strategies */
 	var passport = require('passport');
@@ -22,7 +27,8 @@ module.exports = function(app, mongo, express){
 	passport.use(new GitHubStrategy({
 		clientID: oauth_keys.GITHUB_CLIENT_ID,
 		clientSecret: oauth_keys.GITHUB_CLIENT_SECRET,
-		callbackURL: "http://127.0.0.1:8080/auth/github/callback"
+		callbackURL: 'http://' + config.hostname + ':' + config.httpPort
+			+ '/auth/github/callback'
 	},
 	function(accessToken, refreshToken, profile, done) {
 		//First we need to check if the user logs in for the first time
@@ -30,12 +36,9 @@ module.exports = function(app, mongo, express){
 			'providerID': profile.id,
 			'provider': 'github'
 		}, function(err, user) {
-			if (err) {
-				return done(err);
-			}
+			if (err) return done(err);
 			if (!user) {
 			// no user existent --> new user --> create a new one
-
 				user = new mongo.models.users({
 					name: profile.displayName,
 					email: profile.emails[0].value,
@@ -48,7 +51,6 @@ module.exports = function(app, mongo, express){
 					if (err) console.log(err);
 					return done(err, user);
 				});
-
 			} else {
 				//user found. return it.
 				return done(err, user);
@@ -78,7 +80,6 @@ module.exports = function(app, mongo, express){
 	app.get('/auth/github/callback',
 	  passport.authenticate('github', { failureRedirect: '/login' }),
 	  function(req, res) {
-		 console.log('Im Callback');
 		res.redirect('/');
 	});
 

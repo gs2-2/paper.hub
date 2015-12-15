@@ -14,11 +14,11 @@ var express = require('express');
 var multer = require('multer');
 var app = express();
 var publications = mongo.models.publications;
-require('./pass.js')(app, mongo, express);
+require('./auth.js')(app, mongo, express);
 
 /* connect to mongoDB & launch express webserver */
 mongo.connect(
-	config.dbPort,
+	config.dbAddress,
 	config.dbName,
 	function(err) {
 		if (err) {
@@ -27,7 +27,7 @@ mongo.connect(
 		}
 
 		// once DB is connected, start webserver
-		console.log('connection to database established on port ' + config.dbPort);
+		console.log('connection to database established on ' + config.dbAddress);
 		app.listen(config.httpPort, function(){
 			console.log('http server now listening on port ' + config.httpPort);
 		});
@@ -119,7 +119,7 @@ function loggedIn(req, res, next) {
 }
 
 app.use('/editor', loggedIn, function(req,res,next){
-	
-	res.sendfile('/editor.html');	
+
+	res.sendfile('/editor.html');
 
 });
