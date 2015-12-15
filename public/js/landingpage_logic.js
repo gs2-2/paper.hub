@@ -18,14 +18,30 @@ $(document).ready(function() {
 				$('#paper-table').append(rowHtml);
 			}
 			if (papers.length === 0) {
-// 				$('#paper-table').append('<tr><td>No Papers uploaded yet. Please create one first!</td></tr>');
-// 				Alternativ, falls Button zum Upload direkt auf der Startseite angezeigt werden soll. Öffnet dann ein Modal was in der index.html auskommentiert ist.
 				$('#paper-table').append('<tr><td>No Papers uploaded yet. Want to create one? <a class="button" href="#openUploadModal">Upload new paper</a></td></tr>');
 			}
 		},
 		error: function(xhr, textStatus, errorThrown) {
 			console.error('%s: unable to get list of papers: %s',
 				textStatus, errorThrown);
+		}
+	});
+
+	// check if user is logged in
+	$.ajax({
+		type: 'GET',
+		url: '/getAuthStatus',
+		success: function(data) {
+			console.log(data);
+			if(data === 'Auth successful'){
+				// transform the loginbutton to an "logout" button
+				$('#login-btn').text('Log Out');
+				$('#login-btn').attr('href', '#');
+				$('#login-btn').attr('onclick', 'logout()');
+				// add an "add paper" button
+				$('#login-btn').after('<a id="addpaper-btn"'
+					+ 'class="button" href="#openUploadModal">Add Paper</a>');
+			}
 		}
 	});
 
@@ -40,22 +56,11 @@ function loadPaper(tablerow) {
 	window.location = url + $(tablerow).data('id');
 }
 
-
-$.ajax({
-		type: 'GET',
-		url: '/getAuthStatus',
-		success: function(data) {
-			
-			console.log(data);
-			
-			if(data == 'Auth successful'){
-				
-				//HIER BUTTON TEXT UND LINK UMSCHREIBEN
-				
-			}
-			
-		}
-	
-	});
-
-
+/**
+ * @desc  log the user out by removing the session cookie
+ *        & reloading the index page
+ */
+function logout() {
+	// TODO: remove cookie?
+	window.location.reload();
+}
