@@ -42,7 +42,7 @@
         <div class="logo">
             <img src="img/paperhub_logo2.svg" width="auto" height="47px">
         </div>
-            <a class='button' href="#openLoginModal">Login</a>
+        <a id="login-btn" class='button' href="#openLoginModal">Login</a>
     </div>
 </div>
 
@@ -53,23 +53,20 @@
     <div>
         <h4>Login</h4>
         <p>Please choose a service you want to log in with:</p></br>
-        
+
         <a href="/auth/github"><p>Github</p></a>
-	         
+
         <a href="#close" title="Cancel" class="button cancel">Cancel</a>
     </div>
 </div>
 
 <!-- Upload-modal -->
-<div id="openUploadModal" class="modalDialog"> <!-- todo: für kleinere Auflösungen anpassen-->
+<!-- TODO: ERROR checking: alle felder müssen ausgefüllt sein,
+           idealerweise auch javascript/html in textfeldern filtern (wegen der sicherheit.) -->
+<!-- TODO: für kleinere Auflösungen anpassen (mit schickem grid?) -->
+<div id="openUploadModal" class="modalDialog">
     <div>
         <h4>Upload</h4>
-        <!-- Old upload-modal by nico  todo: remove?-->
-        <!-- <p>You want to upload a Paper? Just select your TeX files!</p>
-        <form action="/addPaper" method="post" enctype="multipart/form-data">
-		<input type="file" value="" name="data" multiple> <!-- liegt am Ende im data Feld -->
-		<!--<button type="submit" class="button">Upload</button>
-        <a href="#close" title="Cancel" class="button cancel">Cancel</a>-->
         <p><b>
             You want to upload a Paper?
             Just select your files for static data!
@@ -79,9 +76,9 @@
             Other files:  <input id="latexDocument" name="files" type="file" multiple="" /></p>
 
             <b>Add the metadata:</b><br><br>
-            Title: <input id="title" name="title"/><br>
+            Title:    <input id="title" name="title"/><br>
             Abstract: <input id="ab" name="abstract"/><br>
-            Author: <input id="author" name="author"/><br>
+            Author:   <input id="author" name="author"/><br>
             <br>
             <a href="#close" title="Cancel" class="button cancel" style="background-color: white">Cancel</a>
             <input class="button" type="submit" value="Upload" style="float:right; background-color: #eeeeee"/>
