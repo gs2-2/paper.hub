@@ -13,3 +13,11 @@
         margin-top: 160px
     }
 }
+
+.login-provider {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 40px;
+    width: auto;
+}
