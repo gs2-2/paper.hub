@@ -92,9 +92,18 @@ table{
     width: 100%;
     position : absolute;
     bottom : 0;
-    height : 40px;
+    height : 25px;
 }
 
 .baseboard .container > a{
     color: black;
 }
+
+.login-provider {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 40px;
+    width: auto;
+}
+

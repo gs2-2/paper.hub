@@ -42,7 +42,7 @@
         <div class="logo">
             <img src="img/paperhub_logo2.svg" width="auto" height="47px">
         </div>
-        <a id="login-btn" class="button" href="#openLoginModal">Login</a>
+        <a id="login-btn" class="button" href="#openUploadModal">Login</a>
     </div>
 </div>
 
@@ -77,14 +77,32 @@
             Just select your files for static data!
         </b></p>
         <form class="input-group" method="POST" enctype="multipart/form-data" action="/addPaper">
-            <p>TeX file: &emsp; <input id="latexDocument" name="latexDocument" type="file" accept=".tex" />
-            Other files:  <input id="latexDocument" name="files" type="file" multiple="" /></p>
-
+            <table class="inputTable">
+                <tr>
+                    <td class="inputTable">TeX file: </td>
+                    <td class="inputTable"><input id="latexDocument" name="latexDocument" type="file" accept=".tex" /></td>
+                </tr>
+                <tr>
+                    <td class="inputTable">Other files:</td>
+                    <td class="inputTable"><input id="files" name="files" type="file" multiple="" /></td>
+                </tr>
+            </table>
             <b>Add the metadata:</b><br><br>
-            Title:    <input id="title" name="title"/><br>
-            Abstract: <input id="ab" name="abstract"/><br>
-            Author:   <input id="author" name="author"/><br>
-            <br>
+            <table class="inputTable">
+                <tr>
+                    <td class="inputTable">Title:</td>
+                    <td class="inputTable"><input id="title" name="title"/></td>
+                </tr>
+                <tr>
+                    <td class="inputTable">Abstract:</td>
+                    <td class="inputTable"><input id="ab" name="abstract"/></td>
+                </tr>
+                <tr>
+                    <td class="inputTable">Author:</td>
+                    <td class="inputTable"><input id="author" name="author"/></td>
+                </tr>
+            </table>
+
             <a href="#close" title="Cancel" class="button cancel" style="background-color: white">Cancel</a>
             <input class="button" type="submit" value="Upload" style="float:right; background-color: #eeeeee"/>
         </form>
@@ -133,7 +151,6 @@
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 <script src="vendor/jquery/dist/jquery.min.js" charset="utf-8"></script>
 <script src="js/landingpage_logic.js" charset="utf-8"></script>
-<!-- todo: script von lasse einbinden -->
 
 </body>
 </html>
