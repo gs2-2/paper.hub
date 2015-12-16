@@ -45,7 +45,8 @@ $(document).ready(function() {
  * @param iframe: the iframe dom object
  */
 function iframeResize(iframe){
-	iframe.height = iframe.contentWindow.document.body.scrollHeight + "px";
+	// add 30 to compensate for an horizontal scrollbar
+	iframe.height = (100 + iframe.contentWindow.document.body.scrollHeight) + "px";
 }
 
 /**

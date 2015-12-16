@@ -42,7 +42,7 @@
         <div class="logo">
             <img src="img/paperhub_logo2.svg" width="auto" height="47px">
         </div>
-        <a id="login-btn" class="button" href="#openUploadModal">Login</a>
+        <a id="login-btn" class="button" href="#openLoginModal">Login</a>
     </div>
 </div>
 
@@ -73,8 +73,8 @@
     <div>
         <h4>Upload</h4>
         <p><b>
-            You want to upload a Paper?
-            Just select your files for static data!
+            To add a paper, select a LaTeX document and additional files the document depends on.
+            Lateron you will be able to upload datasets for embedded interactive visualisations.
         </b></p>
         <form class="input-group" method="POST" enctype="multipart/form-data" action="/addPaper">
             <table class="inputTable">
@@ -91,15 +91,15 @@
             <table class="inputTable">
                 <tr>
                     <td class="inputTable">Title:</td>
-                    <td class="inputTable"><input id="title" name="title"/></td>
+                    <td class="inputTable"><input id="title" name="title" type="text" size="45"/></td>
                 </tr>
                 <tr>
                     <td class="inputTable">Abstract:</td>
-                    <td class="inputTable"><input id="ab" name="abstract"/></td>
+                    <td class="inputTable"><input id="ab" name="abstract" type="text" size="45"/></td>
                 </tr>
                 <tr>
                     <td class="inputTable">Author:</td>
-                    <td class="inputTable"><input id="author" name="author"/></td>
+                    <td class="inputTable"><input id="author" name="author" type="text" size="45"/></td>
                 </tr>
             </table>
 
