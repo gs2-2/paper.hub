@@ -12,6 +12,7 @@ var latex   = require('./latexParser.js');
 var async   = require('async');
 var express = require('express');
 var multer  = require('multer');
+var fs      = require('fs-extra');
 
 var app = express();
 var publications = mongo.models.publications;
@@ -79,21 +80,40 @@ app.post('/addPaper', latexUpload, function(req, res) {
 	});
 
 	var paperID = uploadedPaper._id;
-	var latexFile = req.files['latexDocument'][0].filename;
+	var texFile = req.files['latexDocument'][0].filename;
+	var texPath = config.dataDir.papers + '/' + paperID + '/tex/';
+
+	/**
+	 * @desc  helper function to asynchronously move all files from the upload
+	 *        to its paper folder
+	 * @param paperID the ID of the paper
+	 */
+	function moveUploadToPaper(paperID, callback) {
+
+		// move each file (the latex doc + the utility files) to the paper dir
+		var fileList = req.files['files'];
+		fileList.push(req.files['latexDocument'][0]);
+
+		async.each(fileList, function(file, cb) {
+			fs.move(file.path, texPath + file.filename, {clobber: true}, cb);
+		}, callback);
+	}
 
 	async.series([
-		// save the paper metadata to the DB
-		async.apply(uploadedPaper.save),
 		// create directory structure for the paper
 		async.apply(util.newPaperDir, config.dataDir.papers, paperID),
+		// move the files to the correct location
+		async.apply(moveUploadToPaper, paperID),
 		// convert the tex document to HTML
-		async.apply(latex.latex2html, paperID, latexFile)
+		async.apply(latex.latex2html, paperID, texPath + texFile),
+		// save the paper metadata to the DB
+		async.apply(uploadedPaper.save)
 	],
 	function(err, results) {
 		if (err) return console.error('could not save the new paper:\n%s', err);
 		res.send(paperID)
 		console.log('paper %s (%s) successfully uploaded and converted!',
-			latexFile, paperID);
+			texFile, paperID);
 	});
 });
 

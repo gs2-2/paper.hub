@@ -40,21 +40,18 @@ var latex2xml = function (inPath, outPath, callback) {
 /**
  * @desc converts a given Latex document to HTML
  * @param paperID  ID of the associated paper in the DB
- * @param file     filename of the .tex file, located in ./uploads
+ * @param texPath  filename of the .tex file, located in ./uploads
  * @param callback node style callback
  */
-exports.latex2html = function (paperID, file, callback) {
-	var uploadPath = config.uploadDir + '/' + file;
+exports.latex2html = function (paperID, texPath, callback) {
 	var xmlPath  = config.dataDir.papers + '/' + paperID + '/'      + paperID + '.xml';
 	var htmlPath = config.dataDir.papers + '/' + paperID + '/html/' + paperID + '.html';
-	var texPath  = config.dataDir.papers + '/' + paperID + '/tex/';
+
+	console.log("starting conversion of %s to HTML!", paperID);
 
 	async.series([
-		async.apply(latex2xml, uploadPath, uploadPath),  // convert tex -> xml
-		async.apply(xml2html,  uploadPath,    htmlPath), // convert xml -> html
-		// move tex files to paper dir, so they can be downloaded later
-		async.apply(fs.move,   config.uploadDir, texPath, {clobber: true}),
-		async.apply(fs.mkdirs, config.uploadDir),  // recreate the upload dir
+		async.apply(latex2xml, texPath, xmlPath),  // convert tex -> xml
+		async.apply(xml2html,  xmlPath, htmlPath), // convert xml -> html
 		async.apply(fs.remove, xmlPath)            // remove temporary xml file
 	], function(err, results) {
 		if (err) return callback(err);
