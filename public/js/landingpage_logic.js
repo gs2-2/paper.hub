@@ -14,11 +14,11 @@ $(document).ready(function() {
 					+ papers[i]._id + '"><td>'
 					+ papers[i].title + '</td><td>'
 					+ papers[i].author + '</td><td>'
-					+ papers[i].publicationDate + '</td><tr>';
+					+ papers[i].publicationDate.substr(0, 10) + '</td><tr>';
 				$('#paper-table').append(rowHtml);
 			}
 			if (papers.length === 0) {
-				$('#paper-table').append('<tr><td>No Papers uploaded yet. Want to create one? <a class="button" href="#openUploadModal">Upload new paper</a></td></tr>');
+				$('#paper-table').append('<tr><td>No Papers uploaded yet. Please log in to create one!</td></tr>');
 			}
 		},
 		error: function(xhr, textStatus, errorThrown) {
