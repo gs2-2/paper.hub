@@ -1,0 +1,15 @@
+/**
+ * css for aboutUs page
+ */
+
+#text{
+    margin-top: 75px;
+}
+
+/* bigger margin at the top if there is a break in the top nav-bar  todo: hierfür ne klasse in style.css anlegen?*/
+@media (max-width: 341px) {
+    #text{
+        margin-top: 160px
+    }
+}
+

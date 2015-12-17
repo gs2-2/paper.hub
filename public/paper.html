@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!-- Basic Page Needs
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <meta charset="utf-8">
+    <title>paper.hub</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Mobile Specific Metas
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- FONT
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+    <!-- CSS
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link rel="stylesheet" href="vendor/skeleton/css/normalize.css">
+    <link rel="stylesheet" href="vendor/skeleton/css/skeleton.css">
+    <link rel="stylesheet" href="css/style.css">
+
+
+    <!-- Favicon
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link rel="icon" type="image/png" href="img/paperhub_favicon.svg">
+
+</head>
+<body>
+
+<!-- Primary Page Layout
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->
+
+<!-- Navbar -->
+
+<div class="navbar">
+    <div style="overflow:auto;">
+        <div class="logo">
+            <a href="index.html"><img src="img/paperhub_logo2.svg" width="auto" height="47px"></a>
+        </div>
+            <a class="button" href="#" onclick="downloadPaper()">Download Paper</a>
+    </div>
+</div>
+
+<!-- Modals -->
+<!-- Login-modal-->
+<div id="openLoginModal" class="modalDialog">
+    <div>
+        <h4>Login</h4>
+        <p>Please choose a service you want to log in with:</p></br>
+
+        <ul>
+            <a href="/auth/github">
+                <!-- usage is allowed: https://github.com/logos -->
+                <img class="login-provider" src="img/GitHub_logo_2013.svg" alt="GitHub"/>
+            </a>
+        </ul>
+
+        <a href="#close" title="Cancel" class="button cancel">Cancel</a>
+    </div>
+</div>
+
+<!-- main container -->
+<div class="container">
+
+    <!-- Metadaten-->
+    <!-- todo: metadaten einladen und darstellen -->
+    <div class="row">
+        <div class="column" style="margin-top: 75px">
+            <h4 style="font-weight: 500" id="title"></h4>
+            <p style="font-size:1em" id="author"></p>
+            <p style="font-size:1em" id="pubdate"></p>
+        </div>
+    </div>
+
+    <!-- Paper -->
+    <div class="row">
+        <div class="column">
+            <iframe src="" width="100%" height="100%" id="paper-frame" marginheight="0" frameborder="0" onLoad="iframeResize(this);"></iframe>
+        </div>
+    </div>
+
+</div>
+
+<!-- JS includes
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<script src="vendor/jquery/dist/jquery.min.js" charset="utf-8"></script>
+<script src="js/paperpage_logic.js" charset="utf-8"></script>
+
+</body>
+</html>

@@ -1,0 +1,65 @@
+/**
+ * css editor page
+ */
+
+/* wider container on the editor page*/
+.container{
+    max-width: 1754px;
+}
+
+iframe{
+    overflow: auto;
+}
+
+nav{
+    /* dp not use margin-right or width!*/
+    background-color: rgba(255, 255, 255, 0.29);
+    position:fixed;
+    height: 100%;
+    margin-top: 60px;
+    padding: 20px 10px 10px 10px;
+    right: 0;
+    -webkit-box-shadow: 0 0 3px 5px rgba(238, 236, 226, 0.71);
+    -moz-box-shadow: 0 0 3px 5px rgba(238, 236, 226, 0.64);
+    box-shadow: 0px 0px 10px 5px rgba(196, 194, 186, 0.71);
+    max-width: 20%;
+}
+
+#paper{
+    padding-top: 75px;
+}
+
+
+/** media queries **/
+
+/* fitting the nav-bar on the right for small displays */
+@media (max-width: 800px) {
+    nav{
+        min-width: 140px;
+    }
+}
+
+/* show hint on small displays */
+@media (max-width: 550px) {
+    #paper{
+        display: none;
+    }
+    nav{
+        display: none;
+    }
+    #smallDisplay{
+        margin-top: 120px;
+        display: block;
+        background-color: rgba(139, 0, 0, 0.63);
+        -webkit-box-shadow: 0 0 3px 5px rgba(139, 0, 0, 0.63);
+        -moz-box-shadow: 0 0 3px 5px rgba(139, 0, 0, 0.63);
+        box-shadow: 0 0 3px 5px rgba(139, 0, 0, 0.63);
+    }
+}
+
+/* hide hint on larger displays */
+@media (min-width: 550px){
+    #smallDisplay{
+        display: none;
+    }
+}

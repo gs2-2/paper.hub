@@ -16,6 +16,7 @@ var fs      = require('fs-extra');
 
 var app = express();
 var publications = mongo.models.publications;
+require('./auth.js')(app, mongo, express);
 
 /* check if the all required paths exist & create them if necessary */
 util.createPath([config.dataDir.papers, config.dataDir.widgets, config.uploadDir], function(err) {
@@ -27,7 +28,7 @@ util.createPath([config.dataDir.papers, config.dataDir.widgets, config.uploadDir
 
 /* connect to mongoDB & launch express webserver */
 mongo.connect(
-	config.dbPort,
+	config.dbAddress,
 	config.dbName,
 	function(err) {
 		if (err) {
@@ -36,7 +37,7 @@ mongo.connect(
 		}
 
 		// once DB is connected, start webserver
-		console.log('connection to database established on port ' + config.dbPort);
+		console.log('connection to database established on ' + config.dbAddress);
 		app.listen(config.httpPort, function(){
 			console.log('http server now listening on port ' + config.httpPort);
 		});
@@ -65,6 +66,19 @@ var latexUpload = upload.fields([{
 {
 	name: 'files'
 }]);
+
+var uploadFile = upload.single('latexDocument');
+
+/* return metadata about all stored journeys */
+app.get('/getPaperList', function(req, res) {
+	publications
+		.find({}, '_id title author publicationDate')
+		.sort({publicationDate: -1})
+		.exec(function(err, papers) {
+			if (err) return console.error('could not get stored papers: ' + err);
+			res.json(papers);
+		});
+});
 
 /* Provide express route for the LaTeX Code commited by the user.
    Uploaded Latex file is converted to HTML and saved in FS and DB */
@@ -123,3 +137,19 @@ app.use('/', express.static(__dirname + '/public'));
 /* serve the data directory under '/data',
    to make the converted HTML and widgets available */
 app.use('/data', express.static(config.dataDir.path));
+
+
+function loggedIn(req, res, next) {
+    if (req.user) {
+        next();
+    } else {
+		res.sendfile('/index.html')
+//         res.redirect('/');
+    }
+}
+
+app.use('/editor', loggedIn, function(req,res,next){
+
+	res.sendfile('/editor.html');
+
+});

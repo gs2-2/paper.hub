@@ -1,0 +1,20 @@
+{
+  "name": "paper.hub",
+  "description": "webplatform to submit and read interactive scientific articles",
+  "main": "index.js",
+  "license": "GPL-3.0",
+  "homepage": "https://github.com/gs2-2/paper.hub",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "skeleton": "~2.0.4"
+  }
+}

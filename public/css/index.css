@@ -1,0 +1,24 @@
+/**
+ * css landing page
+ */
+
+
+#intro{
+    margin-top: 80px;
+}
+
+
+
+
+/* bigger margin at the top if there is a break in the top nav-bar */
+@media (max-width: 341px) {
+    #intro{
+        margin-top: 160px
+    }
+}
+
+.inputTable{
+    padding: 0px 10px;
+    text-align: left;
+    border-bottom: 0px solid #E1E1E1;
+}

@@ -2,45 +2,155 @@
 <html lang="en">
 <head>
 
-  <!-- Basic Page Needs
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta charset="utf-8">
-  <title>Your page title here :)</title>
-  <meta name="description" content="">
-  <meta name="author" content="">
+    <!-- Basic Page Needs
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <meta charset="utf-8">
+    <title>paper.hub</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-  <!-- Mobile Specific Metas
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Mobile Specific Metas
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- FONT
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+    <!-- FONT
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
 
-  <!-- CSS
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="stylesheet" href="css/normalize.css">
-  <link rel="stylesheet" href="css/skeleton.css">
+    <!-- CSS
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link rel="stylesheet" href="vendor/skeleton/css/normalize.css">
+    <link rel="stylesheet" href="vendor/skeleton/css/skeleton.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/index.css">
 
-  <!-- Favicon
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="icon" type="image/png" href="img/favicon.png">
+
+    <!-- Favicon
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link rel="icon" type="image/png" href="img/paperhub_favicon.svg">
 
 </head>
 <body>
 
-  <!-- Primary Page Layout
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <div class="container">
-    <div class="row">
-      <div class="one-half column" style="margin-top: 25%">
-        <h4>Basic Page</h4>
-        <p>This index.html page is a placeholder with the CSS, font and favicon. It's just waiting for you to add some content! If you need some help hit up the <a href="http://www.getskeleton.com">Skeleton documentation</a>.</p>
-      </div>
-    </div>
-  </div>
+<!-- Primary Page Layout
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->
 
-<!-- End Document
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<!-- Navbar -->
+
+<div class="navbar">
+    <div style="overflow:auto;">
+        <div class="logo">
+            <img src="img/paperhub_logo2.svg" width="auto" height="47px">
+        </div>
+        <a id="login-btn" class="button" href="#openLoginModal">Login</a>
+    </div>
+</div>
+
+
+<!-- Modals -->
+<!-- Login-modal-->
+<div id="openLoginModal" class="modalDialog">
+    <div>
+        <h4>Login</h4>
+        <p>Please choose a service you want to log in with:</p></br>
+
+        <ul>
+            <a href="/auth/github">
+                <!-- usage is allowed: https://github.com/logos -->
+                <img class="login-provider" src="img/GitHub_logo_2013.svg" alt="GitHub"/>
+            </a>
+        </ul>
+
+        <a href="#close" title="Cancel" class="button cancel">Cancel</a>
+    </div>
+</div>
+
+<!-- Upload-modal -->
+<!-- TODO: ERROR checking: alle felder müssen ausgefüllt, user muss logged in sein
+           idealerweise auch javascript/html in textfeldern filtern (wegen der sicherheit.) -->
+<!-- TODO: für kleinere Auflösungen anpassen (mit schickem grid?) -->
+<div id="openUploadModal" class="modalDialog">
+    <div>
+        <h4>Upload</h4>
+        <p><b>
+            To add a paper, select a LaTeX document and additional files the document depends on.
+            Lateron you will be able to upload datasets for embedded interactive visualisations.
+        </b></p>
+        <form class="input-group" method="POST" enctype="multipart/form-data" action="/addPaper">
+            <table class="inputTable">
+                <tr>
+                    <td class="inputTable">TeX file: </td>
+                    <td class="inputTable"><input id="latexDocument" name="latexDocument" type="file" accept=".tex" /></td>
+                </tr>
+                <tr>
+                    <td class="inputTable">Other files:</td>
+                    <td class="inputTable"><input id="files" name="files" type="file" multiple="" /></td>
+                </tr>
+            </table>
+            <b>Add the metadata:</b><br><br>
+            <table class="inputTable">
+                <tr>
+                    <td class="inputTable">Title:</td>
+                    <td class="inputTable"><input id="title" name="title" type="text" size="45"/></td>
+                </tr>
+                <tr>
+                    <td class="inputTable">Abstract:</td>
+                    <td class="inputTable"><input id="ab" name="abstract" type="text" size="45"/></td>
+                </tr>
+                <tr>
+                    <td class="inputTable">Author:</td>
+                    <td class="inputTable"><input id="author" name="author" type="text" size="45"/></td>
+                </tr>
+            </table>
+
+            <a href="#close" title="Cancel" class="button cancel" style="background-color: white">Cancel</a>
+            <input class="button" type="submit" value="Upload" style="float:right; background-color: #eeeeee"/>
+        </form>
+    </div>
+</div>
+
+
+<!-- main container -->
+<div class="container">
+
+    <!-- introduction -->
+    <div class="row">
+        <div class="column" id="intro">
+            <h2 style="font-weight: 500;">Welcome to paper.hub!</h2>
+            <p style="font-size: 1.5em">Very nice content!!</p>
+        </div>
+    </div>
+
+      <!-- paper table -->
+    <div class="row" style="margin-top: 3%">
+        <table class="u-full-width">
+            <thead><tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Publication Date</th>
+            </tr></thead>
+            <tbody id="paper-table" style="cursor: pointer"></tbody>
+        </table>
+    </div>
+
+</div> <!-- container -->
+
+<!-- footer -->
+<div class="baseboard">
+    <div class="container">
+        <a href="aboutUs.html">About us</a>
+        <!-- todo: copyright -->
+    </div>
+</div>
+
+
+<!-- todo: faq?-->
+
+
+<!-- JS includes
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<script src="vendor/jquery/dist/jquery.min.js" charset="utf-8"></script>
+<script src="js/landingpage_logic.js" charset="utf-8"></script>
+
 </body>
 </html>

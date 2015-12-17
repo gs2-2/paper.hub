@@ -19,9 +19,11 @@ var publicationSchema = new mongoose.Schema({
 /* definition of userSchema */
 //_id attribute will be created automatically
 var userSchema = new mongoose.Schema({
-	oauth_id: String,
-	oauth_token: String,
-	name: String
+	name: String,
+	email: String,
+	username: String,
+	provider: String,
+	providerID: String
 });
 
 var publicationModel = mongoose.model('Publication', publicationSchema);
@@ -34,8 +36,8 @@ var userModel = mongoose.model('User', userSchema);
  * @param dbName:   name of the database to use
  * @param callback: function with parameter 'error' (node style callback)
  */
-exports.connect = function(dbPort, dbName, callback) {
-	var uri = 'mongodb://localhost:' + dbPort + '/' + dbName;
+exports.connect = function(dbAddress, dbName, callback) {
+	var uri = 'mongodb://' + dbAddress + '/' + dbName;
 	var options = {};
 	mongoose.connect(uri, options);
 

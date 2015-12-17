@@ -23,10 +23,19 @@ coverage
 build/Release
 
 # Dependency directory
-# https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
+# https://www.npmj
+s.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules
+# bower dependency directory
+public/vendor
 
 # paper.hub stuff
 data
 upload_tmp
+
+#exclude IDE project files
+.idea
 .Rhistory
+
+# private keys are private!
+oauth_keys.js
