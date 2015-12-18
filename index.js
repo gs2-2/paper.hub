@@ -164,7 +164,7 @@ function zipIt(id){
 			// if error occurs, make console.log
 			if (err) return console.log(err);
 
-			// debuggind
+			// debugging
 			console.log("Zipped folder"/*need to add paperId*/);
 
 
@@ -175,7 +175,7 @@ function zipIt(id){
 }
 
 
-app.get('/downloadPaper', function(req, res){
+app.get('/downloadPaper?id=*', function(req, res){
 
 	// set variable to content of query
 	var paperId = req.query.id;
@@ -189,13 +189,14 @@ app.get('/downloadPaper', function(req, res){
 
 
 	// define as Download
-	res.setHeader('Content-disposition', 'attachment; filename= ' + zipPath);
+	//res.setHeader('Content-disposition', 'attachment; filename= ' + zipPath);
 	res.setHeader('Content-type', 'application-zip, application/octet-stream');
 
 	// start download
 	res.download(zipPath);
 
 });
+
 
 
 //---------------------------End In-Progress------------------------------------------------
