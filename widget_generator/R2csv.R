@@ -6,7 +6,6 @@
 # inputPath = path, where .Rdata is stored
 # outputPath = path, where .csv should be stored
 # 
-require(RJSONIO)
 require(utils)
 
 #' @describe loads an RData file and returns the first object in it
