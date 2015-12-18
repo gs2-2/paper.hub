@@ -28,5 +28,5 @@ createCSV <- function(inputPath, outputPath){
 
 
 }
-args <- commandArgs()
-createCSV(input, output)
+args <- commandArgs(asValues = TRUE)
+createCSV(args$input, args$output)
