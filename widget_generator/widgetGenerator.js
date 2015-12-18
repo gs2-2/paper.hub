@@ -14,7 +14,6 @@ var fs = require('fs-extra');
  * @param callback function that is called after execution of the script with param 'error'
  */
 exports.map = function (inPaths, outPath, callback) {
-
 	var cmd = 'Rscript ' + __dirname + '/makeMapWidget.r'
 		+ ' --input "' + inPaths.toString() + '" --output ' + outPath;
 
@@ -32,7 +31,6 @@ exports.map = function (inPaths, outPath, callback) {
  */
 exports.timeseries = function (inPath, outPath, callback) {
 	// will contain the data from inPath as json
-	// values can be accessed like matrix[row][column]
 	var jsonData = [];
 
 	async.series([
@@ -46,7 +44,7 @@ exports.timeseries = function (inPath, outPath, callback) {
 		function(done) {
 			fs.readFile(inPath, function(err, data) {
 				if (err) done(err);
-				jsonData = parseCSV(data)
+				jsonData = csv2rickshaw(data);
 				done(null);
 			});
 		},
@@ -62,21 +60,36 @@ exports.timeseries = function (inPath, outPath, callback) {
 		// TODO insert modified js into HTML
 
 		// TODO save HTML
-			// call callback
+		callback(null);
 	});
 }
 
 /**
- * @desc    parses a string containing CSV data to a 2d json array / matrix
+ * @desc    parses a string containing CSV data to a format accepted by rickshaw.js
  * @param   csv data as String
- * @returns the json 2d array
+ * @returns a rickshaw.js compatible json object
  */
-function parseCSV(csv) {
-	var lines = csv.split('\n');
-	var csvMatrix = [];
-	lines.map(function(line) {
-		var lineArray = line.split(',');
-		csvMatrix.push(lineArray);
-	});
-	return csvMatrix;
-}
+ function csv2rickshaw(csv) {
+ 	// convert csv string to 2d json array
+ 	var csvMatrix = [];
+ 	var lines = csv.split('\n');
+ 	lines.map(function(line) {
+ 		var lineArray = line.split(',');
+ 		csvMatrix.push(lineArray);
+ 	});
+
+ 	// convert the json "matrix" to a format compatible to rickshaw.js
+ 	// skip first column, as it contains the time index
+ 	// skip first row, as it contains the column names
+ 	var result = [];
+ 	for (var col = 1; col < csvMatrix[0].length; col++) {
+ 		// add a separate line for each column (aka measurement)
+ 		var series = { data: [], color: 'lightblue' };
+
+ 		for (var row = 1; row < csvMatrix.length; row++) {
+ 			series.data.push( { x: csvMatrix[row][0], y: csvMatrix[row][col] } );
+ 		}
+ 		result.push(series);
+ 	}
+ 	return result;
+ }

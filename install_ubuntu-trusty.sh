@@ -59,7 +59,7 @@ cd ..
 rm -rf LaTeXML-0.8.1*
 
 # install additional R packages
-Rscript -e "install.packages(c('rgdal', 'raster', 'leaflet', 'raster', 'xts', 'zoo', 'sp', 'dygraphs', 'htmlwidgets', 'R.utils'), lib='/usr/local/lib/R/site-library', repos='https://cran.rstudio.com')"
+Rscript -e "install.packages(c('rgdal', 'raster', 'leaflet', 'raster', 'xts', 'zoo', 'sp', 'htmlwidgets', 'R.utils'), lib='/usr/local/lib/R/site-library', repos='https://cran.rstudio.com')"
 
 # install node dependencies
 npm install
