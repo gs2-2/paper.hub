@@ -13,6 +13,7 @@ var async   = require('async');
 var express = require('express');
 var multer  = require('multer');
 var fs      = require('fs-extra');
+var ZipZipTop = require('zip-zip-top');
 
 var app = express();
 var publications = mongo.models.publications;
@@ -130,6 +131,77 @@ app.post('/addPaper', latexUpload, function(req, res) {
 			texFile, paperID);
 	});
 });
+
+//----------------------------In progress---------------------------------------------------
+
+/*
+ * @desc zips the folder where uploaded files are stored
+ * ToDo: change paths to real paths in filesystem
+ * ToDo: embed this code/function into route where editing has been finalized
+ * Note: uploaded data and latex files are in two separate folders 
+ * @param id the id of publication
+ */
+function zipIt(id){
+
+	// set path of local folders
+	var localpath = __dirname + "/data/delete/test";
+
+	// set target path for .zip
+	var zippath = __dirname + config.dataDir.papers + '/' + id + '.zip';
+
+	// new ZipZipTip instance
+	var zip = new ZipZipTop();
+
+	// define folder to be zipped
+	zip.zipFolder(localpath, function(err){
+
+		// if error occurs, make console.log
+		if (err) return console.log(err);
+
+		// write zip to target path
+		zip.writeToFile(zippath, function(err){
+
+			// if error occurs, make console.log
+			if (err) return console.log(err);
+
+			// debuggind
+			console.log("Zipped folder"/*need to add paperId*/);
+
+
+			
+		});
+	});
+	
+}
+
+//-------------------Pfade müssen getestet werden. Download funktioniert -----------------
+app.get('/downloadPaper?id', function(req, res){
+
+ 	// if query is empty, response with 'No Id in query'
+	if (req.query.id == {}) return res.send('No Id in query!');
+
+	// set variable to content of query
+	var paperId = req.query.id;
+
+	// define path of .zip file
+	var zipPath = config.dataDir.papers + '/' + paperId + '.zip';
+	
+
+	// delete following line, just for testing
+	//var zipPath = __dirname + '/data/delete/test.zip';
+
+
+	// define as Download
+	res.setHeader('Content-disposition', 'attachment; filename= ' + zipPath);
+	res.setHeader('Content-type', 'application-zip, application/octet-stream');
+
+	// start download
+	res.download(zipPath);
+
+});
+
+
+//---------------------------End In-Progress------------------------------------------------
 
 /* serve the static pages of the site under '/' */
 app.use('/', express.static(__dirname + '/public'));
