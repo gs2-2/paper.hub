@@ -174,11 +174,8 @@ function zipIt(id){
 	
 }
 
-//-------------------Pfade müssen getestet werden. Download funktioniert -----------------
-app.get('/downloadPaper?id', function(req, res){
 
- 	// if query is empty, response with 'No Id in query'
-	if (req.query.id == {}) return res.send('No Id in query!');
+app.get('/downloadPaper', function(req, res){
 
 	// set variable to content of query
 	var paperId = req.query.id;
@@ -188,7 +185,7 @@ app.get('/downloadPaper?id', function(req, res){
 	
 
 	// delete following line, just for testing
-	//var zipPath = __dirname + '/data/delete/test.zip';
+	//var zipPath = __dirname + '/data/delete/' + paperId + '.zip';
 
 
 	// define as Download
