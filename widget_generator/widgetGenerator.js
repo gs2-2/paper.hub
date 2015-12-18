@@ -22,3 +22,13 @@ exports.map = function (inPaths, outPath, callback) {
 		callback(null);
 	});
 }
+
+/**
+ * @desc  generates an interactive timeseries in an HTML file for the specified dataset
+ * @param inPaths  String absolute paths to the datasets
+ * @param outPath  absolute path to the output HTML file
+ * @param callback function that is called after execution of the script with param 'error'
+ */
+exports.timeseries = function (inPaths, outPath, callback) {
+
+}

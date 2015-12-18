@@ -2,11 +2,11 @@
 # Multiple datasets can be added to one map in the following formats:
 #     GeoJSON
 #     R sp objects as RData files
-#     GeoTIFF raster files (supporting only one layer / grayscale)
-# Datasets are expected to have the correct file extension (.json, .tif)
+#     GeoTIFF raster files (only up to 4MB)
+# Datasets are expected to have the correct file extension (.json, .tif, .Rdata)
 #
 # Run the script from the commandline as follows:
-#     Rscript makeMapWidget.r --output <path> --input <JSON-array of input-paths>
+#     Rscript makeMapWidget.r --output <path> --input <comma-separated list of input-paths>
 #
 # external dependencies for GeoTIFF support are: libgdal-dev libproj-dev (Ubuntu 14)
 
