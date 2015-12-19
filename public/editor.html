@@ -24,6 +24,11 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/editor.css">
 
+    <!-- JS includes
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <script src="/vendor/jquery/dist/jquery.min.js" charset="utf-8"></script>
+    <script src="/vendor/async/dist/async.min.js" charset="utf-8"></script>
+    <script src="/js/editorpage_logic.js" charset="utf-8"></script>
 
     <!-- Favicon
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -55,24 +60,23 @@
     <!-- paperFrame -->
     <div class="nine columns" id="paper">
         <!-- does need to handle iframe content from a different domain -->
-        <iframe src="" width="100%" height="100%" id="paper-frame" marginheight="0" frameborder="0" onLoad="iframeResize(this);"></iframe>
+        <iframe src="" width="100%" id="paper-frame" marginheight="0" frameborder="0" onLoad="iframeResize(this); addClickListeners(this);"></iframe>
     </div>
 
     <!-- side content -->
     <div class="two columns post" >
         <nav id="nav">
-            <div>
-                <p>Sollten hier die Metadaten stehen??</p>
-            </div>
-            <div>
-                <p>Wirklich eine Liste? Oder eine Tabelle?</p>
-            </div>
-            <form class="input-group" method="POST" enctype="multipart/form-data" action=""><!-- todo: action-->
-                <input class="button" type="submit" value="Submit" style=" background-color: #eeeeee"/>
-            </form>
+            <p>
+                <b>You can add interactive maps and timeseries graphs to your paper.</b><br>
+                Choose a placement in the paper by clicking on a paragraph. The visualization will be placed below.
+            </p>
+            <table>
+                <thead><th>type</th><th>caption</th></thead>
+                <tbody  id="widget-list"></tbody>
+            </table>
+            <button id="submit" name="submit" onclick="uploadDatasets()">convert!</button>
         </nav>
-        &nbsp; <!-- needed for static design -->
-    </div>-->
+    </div>
 
     <!-- Hint - just shown if display to small for editor-page -->
     <div id="smallDisplay">
@@ -81,12 +85,7 @@
 
 </div> <!-- main container -->
 
-<!-- todo: baseboard? -->
-
 <!-- End Document
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-<script src="/vendor/jquery/dist/jquery.min.js" charset="utf-8"></script>
-<script src="/js/editorpage_logic.js" charset="utf-8"></script>
-
 </body>
 </html>
