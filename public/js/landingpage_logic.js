@@ -46,6 +46,19 @@ $(document).ready(function() {
 
 });
 
+
+/**
+ * @desc Form validation for the uploadModal
+ */
+function validateForm() {
+	var x = document.forms["form"]["latexDocument", "title", "author"].value;
+	if (x == null || x == "") {
+		alert("Please fill in required information and data.");
+		return false;
+	}
+}
+
+
 /**
  * @desc  loads the given paper page, when a tablerow was clicked
  * @param tablerow from the paper-table
@@ -54,3 +67,12 @@ function loadPaper(tablerow) {
 	var url = 'http://' + window.location.host + '/paper.html?id=';
 	window.location = url + $(tablerow).data('id');
 }
+
+/* Upload-button with nice style, but without upload info
+$(document).ready(function(){
+	$('#latexDocument').before('<input type="button" id="button-file" value="Datei Upload" />');
+	$('#latexDocument').hide();
+	$('body').on('click', '#button-file', function() {
+		$('#latexDocument').trigger('click');
+	});
+});*/

@@ -76,7 +76,7 @@
             To add a paper, select a LaTeX document and additional files the document depends on.
             Lateron you will be able to upload datasets for embedded interactive visualisations.
         </b></p>
-        <form class="input-group" method="POST" enctype="multipart/form-data" action="/addPaper">
+        <form name="form" class="input-group" method="POST" enctype="multipart/form-data" action="/addPaper" onsubmit="return validateForm()">
             <table class="inputTable">
                 <tr>
                     <td class="inputTable">TeX file: </td>
@@ -151,6 +151,7 @@
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 <script src="vendor/jquery/dist/jquery.min.js" charset="utf-8"></script>
 <script src="js/landingpage_logic.js" charset="utf-8"></script>
+
 
 </body>
 </html>
