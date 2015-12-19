@@ -95,15 +95,16 @@
                 </tr>
                 <tr>
                     <td class="inputTable">Abstract:</td>
-                    <td class="inputTable"><input id="ab" name="abstract" type="text" size="45"/></td>
+                    <td class="inputTable"><input id="abstract" name="abstract" type="text" size="45"/></td>
                 </tr>
                 <tr>
                     <td class="inputTable">Author:</td>
                     <td class="inputTable"><input id="author" name="author" type="text" size="45"/></td>
                 </tr>
             </table>
-
-            <a href="#close" title="Cancel" class="button cancel" style="background-color: white">Cancel</a>
+            <div id="errorMessage" style="background-color: rgba(186, 0, 0, 0.56); border-radius: 8px; padding: 5px; margin-bottom: 5px; margin-right: 3%; display: none">Please add required information and data.</div>
+            <div id="successMessage" style="background-color: rgba(111, 229, 69, 0.56); border-radius: 8px; padding: 5px; margin-bottom: 5px; margin-right: 3%; display: none">Please wait, data is being uploaded.<img src="../public/img/loadingSymbol.svg" alt="" height="35px" width="auto"></div>
+            <a id="cancelButton" href="#close" title="Cancel" class="button cancel" style="background-color: white">Cancel</a>
             <input class="button" type="submit" value="Upload" style="float:right; background-color: #eeeeee"/>
         </form>
     </div>

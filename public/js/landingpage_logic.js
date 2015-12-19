@@ -1,5 +1,6 @@
 'use strict';
 
+
 $(document).ready(function() {
 
 	// load the available papers and fill the table
@@ -51,13 +52,48 @@ $(document).ready(function() {
  * @desc Form validation for the uploadModal
  */
 function validateForm() {
-	var x = document.forms["form"]["latexDocument", "title", "author"].value;
-	if (x == null || x == "") {
-		alert("Please fill in required information and data.");
-		return false;
-	}
+	var latexDocumentValue = document.forms["form"]["latexDocument"].value;
+	var titleValue = document.forms["form"]["title"].value;
+	var authorValue = document.forms["form"]["author"].value;
+    var error = false;
+	if (latexDocumentValue == null || latexDocumentValue.trim() == "") {
+		$('#latexDocument').css('background-color', 'rgba(229, 0, 0, 0.3)');
+        error=true;
+	} else {
+        $('#latexDocument').css('background-color', 'white');
+    }
+	if (titleValue == null || titleValue.trim() == "") {
+		$('#title').css('background-color', 'rgba(229, 0, 0, 0.3)');
+        error=true;
+	} else {
+        $('#title').css('background-color', 'white');
+    }
+	if (authorValue == null || authorValue.trim() == "") {
+		$('#author').css('background-color', 'rgba(229, 0, 0, 0.3)');
+        error=true;
+	} else {
+        $('#author').css('background-color', 'white');
+    }
+	if (error) {
+        $('#errorMessage').css('display', 'block');
+        return false;
+	} else {
+        $('#errorMessage').css('display', 'none');
+        $('#successMessage').css('display', 'block'); //todo: testen
+    }
 }
 
+/**
+ * @desc delete validation hints and input when cancel button is pressed
+ */
+$('#cancelButton').click(function(){
+    $('#latexDocument').css('background-color', 'white').val('');
+    $('#files').val('');
+    $('#title').css('background-color', 'white').val('');
+    $('#abstract').val('');
+    $('#author').css('background-color', 'white').val('');
+    $('#errorMessage').css('display', 'none');
+});
 
 /**
  * @desc  loads the given paper page, when a tablerow was clicked
