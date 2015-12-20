@@ -18,9 +18,9 @@ $(document).ready(function() {
 				$('#paper-table').append(rowHtml);
 			}
 			if (papers.length === 0) {
-// 				$('#paper-table').append('<tr><td>No Papers uploaded yet. Please create one first!</td></tr>');
+ 				$('#paper-table').append('<tr><td>No Papers uploaded yet. Please create one first!</td></tr>');
 // 				Alternativ, falls Button zum Upload direkt auf der Startseite angezeigt werden soll. Öffnet dann ein Modal was in der index.html auskommentiert ist.
-				$('#paper-table').append('<tr><td>No Papers uploaded yet. Want to create one? <a class="button" href="#openUploadModal">Upload new paper</a></td></tr>');
+//				$('#paper-table').append('<tr><td>No Papers uploaded yet. Want to create one? <a class="button" href="#openUploadModal">Upload new paper</a></td></tr>');
 			}
 		},
 		error: function(xhr, textStatus, errorThrown) {
@@ -40,22 +40,21 @@ function loadPaper(tablerow) {
 	window.location = url + $(tablerow).data('id');
 }
 
-
+/**
+ *	rewrites the Login buttontext to 'Logout' if the user is logged in
+ */	
 $.ajax({
 		type: 'GET',
 		url: '/getAuthStatus',
 		success: function(data) {
-			
-			console.log(data);
-			
 			if(data == 'Auth successful'){
+				// Set the Text on the Button to "Logout" and the href field to /logout
+				$('#LoginButton').text('Logout');
+				$('#LoginButton').attr('href', '/logout');
 				
-				//HIER BUTTON TEXT UND LINK UMSCHREIBEN
-				
+				$('#LoginButton').after('<a class="button" id="UploadButton" href="#openUploadModal">Upload</a>');
 			}
-			
 		}
-	
-	});
+});
 
 

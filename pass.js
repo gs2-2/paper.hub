@@ -84,7 +84,6 @@ module.exports = function(app, mongo, express){
 	app.get('/auth/github/callback', 
 	  passport.authenticate('github', { failureRedirect: '/login' }),
 	  function(req, res) {
-		 console.log('Im Callback'); 
 	    res.redirect('/');
 	  });
 	                                      
