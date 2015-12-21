@@ -18,7 +18,7 @@ var app = express();
 var publications = mongo.models.publications;
 require('./auth.js')(app, mongo, express);
 
-/* check if the all required paths exist & create them if necessary */
+/* check if all required paths exist & create them if necessary */
 util.createPath([config.dataDir.papers, config.dataDir.widgets, config.uploadDir], function(err) {
 	if (err) {
 		console.error('couldnt find nor create data directory: ' + err);
@@ -67,9 +67,8 @@ var latexUpload = upload.fields([{
 	name: 'files'
 }]);
 
-var uploadFile = upload.single('latexDocument');
 
-/* return metadata about all stored journeys */
+/* return metadata about all stored papers */
 app.get('/getPaperList', function(req, res) {
 	publications
 		.find({}, '_id title author publicationDate')
@@ -78,6 +77,66 @@ app.get('/getPaperList', function(req, res) {
 			if (err) return console.error('could not get stored papers: ' + err);
 			res.json(papers);
 		});
+});
+
+/**
+* @desc Send the metadata of the specified paper to the client
+*/
+app.get('/getPaperMetadata/:id', function(req, res) {
+	
+	//extract the id from the URL
+	var id = req.params.id;
+
+	publications.findById(id, function(err, doc) {
+		if(err) {
+			res.send('Error: ' + err);
+		}
+		res.send(doc);
+	});
+});
+
+/**
+* @desc Get the specified publication as HTML file.
+*/
+app.get('/getPaper/:id', function(req, res) {
+
+	//save the id from the URL
+	var id = req.params.id;
+
+	//send the html file saved in the paper-dir
+	res.sendFile(config.dataDir.papers + '/' + id + '/html/' + id + '.html');
+});
+
+app.get('/getWidget/:id', function(req, res) {
+
+	//save the id form the URL
+	var id = req.params.id;
+
+	res.sendFile(config.dataDir.widgets + '/' + id + '.html');
+});
+
+/**
+* @desc Delete the DB-content of the publication
+*/
+app.delete('/deletePaper/:id', function(req, res) {
+
+	//save the id from the URL
+	var id = req.params.id;
+
+	//remove the dir from the file system
+	fs.remove(config.dataDir.papers + '/' + id, function(err) {
+		if(err) {
+			res.send('Error, could not find or delete directory.');
+		}
+	});
+
+	// remove the document form the DB
+	publications.remove({_id: id}, function(err) {
+		if(err) {
+			res.send('Error deleting paper: ' + err);
+		}
+		res.send('successfully deleted paper.');
+	});
 });
 
 /* Provide express route for the LaTeX Code commited by the user.
