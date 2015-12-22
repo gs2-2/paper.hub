@@ -130,6 +130,13 @@ app.delete('/deletePaper/:id', function(req, res) {
 		}
 	});
 
+	//remove widgets, that might be created already
+	fs.remove(config.dataDir.widgets + '/' + id, function(err) {
+		if(err) {
+			res.send('Error, could not find or delete directory.');
+		}
+	});
+
 	// remove the document form the DB
 	publications.remove({_id: id}, function(err) {
 		if(err) {
