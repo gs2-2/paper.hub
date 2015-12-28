@@ -103,16 +103,19 @@ app.get('/getPaper/:id', function(req, res) {
 	//save the id from the URL
 	var id = req.params.id;
 
-	//send the html file saved in the paper-dir
-	res.sendFile(config.dataDir.papers + '/' + id + '/html/' + id + '.html');
+	//redirect to the specified paper 
+	res.redirect('/data/papers/' + id + '/' + 'html/' + id + '.html');
 });
 
+/**
+* @desc Get the speicified widget from the server.
+*/
 app.get('/getWidget/:id', function(req, res) {
 
 	//save the id form the URL
 	var id = req.params.id;
 
-	res.sendFile(config.dataDir.widgets + '/' + id + '.html');
+	res.redirect('data/widgets/' + id + '.html');
 });
 
 /**
@@ -130,12 +133,26 @@ app.delete('/deletePaper/:id', function(req, res) {
 		}
 	});
 
-	//remove widgets, that might be created already
-	fs.remove(config.dataDir.widgets + '/' + id, function(err) {
+	var dbEntry;
+
+	//find all widgets of the given publication
+	publications.findById(id, function(err, doc) {
 		if(err) {
-			res.send('Error, could not find or delete directory.');
+			res.send('Error: ' + err);
 		}
+		dbEntry = doc.widgets;
 	});
+
+	//delete all widgets, saved in the widgets array
+	for(var i = 0; i < dbEntry.length; i++) {
+
+		//remove widgets, that might be created already
+		fs.remove(config.dataDir.widgets + '/' + dbEntry[i], function(err) {
+			if(err) {
+				res.send('Error, could not find or delete widget.');
+			}
+		})
+	};
 
 	// remove the document form the DB
 	publications.remove({_id: id}, function(err) {
@@ -209,7 +226,7 @@ function loggedIn(req, res, next) {
     if (req.user) {
         next();
     } else {
-		res.sendfile('/index.html')
+		res.sendFile('/index.html')
 //         res.redirect('/');
     }
 }
