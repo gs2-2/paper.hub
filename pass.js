@@ -13,6 +13,8 @@ module.exports = function(app, mongo, express){
 	/* Passport & Login Strategies */
 	var passport = require('passport');
 	var GitHubStrategy = require('passport-github2').Strategy;
+	var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+
 
 	app.use(passport.initialize());
 	app.use(passport.session());
@@ -43,7 +45,6 @@ module.exports = function(app, mongo, express){
                 user = new mongo.models.users({
                     name: profile.displayName,
                     email: profile.emails[0].value,
-                    username: profile.username,
                     provider: 'github',
                     providerID: profile.id
                 });
@@ -58,8 +59,59 @@ module.exports = function(app, mongo, express){
                 return done(err, user);
             }
         });
-    }
-));
+      }
+    
+	));
+	
+	    
+	    
+	passport.use(new GoogleStrategy({
+	    clientID: oauth_keys.GOOGLE_CLIENT_ID,
+	    clientSecret: oauth_keys.GOOGLE_CLIENT_SECRET,
+	    callbackURL: "http://127.0.0.1:8080/auth/google/callback"
+	  },
+		  function(accessToken, refreshToken, profile, done) {
+			
+			console.log(profile);		   
+
+	        mongo.models.users.findOne({
+	            'providerID': profile.id,
+	            'provider': 'google' 
+	        }, function(err, user) {
+	            if (err) {
+	                return done(err);
+	            }
+	            if (!user) {
+				// no user existent --> new user --> create a new one
+				
+				// Fix if a user has a Google Account but no real name
+				var userName = 'Unbekannter Benutzer via Google';
+				if(profile.displayName){userName = profile.displayName};
+// 				if(profile.displayName){userName = profile.emails[0].value};	//Alternative, falls E-Mail anstatt "Unbekannter Autor" gesetzt werden soll
+
+
+	                user = new mongo.models.users({
+	                    name: userName,
+	                    email: profile.emails[0].value,
+	                    provider: 'google',
+	                    providerID: profile.id
+	                });
+	                
+	                user.save(function(err) {
+	                    if (err) console.log(err);
+	                    return done(err, user);
+	                });
+	            
+	            } else {
+	                //user found. return it.
+	                return done(err, user);
+	            }
+	        });
+
+		  
+		  }
+	));    
+	    
 	
 	/* Routes for Passport */
 	
@@ -87,12 +139,39 @@ module.exports = function(app, mongo, express){
 	    res.redirect('/');
 	  });
 	                                      
+                           
+	
+	
+	/** GOOGLE ROUTES **/
+	
+	// GET /auth/google
+// 	app.get('/auth/google', passport.authenticate('google', { scope: 'https://www.googleapis.com/auth/plus.login' }));
+	app.get('/auth/google', passport.authenticate('google', { scope: [ 'https://www.googleapis.com/auth/plus.login', 'https://www.googleapis.com/auth/plus.profile.emails.read' ] }));
+
+	// GET /auth/google/callback
+	app.get('/auth/google/callback', 
+	  passport.authenticate('google', { failureRedirect: '/login' }),
+	  function(req, res) {
+	    // Successful authentication, redirect home.
+	    res.redirect('/');
+	});
+
+	
+	
+	
+	
 	// GET /logout
 	// Can be used to log a user out.                                     
 	app.get('/logout', function(req, res){
 	  req.logout();
 	  res.redirect('/');
-	});                              
+	});   
+	
+	
+	
+	
+	
+	
 	     
 	// GET /getAuthStatus
 	// Can be used to check for the Login status of the current user  	                                      
