@@ -208,7 +208,7 @@ module.exports = function(app, mongo, express){
 	
 	// GET /auth/linkedin
 	app.get('/auth/linkedin',
-	  passport.authenticate('linkedin', { state: 't9PW4vCJU6BA26W'  }),
+	  passport.authenticate('linkedin', { state: oauth_keys.LINKEDIN_STATE }),
 	  function(req, res){
 	});
 	
