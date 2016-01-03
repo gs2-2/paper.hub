@@ -16,6 +16,7 @@ var fs      = require('fs-extra');
 
 var app = express();
 var publications = mongo.models.publications;
+var widget = mongo.models.widget;
 require('./auth.js')(app, mongo, express);
 
 /* check if all required paths exist & create them if necessary */
@@ -66,6 +67,8 @@ var latexUpload = upload.fields([{
 {
 	name: 'files'
 }]);
+
+var widgetUpload = upload.single('dataset');
 
 
 /* return metadata about all stored papers */
@@ -214,9 +217,92 @@ app.post('/addPaper', latexUpload, function(req, res) {
 	});
 });
 
-/* serve the static pages of the site under '/' */
-app.use('/', express.static(__dirname + '/public'));
+/**
+* @desc Upload a dataset, that is part of the publication.
+* 		The dataset is parsed and saved in the file system.
+*/
+app.post('/addDataset', widgetUpload, function(req, res) {
+	
+	//get the file extension of the uploaded file
+	var fileExt = req.file.filename.split('.').pop().toLowerCase();
+	
+	//create a DB entry for the dataset
+	var uploadedWidget = new widget({
+		publicationID: req.body.publication,
+		caption: req.body.caption,
+		fileType: fileExt,
+		widgetType: req.body.widgetType, // soll da sowas wie "map" hin?
+		file: req.body.publication
+	});
 
+	var widgetID = uploadedWidget._id
+	var filename = req.file.filename;
+	var movePath = config.dataDir.papers + '/' + req.body.publication + '/datasets/';
+
+	/**
+	* @desc Helper function to decide whether a file is for map data or not
+	* @param extension The fileextension, which shall be examined.
+	*/
+	function isMapData(extension, callback) {
+
+		switch(extension) {		
+			case 'json':
+			case 'tif':
+			case 'geojson':
+			case 'geotif':
+				return true;
+		}
+		return false;
+	};
+
+	/**
+	* @desc Helper fucntion to decide whether a file is an rData time series
+	* @param extension Fileextension, that shall be examined.
+	*/
+	function isTimeSeries(extension, callback) {
+
+		if(extension == 'rdata') return true;
+		return false;
+	};
+
+	/**
+	* @desc Helper function, that calls the script to parse the given file to a widget
+	*/
+	function useWidgetScript(file, callback) {
+
+		if(isMapData(file.split('.').pop().toLowerCase())) {
+			widgets.map(movePath + filename, config.dataDir.widgets + '/' + widgetID, function(err) {
+				if(err) console.log(err);
+			});
+		}
+		else if(isTimeSeries(file.split('.').pop().toLowerCase())) {
+			//widgets./*Jans function*/(movePath + filename, config.dataDir.widgets + '/' + widgetID);
+		}
+		else console.error('The file can not be parsed to a widget')
+	};
+	
+	//perform task in an asynchronous series, one after another
+	async.series([
+		//move the file to the paperDir of the related paper
+		async.apply(fs.move, req.file.path, movePath + filename, {clobber: true}),
+		//start the conversion of the dataset for any format
+		async.apply(useWidgetScript, filename),
+		//save the DB entry for the file.
+		async.apply(uploadedWidget.save)
+	],
+	function(err, results) {
+		if(err) return console.error('Could not save the new widget:\n%s', err)
+		res.send(widgetID)
+		console.log('Widget %s (%s) successfully created and saved.', filename, widgetID);
+	});
+});
+
+
+/* serve the static pages of the site under '/' */
+//app.use('/', express.static(__dirname + '/public'));
+app.get('/', function(req, res) {
+	res.sendFile(__dirname + '/TESTHTML.html');
+})
 /* serve the data directory under '/data',
    to make the converted HTML and widgets available */
 app.use('/data', express.static(config.dataDir.path));
