@@ -14,6 +14,7 @@ module.exports = function(app, mongo, express){
 	var passport = require('passport');
 	var GitHubStrategy = require('passport-github2').Strategy;
 	var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+	var LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
 
 
 	app.use(passport.initialize());
@@ -24,6 +25,8 @@ module.exports = function(app, mongo, express){
 	 *	@desc Passport Integration
 	 */	
 	 
+	 
+	/** GITHUB STRATEGY **/
 	 
 	passport.use(new GitHubStrategy({
 	    clientID: oauth_keys.GITHUB_CLIENT_ID,
@@ -63,7 +66,7 @@ module.exports = function(app, mongo, express){
     
 	));
 	
-	    
+	/** GOOGLE STRATEGY **/
 	    
 	passport.use(new GoogleStrategy({
 	    clientID: oauth_keys.GOOGLE_CLIENT_ID,
@@ -111,9 +114,54 @@ module.exports = function(app, mongo, express){
 		  
 		  }
 	));    
-	    
 	
+	
+	/** LINKEDIN STRATEGY **/
+
+
+
+	passport.use(new LinkedInStrategy({
+	  clientID: oauth_keys.LINKEDIN_KEY,
+	  clientSecret: oauth_keys.LINKEDIN_SECRET,
+	  callbackURL: "http://localhost:8080/auth/linkedin/callback",
+	  scope: ['r_emailaddress', 'r_basicprofile']
+	  }, function(accessToken, refreshToken, profile, done) {
+	 
+	    mongo.models.users.findOne({
+            'providerID': profile.id,
+            'provider': 'linkedin' 
+        }, function(err, user) {
+            if (err) {
+                return done(err);
+            }
+            if (!user) {
+			// no user existent --> new user --> create a new one
+
+                user = new mongo.models.users({
+                    name: profile.displayName,
+                    email: profile.emails[0].value,
+                    provider: 'linkedin',
+                    providerID: profile.id
+                });
+                
+                user.save(function(err) {
+                    if (err) console.log(err);
+                    return done(err, user);
+                });
+            
+            } else {
+                //user found. return it.
+                return done(err, user);
+            }
+        });
+
+	}));
+
+
 	/* Routes for Passport */
+	
+	
+	/** GITHUB ROUTES **/
 	
 	
 	// GET /auth/github
@@ -145,7 +193,6 @@ module.exports = function(app, mongo, express){
 	/** GOOGLE ROUTES **/
 	
 	// GET /auth/google
-// 	app.get('/auth/google', passport.authenticate('google', { scope: 'https://www.googleapis.com/auth/plus.login' }));
 	app.get('/auth/google', passport.authenticate('google', { scope: [ 'https://www.googleapis.com/auth/plus.login', 'https://www.googleapis.com/auth/plus.profile.emails.read' ] }));
 
 	// GET /auth/google/callback
@@ -157,6 +204,21 @@ module.exports = function(app, mongo, express){
 	});
 
 	
+	/** LINKEDIN ROUTES **/
+	
+	// GET /auth/linkedin
+	app.get('/auth/linkedin',
+	  passport.authenticate('linkedin', { state: 't9PW4vCJU6BA26W'  }),
+	  function(req, res){
+	});
+	
+	// GET /auth/linkedin/callback
+	app.get('/auth/linkedin/callback', passport.authenticate('linkedin', {
+		successRedirect: '/',
+		failureRedirect: '/login'
+	}));
+	
+	/** Additional Passport Routes **/
 	
 	
 	
@@ -167,12 +229,7 @@ module.exports = function(app, mongo, express){
 	  res.redirect('/');
 	});   
 	
-	
-	
-	
-	
-	
-	     
+
 	// GET /getAuthStatus
 	// Can be used to check for the Login status of the current user  	                                      
 	app.get('/getAuthStatus', function(req,res){
@@ -185,7 +242,7 @@ module.exports = function(app, mongo, express){
 	});                                    
 	   	 
 	    
-	/* Passport needs some functions for serialization */
+	/* passport serialization functions */
 	
 	
 	passport.serializeUser(function(user, done) {
