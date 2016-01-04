@@ -231,8 +231,7 @@ app.post('/addDataset', widgetUpload, function(req, res) {
 		publicationID: req.body.publication,
 		caption: req.body.caption,
 		fileType: fileExt,
-		widgetType: req.body.widgetType, // soll da sowas wie "map" hin?
-		file: req.body.publication
+		widgetType: req.body.widgetType
 	});
 
 	var widgetID = uploadedWidget._id

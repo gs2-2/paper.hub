@@ -33,8 +33,7 @@ var widgetSchema = new mongoose.Schema({
 	publicationID: String,
 	caption: String,
 	fileType: String,
-	widgetType: String,
-	file: Buffer
+	widgetType: {type: String, enum: ['map', 'timeseries']}
 });
 
 var publicationModel = mongoose.model('Publication', publicationSchema);
