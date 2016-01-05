@@ -25,6 +25,8 @@
 #y_Axis{
 	position: absolute;
 	left: -400px;
+	top: 0px;
+	height: 300px;
 }
 
 #x_Axis{
@@ -42,5 +44,5 @@
 #slider{
 	position: absolute;
 	top: 310px;
-	left: 20px;
+	left: 30px;
 }
