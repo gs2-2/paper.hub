@@ -1,0 +1,46 @@
+/**
+<div id="chart_container">
+	<div id="y_Axis"></div>
+	<div id="chart"></div>
+	<div id="x_Axis"></div>
+	<div id="legend_container">
+		<div id="smoother" title="Smoothing"></div>
+		<div id="legend"></div>
+	</div>
+	<div id="slider"></div>
+</div>
+
+**/
+#chart_container{
+	width: 420px;
+	position: relative;
+}
+
+#chart{
+	position: absolute;
+	left: 20px;
+	top: 0px;
+}
+
+#y_Axis{
+	position: absolute;
+	left: -400px;
+}
+
+#x_Axis{
+	position: absolute;
+	left: 0px;
+	bottom: 0px;
+}
+
+#legend_container{
+	position: absolute;
+	top: 0px;
+	left: 430px;
+}
+
+#slider{
+	position: absolute;
+	top: 310px;
+	left: 20px;
+}

@@ -1,0 +1,110 @@
+<!doctype>
+<head>
+	<link rel="stylesheet" type="text/css" href="vendor/jquery-ui/themes/base/all.css">
+	<link rel="stylesheet" type="text/css" href="vendor/rickshaw/rickshaw.css">
+	<link rel="stylesheet" type="text/css" href="vendor/rickshaw/src/css/graph.css">
+	<link rel="stylesheet" type="text/css" href="vendor/rickshaw/src/css/detail.css">
+	<link rel="stylesheet" type="text/css" href="vendor/rickshaw/src/css/legend.css">
+	<link rel="stylesheet" type="text/css" href="css/graph.css">
+
+	<script src="vendor/rickshaw/vendor/d3.min.js"></script>
+	<script src="vendor/rickshaw/vendor/d3.layout.min.js"></script>
+
+	<script src="vendor/jquery/dist/jquery.min.js"></script>
+	<script src="vendor/jquery-ui/jquery-ui.min.js"></script>
+
+
+	<script src="vendor/rickshaw/rickshaw.js"></script>
+	
+</head>
+<body>
+
+<div id="chart_container">
+	<div id="y_Axis"></div>
+	<div id="chart"></div>
+	<div id="x_Axis"></div>
+	<div id="legend_container">
+		<div id="smoother" title="Smoothing"></div>
+		<div id="legend"></div>
+	</div>
+	<div id="slider"></div>
+</div>
+
+<script>
+
+
+// define color schemes: colorwheel, munin, spectrum14
+var palette = new Rickshaw.Color.Palette({scheme: "munin"});
+
+
+
+
+// set up our data series with 50 random data points
+
+var graph = new Rickshaw.Graph({
+	element: document.getElementById("chart"),
+	width: 400,
+	height: 300,
+	renderer: "area",
+	series: [{
+		data: [ { x: 0, y: 4 }, { x: 1, y: 49 }, { x: 2, y: 38 }, { x: 3, y: 30 }, { x: 4, y: 32 } ],
+		color: palette.color()
+	}, {
+		data: [ { x: 0, y: 20 }, { x: 1, y: 24 }, { x: 2, y: 19 }, { x: 3, y: 15 }, { x: 7, y: 16 } ],
+		color: palette.color()
+	}]
+});
+
+
+graph.render();
+
+// Create legend
+var legend = new Rickshaw.Graph.Legend( {
+	graph: graph,
+	element: document.getElementById("legend")
+
+} );
+
+// Add visibility toggle
+var shelving = new Rickshaw.Graph.Behavior.Series.Toggle({
+    graph: graph,
+    legend: legend
+});
+
+// Add series highlighting
+var lighlighter = new Rickshaw.Graph.Behavior.Series.Highlight({
+	graph: graph,
+	legend: legend
+});
+
+// Add drag-drop to reorder stack
+var order = new Rickshaw.Graph.Behavior.Series.Order({
+	graph: graph,
+	legend: legend
+});
+
+// Create Range selector
+var slider = new Rickshaw.Graph.RangeSlider({
+	graph: graph,
+	element: document.getElementById("slider")
+})
+
+
+// Add Axes
+var xAxis = new Rickshaw.Graph.Axis.Time({
+	graph: graph
+});
+
+
+xAxis.render();
+
+var yAxis = new Rickshaw.Graph.Axis.Y({
+	graph: graph,
+	orientation:"left",
+	element: document.getElementById("y_Axis")
+});
+
+yAxis.render();
+</script>
+
+</body>
