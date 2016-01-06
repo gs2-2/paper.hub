@@ -3,7 +3,7 @@
 # Usage:
 # Rscript R2csv.r --inputPath <pathToDataset> --outputPath <targetPath>
 
-require(utils)
+require(R.utils)
 
 #' @describe loads an RData file and returns the first object in it
 #' @param    path path to the Rdata file

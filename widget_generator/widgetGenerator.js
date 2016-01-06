@@ -6,6 +6,7 @@
 
 var cp = require('child_process');
 var fs = require('fs-extra');
+var async = require('async');
 
 /**
  * @desc  generates an interactive map in an HTML file for the specified datasets
@@ -36,35 +37,36 @@ exports.timeseries = function (inPath, outPath, callback) {
 	// will contain the string for the graph-html template
 	var graphTemplate;
 	async.series([
-		// convert data to CSV using R2csv.r
+		// convert data to CSV using R2csv.r to a temporary csv file
 		function(done) {
 			var cmd = 'Rscript ' + __dirname + '/R2csv.r'
-				+ ' --input "' + inPath + '" --output ' + outPath;
+				+ ' --input "' + inPath + '" --output ' + inPath + '.csv';
 			cp.exec(cmd, done);
 		},
 		// read csv file & parse csv to json 2d array
 		function(done) {
-			fs.readFile(inPath, function(err, data) {
+			fs.readFile(inPath + '.csv', function(err, data) {
 				if (err) done(err);
-				jsonData = csv2rickshaw(data);
+				jsonData = csv2rickshaw(data.toString('utf8'));
 				done(null);
 			});
 		},
-		// TODO load JS & HTML template as strings
+		// remove temporary csv file
+		function (done) { fs.remove(inPath + '.csv', done); },
+		// load JS & HTML template as strings
 		function(done) {
-			fs.readFile(__dirname + 'graphTemplate.txt', function(err, data){
+			fs.readFile(__dirname + '/graphTemplate.txt', function(err, data){
 				if (err) done(err);
-				graphTemplate = data;
+				graphTemplate = data.toString('utf8');
 				done(null);
 			});
-			
+
 		}
 	], function(err) {
 		if (err) return callback(err);
 
 		//insert values into JS template
 		var addedValues = graphTemplate.replace('InsertValuesHere', jsonData);
-		
 
 		// save HTML
 		fs.writeFile(outPath, addedValues, callback),
