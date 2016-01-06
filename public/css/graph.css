@@ -11,38 +11,50 @@
 </div>
 
 **/
+
+
+
+
+
 #chart_container{
-	width: 420px;
+	width: 100%;
 	position: relative;
 }
 
 #chart{
 	position: absolute;
-	left: 20px;
+	width: 88%;
+	left: 2.5%;
 	top: 0px;
 }
 
 #y_Axis{
 	position: absolute;
-	left: -400px;
-	top: 0px;
+	right: 97.55%;
+	top: 0%;
 	height: 300px;
 }
 
 #x_Axis{
 	position: absolute;
-	left: 0px;
-	bottom: 0px;
+	left: 0%;
+	bottom: 0%;
 }
 
 #legend_container{
 	position: absolute;
-	top: 0px;
-	left: 430px;
+	top: 0%;
+	right: 0%;
 }
 
 #slider{
 	position: absolute;
 	top: 310px;
-	left: 30px;
+	left: 2.5%;
+}
+
+#color_chooser{
+	position: absolute;
+	right: 0%;
+	top: 217px;
 }

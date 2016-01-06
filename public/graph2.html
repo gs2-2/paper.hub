@@ -5,7 +5,7 @@
 	<link rel="stylesheet" type="text/css" href="vendor/rickshaw/src/css/graph.css">
 	<link rel="stylesheet" type="text/css" href="vendor/rickshaw/src/css/detail.css">
 	<link rel="stylesheet" type="text/css" href="vendor/rickshaw/src/css/legend.css">
-	<link rel="stylesheet" type="text/css" href="css/graph.css">
+
 
 	<script src="vendor/rickshaw/vendor/d3.min.js"></script>
 	<script src="vendor/rickshaw/vendor/d3.layout.min.js"></script>
@@ -15,7 +15,53 @@
 
 
 	<script src="vendor/rickshaw/rickshaw.js"></script>
+	<script src="vendor/rickshaw/src/js/Rickshaw.Color.Palette.js"></script>
 	
+	<style>
+
+		#chart_container{
+			width: 100%;
+			position: relative;
+		}
+
+		#chart{
+			position: absolute;
+			width: 88%;
+			left: 2.5%;
+			top: 0px;
+		}
+
+		#y_Axis{
+			position: absolute;
+			right: 97.55%;
+			top: 0%;
+			height: 300px;
+		}
+
+		#x_Axis{
+			position: absolute;
+			left: 0%;
+			bottom: 0%;
+		}
+
+		#legend_container{
+			position: absolute;
+			top: 0%;
+			right: 0%;
+		}
+
+		#slider{
+			position: absolute;
+			top: 310px;
+			left: 2.5%;
+		}
+
+		#color_chooser{
+			position: absolute;
+			right: 0%;
+			top: 217px;
+		}
+	</style>
 </head>
 <body>
 
@@ -27,71 +73,83 @@
 		<div id="smoother" title="Smoothing"></div>
 		<div id="legend"></div>
 	</div>
+	<div id="color_chooser">
+		<div id="styles" class="rickshaw_legend" style="height: 60px;"><b>Style</b>
+			<ul class="ui-sortable">
+				<li class="line ui-sortable-handle"><span class="label">Munin</span></li>
+				<li class="line ui-sortable-handle"><span class="label">Colorwheel</span></li>
+				<li class="line ui-sortable-handle"><span class="label">Spectrum14</span></li>
+
+			</ul>
+		</div>
+	</div>
 	<div id="slider"></div>
 </div>
 
 <script>
 
 
-// define color schemes: colorwheel, munin, spectrum14
+
+/* define color schemes: colorwheel, munin, spectrum14 */
 var palette = new Rickshaw.Color.Palette({scheme: "munin"});
 
 
 
 
-// set up our data series with 50 random data points
+/* set up our data series with 50 random data points */
 
 var graph = new Rickshaw.Graph({
 	element: document.getElementById("chart"),
-	width: 400,
+	
 	height: 300,
 	renderer: "area",
-	series: [{
-		data: [ { x: 0, y: 4 }, { x: 1, y: 49 }, { x: 2, y: 38 }, { x: 3, y: 30 }, { x: 4, y: 32 } ],
-		color: palette.color()
-	}, {
-		data: [ { x: 0, y: 20 }, { x: 1, y: 24 }, { x: 2, y: 19 }, { x: 3, y: 15 }, { x: 7, y: 16 } ],
-		color: palette.color()
-	}]
+	InsertValuesHere
+	
+	
 });
+
+
+for(var i=0; i<graph.series.length; i++){
+	graph.series[i]["color"] = palette.color();
+}
 
 
 graph.render();
 
-// Create legend
+/* Create legend */
 var legend = new Rickshaw.Graph.Legend( {
 	graph: graph,
 	element: document.getElementById("legend")
 
 } );
 
-// Add visibility toggle
+/* Add visibility toggle */
 var shelving = new Rickshaw.Graph.Behavior.Series.Toggle({
     graph: graph,
     legend: legend
 });
 
-// Add series highlighting
+/* Add series highlighting */
 var lighlighter = new Rickshaw.Graph.Behavior.Series.Highlight({
 	graph: graph,
 	legend: legend
 });
 
-// Add drag-drop to reorder stack
+/* Add drag-drop to reorder stack */
 var order = new Rickshaw.Graph.Behavior.Series.Order({
 	graph: graph,
 	legend: legend
 });
 
-// Create Range selector
+/* Create Range selector */
 var slider = new Rickshaw.Graph.RangeSlider({
 	graph: graph,
 	element: document.getElementById("slider")
 })
 
 
-// Add Axes
-var xAxis = new Rickshaw.Graph.Axis.Time({
+/* Add Axes */
+var xAxis = new Rickshaw.Graph.Axis.X({
 	graph: graph
 });
 
@@ -105,6 +163,7 @@ var yAxis = new Rickshaw.Graph.Axis.Y({
 });
 
 yAxis.render();
+
 </script>
 
 </body>

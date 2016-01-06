@@ -33,6 +33,8 @@ exports.timeseries = function (inPath, outPath, callback) {
 	// will contain the data from inPath as json
 	var jsonData = [];
 
+	// will contain the string for the graph-html template
+	var graphTemplate;
 	async.series([
 		// convert data to CSV using R2csv.r
 		function(done) {
@@ -50,16 +52,22 @@ exports.timeseries = function (inPath, outPath, callback) {
 		},
 		// TODO load JS & HTML template as strings
 		function(done) {
-			done(null);
+			fs.readFile(__dirname + 'graphTemplate.txt', function(err, data){
+				if (err) done(err);
+				graphTemplate = data;
+				done(null);
+			});
+			
 		}
 	], function(err) {
 		if (err) return callback(err);
 
-		// TODO insert values into JS template
+		//insert values into JS template
+		var addedValues = graphTemplate.replace('InsertValuesHere', jsonData);
+		
 
-		// TODO insert modified js into HTML
-
-		// TODO save HTML
+		// save HTML
+		fs.writeFile(outPath, addedValues, callback),
 		callback(null);
 	});
 }
@@ -84,11 +92,13 @@ exports.timeseries = function (inPath, outPath, callback) {
  	var result = [];
  	for (var col = 1; col < csvMatrix[0].length; col++) {
  		// add a separate line for each column (aka measurement)
- 		var series = { data: [], color: 'lightblue' };
+ 		var series = { data: [], name: String};
 
  		for (var row = 1; row < csvMatrix.length; row++) {
  			series.data.push( { x: csvMatrix[row][0], y: csvMatrix[row][col] } );
  		}
+ 		// add name attribute to series
+ 		series.name = csvMatrix[0][col];
  		result.push(series);
  	}
  	return result;
