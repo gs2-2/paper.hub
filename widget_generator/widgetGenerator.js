@@ -69,7 +69,7 @@ exports.timeseries = function (inPath, outPath, callback) {
 		var addedValues = graphTemplate.replace('InsertValuesHere', jsonData);
 
 		// save HTML
-		fs.writeFile(outPath, addedValues, callback),
+		fs.writeFile(outPath, addedValues, callback);
 		callback(null);
 	});
 }
