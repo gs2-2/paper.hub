@@ -1,6 +1,5 @@
 'use strict';
 
-
 $(document).ready(function() {
 
 	// load the available papers and fill the table
@@ -49,39 +48,64 @@ $(document).ready(function() {
 
 
 /**
- * @desc Form validation for the uploadModal
+ * @desc Form validation for the uploadModal: tests if latex-upload, title or author is empty and shows a warning message
+ * @desc escape htmlCode in the textfields (title, author, abstract)
  */
 function validateForm() {
 	var latexDocumentValue = document.forms["form"]["latexDocument"].value;
 	var titleValue = document.forms["form"]["title"].value;
 	var authorValue = document.forms["form"]["author"].value;
-    var error = false;
+	var abstractValue = document.forms["form"]["abstract"].value;
+    var showErrorMessage = false;
 	if (latexDocumentValue == null || latexDocumentValue.trim() == "") {
 		$('#latexDocument').css('background-color', 'rgba(229, 0, 0, 0.3)');
-        error=true;
+        showErrorMessage = true;
 	} else {
         $('#latexDocument').css('background-color', 'white');
     }
 	if (titleValue == null || titleValue.trim() == "") {
 		$('#title').css('background-color', 'rgba(229, 0, 0, 0.3)');
-        error=true;
+        showErrorMessage = true;
 	} else {
         $('#title').css('background-color', 'white');
+		latexDocumentValue = escapeHtml(latexDocumentValue);
     }
 	if (authorValue == null || authorValue.trim() == "") {
 		$('#author').css('background-color', 'rgba(229, 0, 0, 0.3)');
-        error=true;
+        showErrorMessage = true;
 	} else {
         $('#author').css('background-color', 'white');
+		authorValue = escapeHtml(authorValue);
     }
-	if (error) {
+	if (showErrorMessage) {
         $('#errorMessage').css('display', 'block');
         return false;
 	} else {
+		abstractValue = escapeHtml(abstractValue);
+		//show success message and hide errorMessage if reqired fields are filled
         $('#errorMessage').css('display', 'none');
-        $('#successMessage').css('display', 'block'); //todo: testen
+        $('#successMessage').css('display', 'block');
     }
 }
+
+/*
+ * @task: Replace tokens to avoid damaging html
+ */
+function escapeHtml(string) {
+    var entityMap = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': '&quot;',
+        "'": '&#39;',
+        "/": '&#x2F;'
+    };
+
+    return String(string).replace(/[&<>"'\/]/g, function (s) {
+        return entityMap[s];
+    });
+}
+
 
 /**
  * @desc delete validation hints and input when cancel button is pressed
