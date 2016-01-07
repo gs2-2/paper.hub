@@ -132,22 +132,18 @@ app.post('/addPaper', latexUpload, function(req, res) {
 	});
 });
 
-//----------------------------In progress---------------------------------------------------
+
 
 /*
- * @desc zips the folder where uploaded files are stored
- * ToDo: change paths to real paths in filesystem
- * ToDo: embed this code/function into route where editing has been finalized
- * Note: uploaded data and latex files are in two separate folders 
+ * @desc zips the folder where uploaded files are stored 
  * @param id the id of publication
  */
 function zipIt(id){
-
 	// set path of local folders
-	var localpath = __dirname + "/data/delete/test";
+	var localpath = config.dataDir.papers + '/' + id;
 
 	// set target path for .zip
-	var zippath = __dirname + config.dataDir.papers + '/' + id + '.zip';
+	var zippath = config.dataDir.papers + '/' + id + '.zip';
 
 	// new ZipZipTip instance
 	var zip = new ZipZipTop();
@@ -165,7 +161,7 @@ function zipIt(id){
 			if (err) return console.log(err);
 
 			// debugging
-			console.log("Zipped folder"/*need to add paperId*/);
+			console.log("Zipped folder: " + id/*need to add paperId*/);
 
 
 			
@@ -174,18 +170,16 @@ function zipIt(id){
 	
 }
 
-
-app.get('/downloadPaper?id=*', function(req, res){
+/* Route for downloading a zip File. 
+*  /:id paperId, equals folder name 	
+*/
+app.get('/downloadPaper/:id/', function(req, res){
 
 	// set variable to content of query
-	var paperId = req.query.id;
+	var paperId = req.params.id;
 
 	// define path of .zip file
 	var zipPath = config.dataDir.papers + '/' + paperId + '.zip';
-	
-
-	// delete following line, just for testing
-	//var zipPath = __dirname + '/data/delete/' + paperId + '.zip';
 
 
 	// define as Download
@@ -199,7 +193,6 @@ app.get('/downloadPaper?id=*', function(req, res){
 
 
 
-//---------------------------End In-Progress------------------------------------------------
 
 /* serve the static pages of the site under '/' */
 app.use('/', express.static(__dirname + '/public'));
