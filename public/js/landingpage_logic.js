@@ -68,20 +68,20 @@ function validateForm() {
         showErrorMessage = true;
 	} else {
         $('#title').css('background-color', 'white');
-		latexDocumentValue = escapeHtml(latexDocumentValue);
+        document.forms["form"]["title"].value = escapeHtml(titleValue);
     }
 	if (authorValue == null || authorValue.trim() == "") {
 		$('#author').css('background-color', 'rgba(229, 0, 0, 0.3)');
         showErrorMessage = true;
 	} else {
         $('#author').css('background-color', 'white');
-		authorValue = escapeHtml(authorValue);
+        document.forms["form"]["author"].value = escapeHtml(authorValue);
     }
 	if (showErrorMessage) {
         $('#errorMessage').css('display', 'block');
         return false;
 	} else {
-		abstractValue = escapeHtml(abstractValue);
+        document.forms["form"]["abstract"].value = escapeHtml(abstractValue);
 		//show success message and hide errorMessage if reqired fields are filled
         $('#errorMessage').css('display', 'none');
         $('#successMessage').css('display', 'block');
