@@ -98,28 +98,6 @@ app.get('/getPaperMetadata/:id', function(req, res) {
 	});
 });
 
-/**
-* @desc Get the specified publication as HTML file.
-*/
-app.get('/getPaper/:id', function(req, res) {
-
-	//save the id from the URL
-	var id = req.params.id;
-
-	//redirect to the specified paper 
-	res.redirect('/data/papers/' + id + '/' + 'html/' + id + '.html');
-});
-
-/**
-* @desc Get the speicified widget from the server.
-*/
-app.get('/getWidget/:id', function(req, res) {
-
-	//save the id form the URL
-	var id = req.params.id;
-
-	res.redirect('data/widgets/' + id + '.html');
-});
 
 /**
 * @desc Delete the DB-content of the publication
@@ -190,8 +168,11 @@ app.post('/addPaper', latexUpload, function(req, res) {
 	 */
 	function moveUploadToPaper(paperID, callback) {
 
+		var fileList;
 		// move each file (the latex doc + the utility files) to the paper dir
-		var fileList = req.files['files'];
+		if(req.files['files']) {
+			fileList = req.files['files'];
+		}
 		fileList.push(req.files['latexDocument'][0]);
 
 		async.each(fileList, function(file, cb) {
@@ -231,7 +212,7 @@ app.post('/addDataset', widgetUpload, function(req, res) {
 		publicationID: req.body.publication,
 		caption: req.body.caption,
 		fileType: fileExt,
-		widgetType: req.body.widgetType
+		widgetType: req.body.type
 	});
 
 	var widgetID = uploadedWidget._id
@@ -239,45 +220,23 @@ app.post('/addDataset', widgetUpload, function(req, res) {
 	var movePath = config.dataDir.papers + '/' + req.body.publication + '/datasets/';
 
 	/**
-	* @desc Helper function to decide whether a file is for map data or not
-	* @param extension The fileextension, which shall be examined.
-	*/
-	function isMapData(extension, callback) {
-
-		switch(extension) {		
-			case 'json':
-			case 'tif':
-			case 'geojson':
-			case 'geotif':
-				return true;
-		}
-		return false;
-	};
-
-	/**
-	* @desc Helper fucntion to decide whether a file is an rData time series
-	* @param extension Fileextension, that shall be examined.
-	*/
-	function isTimeSeries(extension, callback) {
-
-		if(extension == 'rdata') return true;
-		return false;
-	};
-
-	/**
 	* @desc Helper function, that calls the script to parse the given file to a widget
 	*/
 	function useWidgetScript(file, callback) {
 
-		if(isMapData(file.split('.').pop().toLowerCase())) {
+		if(uploadedWidget.widgetType == 'map') {
 			widgets.map(movePath + filename, config.dataDir.widgets + '/' + widgetID, function(err) {
 				if(err) console.log(err);
 			});
 		}
-		else if(isTimeSeries(file.split('.').pop().toLowerCase())) {
-			//widgets./*Jans function*/(movePath + filename, config.dataDir.widgets + '/' + widgetID);
+		else if(uploadedWidget.widgetType == 'timeseries') {
+			widgets.timeseries(movePath + filename, config.dataDir.widgets + '/' + widgetID + '.html');
 		}
-		else console.error('The file can not be parsed to a widget')
+		else {
+			console.error('The file can not be parsed to a widget');
+			return callback('Error filetype not available');
+		}
+		callback(null);
 	};
 	
 	//perform task in an asynchronous series, one after another
@@ -287,7 +246,12 @@ app.post('/addDataset', widgetUpload, function(req, res) {
 		//start the conversion of the dataset for any format
 		async.apply(useWidgetScript, filename),
 		//save the DB entry for the file.
-		async.apply(uploadedWidget.save)
+		async.apply(uploadedWidget.save),
+		//save the widget in the widgets-array of the publication
+		//async.apply(publications.update, {_id: req.body.publication}, {$push: {'widgets': widgetID}}, {})
+		function(callback) {
+			publications.update( {_id: req.body.publication}, {$push: {'widgets': widgetID}}, {}, callback);
+		}
 	],
 	function(err, results) {
 		if(err) return console.error('Could not save the new widget:\n%s', err)
@@ -298,10 +262,8 @@ app.post('/addDataset', widgetUpload, function(req, res) {
 
 
 /* serve the static pages of the site under '/' */
-//app.use('/', express.static(__dirname + '/public'));
-app.get('/', function(req, res) {
-	res.sendFile(__dirname + '/TESTHTML.html');
-})
+app.use('/', express.static(__dirname + '/public'));
+
 /* serve the data directory under '/data',
    to make the converted HTML and widgets available */
 app.use('/data', express.static(config.dataDir.path));
