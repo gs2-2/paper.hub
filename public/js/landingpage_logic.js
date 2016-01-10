@@ -40,9 +40,6 @@ $(document).ready(function() {
 				// add an "add paper" button
 				$('#login-btn').after('<a id="addpaper-btn"'
 					+ 'class="button" href="#openUploadModal">Add Paper</a>');
-				if (window.matchMedia("(max-width: 400px)").matches) {
-					$('#intro').css('margin', '200px');
-				}
 			}
 		}
 	});
