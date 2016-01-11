@@ -71,6 +71,30 @@ var latexUpload = upload.fields([{
 var widgetUpload = upload.single('dataset');
 
 
+/**
+* @desc Send the HTML file of the specified paper.
+*/
+app.get('/paper/:id', function(req, res) {
+
+	//get the id from the request
+	var id = req.params.id;
+
+	//send the html file
+	res.redirect('/data/papers/' + id + '/html/' + id + '.html');
+});
+
+/**
+* @desc Send the file for the editor page
+*/
+app.get('editor/:id', function(req, res) {
+
+	//get the id from the request
+	var id = req.params.id;
+
+	//send the html file in the response
+	res.redirect('/data/papers/' + id + '/html/' + id + '.html');
+});
+
 /* return metadata about all stored papers */
 app.get('/getPaperList', function(req, res) {
 	publications
