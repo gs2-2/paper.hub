@@ -27,6 +27,39 @@ util.createPath([config.dataDir.papers, config.dataDir.widgets, config.uploadDir
 	}
 });
 
+
+
+
+/* SSL Integration *
+
+var https = require('https');
+var fs = require('fs');
+var httpsPort = 3443;
+// Setup HTTPS
+var options = {
+  key: fs.readFileSync('private.key'),
+  cert: fs.readFileSync('certificate.pem')
+};
+var secureServer = https.createServer(options, app).listen(httpsPort);
+
+
+
+
+/* Redirect all traffic over :8080 to SSL Port
+// TODO: generate SSL cert in installscript
+// TODO: move httpsPort to config.js
+
+app.set('port_https', httpsPort); 
+// Secure traffic only
+app.all('*', function(req, res, next){
+  if (req.secure) {
+    return next();
+  };
+ res.redirect("https://"+req.hostname+":"+app.get('port_https')+req.url);
+});	
+	
+*/
+
 /* connect to mongoDB & launch express webserver */
 mongo.connect(
 	config.dbAddress,

@@ -21,7 +21,6 @@ var publicationSchema = new mongoose.Schema({
 var userSchema = new mongoose.Schema({
 	name: String,
 	email: String,
-	username: String,
 	provider: String,
 	providerID: String
 });

@@ -6,7 +6,7 @@ $(document).ready(function() {
 	$.ajax({
 		type: 'GET',
 		dataType: 'json',
-		url: 'http://' + window.location.host + '/getPaperList',
+		url: '/getPaperList',
 		success: function(papers, textStatus) {
 			// fill the table with publications
 			for (var i = 0; i < papers.length; i++) {
@@ -126,15 +126,6 @@ $('#cancelButton').click(function(){
  * @param tablerow from the paper-table
  */
 function loadPaper(tablerow) {
-	var url = 'http://' + window.location.host + '/paper.html?id=';
+	var url = '/paper.html?id=';
 	window.location = url + $(tablerow).data('id');
 }
-
-/* Upload-button with nice style, but without upload info
-$(document).ready(function(){
-	$('#latexDocument').before('<input type="button" id="button-file" value="Datei Upload" />');
-	$('#latexDocument').hide();
-	$('body').on('click', '#button-file', function() {
-		$('#latexDocument').trigger('click');
-	});
-});*/
