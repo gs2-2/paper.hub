@@ -62,10 +62,86 @@ module.exports = function(app, mongo, express){
 		});
 	}));
 
+	/** GOOGLE STRATEGY **/
 
-	
+	passport.use(new GoogleStrategy({
+		clientID: oauth_keys.GOOGLE_CLIENT_ID,
+		clientSecret: oauth_keys.GOOGLE_CLIENT_SECRET,
+		callbackURL: "http://127.0.0.1:8080/auth/google/callback"
+	},
+	function(accessToken, refreshToken, profile, done) {
+
+		mongo.models.users.findOne({
+			'providerID': profile.id,
+			'provider': 'google'
+		}, function(err, user) {
+			if (err) return done(err);
+			if (!user) {
+				// no user existent --> new user --> create a new one
+
+				// Fix if a user has a Google Account but no real name
+				var userName = 'Unbekannter Benutzer via Google';
+				if(profile.displayName){userName = profile.displayName};
+	// 				if(profile.displayName){userName = profile.emails[0].value};	//Alternative, falls E-Mail anstatt "Unbekannter Autor" gesetzt werden soll
+
+				user = new mongo.models.users({
+					name: userName,
+					email: profile.emails[0].value,
+					provider: 'google',
+					providerID: profile.id
+				});
+
+				user.save(function(err) {
+					if (err) console.log(err);
+					return done(err, user);
+				});
+
+			} else {
+				//user found. return it.
+				return done(err, user);
+			}
+		});
+	}));
+
+	/** LINKEDIN STRATEGY **/
+	passport.use(new LinkedInStrategy({
+		clientID: oauth_keys.LINKEDIN_KEY,
+		clientSecret: oauth_keys.LINKEDIN_SECRET,
+		callbackURL: "http://localhost:8080/auth/linkedin/callback",
+		scope: ['r_emailaddress', 'r_basicprofile']
+	}, function(accessToken, refreshToken, profile, done) {
+		mongo.models.users.findOne({
+			'providerID': profile.id,
+			'provider': 'linkedin'
+		}, function(err, user) {
+			if (err) {
+				return done(err);
+			}
+			if (!user) {
+			// no user existent --> new user --> create a new one
+
+				user = new mongo.models.users({
+					name: profile.displayName,
+					email: profile.emails[0].value,
+					provider: 'linkedin',
+					providerID: profile.id
+				});
+
+				user.save(function(err) {
+					if (err) console.log(err);
+					return done(err, user);
+				});
+
+			} else {
+				//user found. return it.
+				return done(err, user);
+			}
+		});
+
+	}));
+
 	/** GITHUB ROUTES **/
-		
+
 	// GET /auth/github
 	//   Use passport.authenticate() as route middleware to authenticate the
 	//   request.  The first step in GitHub authentication will involve redirecting
@@ -95,28 +171,28 @@ module.exports = function(app, mongo, express){
 	app.get('/auth/google', passport.authenticate('google', { scope: [ 'https://www.googleapis.com/auth/plus.login', 'https://www.googleapis.com/auth/plus.profile.emails.read' ] }));
 
 	// GET /auth/google/callback
-	app.get('/auth/google/callback', 
+	app.get('/auth/google/callback',
 	  passport.authenticate('google', { failureRedirect: '/login' }),
 	  function(req, res) {
 	    // Successful authentication, redirect home.
 	    res.redirect('/');
 	});
 
-	
+
 	/** LINKEDIN ROUTES **/
-	
+
 	// GET /auth/linkedin
 	app.get('/auth/linkedin',
 	  passport.authenticate('linkedin', { state: oauth_keys.LINKEDIN_STATE }),
 	  function(req, res){
 	});
-	
+
 	// GET /auth/linkedin/callback
 	app.get('/auth/linkedin/callback', passport.authenticate('linkedin', {
 		successRedirect: '/',
 		failureRedirect: '/login'
 	}));
-	
+
 
 	/** Additional Passport Routes **/
 	// Can be used to log a user out.
@@ -133,9 +209,9 @@ module.exports = function(app, mongo, express){
 		}else{
 			res.send('Auth unsuccessful');
 		}
-	});                                    
-	   	 
-	    
+	});
+
+
 	/* passport serialization functions */
 	passport.serializeUser(function(user, done) {
 	  done(null, user);
