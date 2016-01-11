@@ -9,6 +9,27 @@
 
 
 
+/*  Upload-button with nice style, but without upload info
+#button-file {
+    color: #fff;
+    font-weight: bold;
+    border: 1px #999 solid;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -o-border-radius: 3px;
+    border-radius: 3px;
+    filter:progid:DXImageTransform.Microsoft.Gradient(StartColorStr='#bb0000ff', EndColorStr='#990000ff');
+    background: #ededed;
+    padding: 10px 5px;
+}
+#button-file:active {
+    filter:progid:DXImageTransform.Microsoft.Gradient(StartColorStr='#990000ff', EndColorStr='#bb0000ff');
+    background: darkgrey;
+}
+#button-file:hover {
+    cursor: pointer;
+}*/
+
 
 /* bigger margin at the top if there is a break in the top nav-bar */
 @media (max-width: 341px) {

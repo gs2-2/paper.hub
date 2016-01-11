@@ -66,8 +66,7 @@
 </div>
 
 <!-- Upload-modal -->
-<!-- TODO: ERROR checking: alle felder müssen ausgefüllt, user muss logged in sein
-           idealerweise auch javascript/html in textfeldern filtern (wegen der sicherheit.) -->
+<!-- TODO: ERROR checking: user muss logged in sein -->
 <!-- TODO: für kleinere Auflösungen anpassen (mit schickem grid?) -->
 <div id="openUploadModal" class="modalDialog">
     <div>
@@ -76,10 +75,10 @@
             To add a paper, select a LaTeX document and additional files the document depends on.
             Lateron you will be able to upload datasets for embedded interactive visualisations.
         </b></p>
-        <form class="input-group" method="POST" enctype="multipart/form-data" action="/addPaper">
+        <form name="form" class="input-group" method="POST" enctype="multipart/form-data" action="/addPaper" onsubmit="return validateForm()">
             <table class="inputTable">
                 <tr>
-                    <td class="inputTable">TeX file: </td>
+                    <td class="inputTable">TeX file*: </td>
                     <td class="inputTable"><input id="latexDocument" name="latexDocument" type="file" accept=".tex" /></td>
                 </tr>
                 <tr>
@@ -90,20 +89,22 @@
             <b>Add the metadata:</b><br><br>
             <table class="inputTable">
                 <tr>
-                    <td class="inputTable">Title:</td>
+                    <td class="inputTable">Title*:</td>
                     <td class="inputTable"><input id="title" name="title" type="text" size="45"/></td>
                 </tr>
                 <tr>
                     <td class="inputTable">Abstract:</td>
-                    <td class="inputTable"><input id="ab" name="abstract" type="text" size="45"/></td>
+                    <td class="inputTable"><input id="abstract" name="abstract" type="text" size="45"/></td>
                 </tr>
                 <tr>
-                    <td class="inputTable">Author:</td>
+                    <td class="inputTable">Author*:</td>
                     <td class="inputTable"><input id="author" name="author" type="text" size="45"/></td>
                 </tr>
             </table>
-
-            <a href="#close" title="Cancel" class="button cancel" style="background-color: white">Cancel</a>
+            <div id="errorMessage" style="background-color: rgba(186, 0, 0, 0.56); border-radius: 8px; padding: 5px; margin-bottom: 5px; margin-right: 3%; display: none">Please add required information and data.</div>
+            <div id="successMessage" style="background-color: rgba(111, 229, 69, 0.56); border-radius: 8px; padding: 5px; margin-bottom: 5px; margin-right: 3%; display: none">Please wait, data is being uploaded.<img src="img/loadingSymbol.svg" alt="" height="35px" width="auto"></div>
+            <!-- todo: pfad überprüfen/ tuts das symbol? / ie? -->
+            <a id="cancelButton" href="#close" title="Cancel" class="button cancel" style="background-color: white">Cancel</a>
             <input class="button" type="submit" value="Upload" style="float:right; background-color: #eeeeee"/>
         </form>
     </div>
@@ -151,6 +152,7 @@
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 <script src="vendor/jquery/dist/jquery.min.js" charset="utf-8"></script>
 <script src="js/landingpage_logic.js" charset="utf-8"></script>
+
 
 </body>
 </html>

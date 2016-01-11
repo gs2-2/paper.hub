@@ -126,7 +126,7 @@ app.post('/addPaper', latexUpload, function(req, res) {
 	],
 	function(err, results) {
 		if (err) return console.error('could not save the new paper:\n%s', err);
-		res.send(paperID)
+		res.redirect('/editor.html?id='+paperID);
 		console.log('paper %s (%s) successfully uploaded and converted!',
 			texFile, paperID);
 	});
