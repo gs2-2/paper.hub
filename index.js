@@ -111,7 +111,7 @@ app.get('/getPaperList', function(req, res) {
 * @desc Send the metadata of the specified paper to the client
 */
 app.get('/getPaperMetadata/:id', function(req, res) {
-	
+
 	//extract the id from the URL
 	var id = req.params.id;
 
@@ -127,7 +127,7 @@ app.get('/getPaperMetadata/:id', function(req, res) {
 /**
 * @desc Delete the DB-content of the publication
 */
-app.delete('/deletePaper/:id', function(req, res) {
+app.delete('/deletePaper/:id', loggedIn, function(req, res) {
 
 	//save the id from the URL
 	var id = req.params.id;
@@ -171,7 +171,7 @@ app.delete('/deletePaper/:id', function(req, res) {
 
 /* Provide express route for the LaTeX Code commited by the user.
    Uploaded Latex file is converted to HTML and saved in FS and DB */
-app.post('/addPaper', latexUpload, function(req, res) {
+app.post('/addPaper', latexUpload, loggedIn, function(req, res) {
 
 	//create new paper instance in the DB
 	var uploadedPaper = new publications({
@@ -225,7 +225,7 @@ app.post('/addPaper', latexUpload, function(req, res) {
 
 
 /*
- * @desc zips the folder where uploaded files are stored 
+ * @desc zips the folder where uploaded files are stored
  * @param id the id of publication
  */
 function zipIt(id){
@@ -246,26 +246,21 @@ function zipIt(id){
 
 		// write zip to target path
 		zip.writeToFile(zippath, function(err){
-
 			// if error occurs, make console.log
 			if (err) return console.log(err);
 
 			// debugging
 			console.log("Zipped folder: " + id/*need to add paperId*/);
-
-
-			
 		});
 	});
-	
+
 }
 
-/* Route for zipping a folder 
+/* Route for zipping a folder
 *  /:id paperId, equals folder name
 */
 app.get('/zipFolder/:id/', function(req, res){
-
-	// ser variable to content of param :id
+	// variable to content of param :id
 	var paperId = req.params.id;
 
 	// define path of folder to be zipped for error handling
@@ -273,24 +268,19 @@ app.get('/zipFolder/:id/', function(req, res){
 
 	// check if folder exists
 	fs.access(zipPath, fs.F_OK, function(err){
-
 		// if folder exists zip it
 		if (!err){
-
-			// call function for zipping with paperId
 			zipIt(paperId);
-			
 			res.end();
-
-		// if folder does NOT exist send error	
 		} else {
+			// if folder does NOT exist send error
 			res.status(404).send('Folder  "' + paperId + '" not found!');
 		}
 	});
 });
 
-/* Route for downloading a zip File. 
-*  /:id paperId, equals folder name 	
+/* Route for downloading a zip File.
+*  /:id paperId, equals folder name
 */
 app.get('/downloadPaper/:id/', function(req, res){
 
@@ -327,10 +317,10 @@ app.get('/downloadPaper/:id/', function(req, res){
 * 		The dataset is parsed and saved in the file system.
 */
 app.post('/addDataset', widgetUpload, function(req, res) {
-	
+
 	//get the file extension of the uploaded file
 	var fileExt = req.file.filename.split('.').pop().toLowerCase();
-	
+
 	//create a DB entry for the dataset
 	var uploadedWidget = new widget({
 		publicationID: req.body.publication,
@@ -362,7 +352,7 @@ app.post('/addDataset', widgetUpload, function(req, res) {
 		}
 		callback(null);
 	};
-	
+
 	//perform task in an asynchronous series, one after another
 	async.series([
 		//move the file to the paperDir of the related paper
@@ -384,14 +374,12 @@ app.post('/addDataset', widgetUpload, function(req, res) {
 	});
 });
 
-
 /* serve the static pages of the site under '/' */
 app.use('/', express.static(__dirname + '/public'));
 
 /* serve the data directory under '/data',
    to make the converted HTML and widgets available */
 app.use('/data', express.static(config.dataDir.path));
-
 
 function loggedIn(req, res, next) {
     if (req.user) {
