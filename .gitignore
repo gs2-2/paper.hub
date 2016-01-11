@@ -36,6 +36,9 @@ upload_tmp
 #exclude IDE project files
 .idea
 .Rhistory
+.vscode
 
 # private keys are private!
 oauth_keys.js
+certificate.pem
+private.key

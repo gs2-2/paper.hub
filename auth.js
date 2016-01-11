@@ -20,10 +20,14 @@ module.exports = function(app, mongo, express){
 	/* Passport & Login Strategies */
 	var passport = require('passport');
 	var GitHubStrategy = require('passport-github2').Strategy;
+	var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+	var LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
+
 
 	app.use(passport.initialize());
 	app.use(passport.session());
 
+	/** GITHUB STRATEGY **/
 	passport.use(new GitHubStrategy({
 		clientID: oauth_keys.GITHUB_CLIENT_ID,
 		clientSecret: oauth_keys.GITHUB_CLIENT_SECRET,
@@ -58,8 +62,10 @@ module.exports = function(app, mongo, express){
 		});
 	}));
 
-	/* Routes for Passport */
 
+	
+	/** GITHUB ROUTES **/
+		
 	// GET /auth/github
 	//   Use passport.authenticate() as route middleware to authenticate the
 	//   request.  The first step in GitHub authentication will involve redirecting
@@ -81,27 +87,56 @@ module.exports = function(app, mongo, express){
 	  passport.authenticate('github', { failureRedirect: '/login' }),
 	  function(req, res) {
 		res.redirect('/');
+	  });
+
+	/** GOOGLE ROUTES **/
+
+	// GET /auth/google
+	app.get('/auth/google', passport.authenticate('google', { scope: [ 'https://www.googleapis.com/auth/plus.login', 'https://www.googleapis.com/auth/plus.profile.emails.read' ] }));
+
+	// GET /auth/google/callback
+	app.get('/auth/google/callback', 
+	  passport.authenticate('google', { failureRedirect: '/login' }),
+	  function(req, res) {
+	    // Successful authentication, redirect home.
+	    res.redirect('/');
 	});
 
-	// GET /logout
+	
+	/** LINKEDIN ROUTES **/
+	
+	// GET /auth/linkedin
+	app.get('/auth/linkedin',
+	  passport.authenticate('linkedin', { state: oauth_keys.LINKEDIN_STATE }),
+	  function(req, res){
+	});
+	
+	// GET /auth/linkedin/callback
+	app.get('/auth/linkedin/callback', passport.authenticate('linkedin', {
+		successRedirect: '/',
+		failureRedirect: '/login'
+	}));
+	
+
+	/** Additional Passport Routes **/
 	// Can be used to log a user out.
 	app.get('/logout', function(req, res){
 	  req.logout();
 	  res.redirect('/');
 	});
 
-	// GET /getAuthStatus
+
 	// Can be used to check for the Login status of the current user
 	app.get('/getAuthStatus', function(req,res){
-
 		if(req.user){
 			res.send('Auth successful');
 		}else{
 			res.send('Auth unsuccessful');
 		}
-	});
-
-	/* Passport needs some functions for serialization */
+	});                                    
+	   	 
+	    
+	/* passport serialization functions */
 	passport.serializeUser(function(user, done) {
 	  done(null, user);
 	});

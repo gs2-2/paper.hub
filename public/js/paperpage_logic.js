@@ -2,7 +2,6 @@
 
 // get the paperid from the URL query (slice(4) for '?id=')
 var paperID = window.location.pathname.split('/').pop();
-console.log(paperID);
 
 $(document).ready(function() {
 	// load the paper into the iframe
@@ -13,7 +12,7 @@ $(document).ready(function() {
 	$.ajax({
 		type: 'GET',
 		dataType: 'json',
-		url: 'http://' + window.location.host + '/getPaperMetadata/' + paperID,
+		url: '/getPaperMetadata/' + paperID,
 		success: function(paper, textStatus) {
 			$('#title').text(paper.title);
 			$('#author').text('by ' + paper.author);
@@ -39,6 +38,5 @@ function iframeResize(iframe){
  * @desc redirects to a download package
  */
 function downloadPaper() {
-	var url = 'http://' + window.location.host + '/downloadPaper/';
-	window.open(url + paperID);
+	window.open('/downloadPaper/' + paperID);
 }
