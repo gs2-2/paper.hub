@@ -13,6 +13,7 @@ var async   = require('async');
 var express = require('express');
 var multer  = require('multer');
 var fs      = require('fs-extra');
+var ZipZipTop = require('zip-zip-top');
 
 var app = express();
 var publications = mongo.models.publications;
@@ -130,6 +131,108 @@ app.post('/addPaper', latexUpload, function(req, res) {
 			texFile, paperID);
 	});
 });
+
+
+
+/*
+ * @desc zips the folder where uploaded files are stored 
+ * @param id the id of publication
+ */
+function zipIt(id){
+	// set path of local folders
+	var localpath = config.dataDir.papers + '/' + id;
+
+	// set target path for .zip
+	var zippath = config.dataDir.papers + '/' + id + '.zip';
+
+	// new ZipZipTip instance
+	var zip = new ZipZipTop();
+
+	// define folder to be zipped
+	zip.zipFolder(localpath, function(err){
+
+		// if error occurs, make console.log
+		if (err) return console.log(err);
+
+		// write zip to target path
+		zip.writeToFile(zippath, function(err){
+
+			// if error occurs, make console.log
+			if (err) return console.log(err);
+
+			// debugging
+			console.log("Zipped folder: " + id/*need to add paperId*/);
+
+
+			
+		});
+	});
+	
+}
+
+/* Route for zipping a folder 
+*  /:id paperId, equals folder name
+*/
+app.get('/zipFolder/:id/', function(req, res){
+
+	// ser variable to content of param :id
+	var paperId = req.params.id;
+
+	// define path of folder to be zipped for error handling
+	var zipPath = config.dataDir.papers + '/' + paperId;
+
+	// check if folder exists
+	fs.access(zipPath, fs.F_OK, function(err){
+
+		// if folder exists zip it
+		if (!err){
+
+			// call function for zipping with paperId
+			zipIt(paperId);
+			
+			res.end();
+
+		// if folder does NOT exist send error	
+		} else {
+			res.status(404).send('Folder  "' + paperId + '" not found!');
+		}
+	});
+});
+
+/* Route for downloading a zip File. 
+*  /:id paperId, equals folder name 	
+*/
+app.get('/downloadPaper/:id/', function(req, res){
+
+	// set variable to content of param :id
+	var paperId = req.params.id;
+
+	// define path of .zip file
+	var zipPath = config.dataDir.papers + '/' + paperId + '.zip';
+
+	//check if .zipFile exists
+	fs.access(zipPath, fs.F_OK, function(err){
+
+		// if file found download it
+		if (!err){
+			// define as Download
+			//res.setHeader('Content-disposition', 'attachment; filename= ' + zipPath);
+			res.setHeader('Content-type', 'application-zip, application/octet-stream');
+
+			// start download
+			res.download(zipPath);
+
+		//if file NOT found send error
+		} else {
+			res.status(404).send('File not found');
+		}
+	});
+
+
+});
+
+
+
 
 /* serve the static pages of the site under '/' */
 app.use('/', express.static(__dirname + '/public'));
