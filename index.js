@@ -80,19 +80,19 @@ app.get('/paper/:id', function(req, res) {
 	var id = req.params.id;
 
 	//send the html file
-	res.redirect('/data/papers/' + id + '/html/' + id + '.html');
+	res.sendFile(__dirname + '/public/paper.html');
 });
 
 /**
 * @desc Send the file for the editor page
 */
-app.get('editor/:id', function(req, res) {
+app.get('/editor/:id', loggedIn, function(req, res) {
 
 	//get the id from the request
 	var id = req.params.id;
 
 	//send the html file in the response
-	res.redirect('/data/papers/' + id + '/html/' + id + '.html');
+	res.sendFile(__dirname + '/public/editor.html');
 });
 
 /* return metadata about all stored papers */
@@ -297,13 +297,7 @@ function loggedIn(req, res, next) {
     if (req.user) {
         next();
     } else {
-		res.sendFile('/index.html')
-//         res.redirect('/');
+		//res.sendFile('/index.html')
+		res.redirect('/');
     }
 }
-
-app.use('/editor', loggedIn, function(req,res,next){
-
-	res.sendfile('/editor.html');
-
-});
