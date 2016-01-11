@@ -12,7 +12,7 @@ $(document).ready(function() {
 	$.ajax({
 		type: 'GET',
 		dataType: 'json',
-		url: 'http://' + window.location.host + '/getPaperMetadata?id=' + paperID,
+		url: '/getPaperMetadata?id=' + paperID,
 		success: function(paper, textStatus) {
 			$('#title').text(paper.title);
 			$('#author').text('by ' + paper.author);
@@ -38,6 +38,6 @@ function iframeResize(iframe){
  * @desc redirects to a download package
  */
 function downloadPaper() {
-	var url = 'http://' + window.location.host + '/downloadPaper?id=';
+	var url = '/downloadPaper?id=';
 	window.open(url + paperID);
 }

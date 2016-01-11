@@ -24,7 +24,7 @@ set -o pipefail
 
 # installation-script dependencies
 apt-get update
-apt-get install -y build-essential curl
+apt-get install -y build-essential curl openssl
 
 # add external repositories: mongoDB 3.x, nodeJS 4.x, R cran
 apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10 # mongo repo
@@ -68,5 +68,12 @@ bower install --allow-root
 
 echo "\nInstallation of paper.hub complete!"
 echo "Start the server via npm start"
-echo "You might want to change some configuration options in ./config.js"
+echo "You now need to copy a SSL certificate into the current folder."
+echo "To generate a self signed certificate, you may use the following commands:"
+echo "    openssl genrsa 1024 > private.key"
+echo "    openssl req -new -key private.key -out cert.csr"
+echo "    openssl x509 -req -in cert.csr -signkey private.key -out certificate.pem"
+echo "You also need to get Oauth application keys from GitHub, linkedin & Google."
+echo "When you got them, store them in the file ./oauth_keys.js"
+echo "You also may want to change some configuration options in ./config.js"
 exit 0;

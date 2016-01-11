@@ -30,35 +30,24 @@ util.createPath([config.dataDir.papers, config.dataDir.widgets, config.uploadDir
 
 
 
-/* SSL Integration *
+/* SSL Integration */
 
 var https = require('https');
-var fs = require('fs');
-var httpsPort = 3443;
-// Setup HTTPS
-var options = {
-  key: fs.readFileSync('private.key'),
-  cert: fs.readFileSync('certificate.pem')
-};
-var secureServer = https.createServer(options, app).listen(httpsPort);
+var httpsServer = https.createServer({
+	key: fs.readFileSync('private.key'),
+	cert: fs.readFileSync('certificate.pem')
+}, app).listen(config.httpsPort);
 
-
-
-
-/* Redirect all traffic over :8080 to SSL Port
+/* Redirect all traffic over :8080 to SSL Port */
 // TODO: generate SSL cert in installscript
 // TODO: move httpsPort to config.js
 
-app.set('port_https', httpsPort); 
+app.set('port_https', config.httpsPort);
 // Secure traffic only
 app.all('*', function(req, res, next){
-  if (req.secure) {
-    return next();
-  };
- res.redirect("https://"+req.hostname+":"+app.get('port_https')+req.url);
-});	
-	
-*/
+ 	if (req.secure) return next();
+	res.redirect("https://" + req.hostname + ":" + config.httpsPort + req.url);
+});
 
 /* connect to mongoDB & launch express webserver */
 mongo.connect(
@@ -96,8 +85,7 @@ var upload = multer({ storage: storage });
 var latexUpload = upload.fields([{
 	name: 'latexDocument',
 	maxCount: 1
-},
-{
+}, {
 	name: 'files'
 }]);
 
@@ -168,7 +156,7 @@ app.post('/addPaper', latexUpload, function(req, res) {
 
 
 /*
- * @desc zips the folder where uploaded files are stored 
+ * @desc zips the folder where uploaded files are stored
  * @param id the id of publication
  */
 function zipIt(id){
@@ -197,13 +185,13 @@ function zipIt(id){
 			console.log("Zipped folder: " + id/*need to add paperId*/);
 
 
-			
+
 		});
 	});
-	
+
 }
 
-/* Route for zipping a folder 
+/* Route for zipping a folder
 *  /:id paperId, equals folder name
 */
 app.get('/zipFolder/:id/', function(req, res){
@@ -222,18 +210,18 @@ app.get('/zipFolder/:id/', function(req, res){
 
 			// call function for zipping with paperId
 			zipIt(paperId);
-			
+
 			res.end();
 
-		// if folder does NOT exist send error	
+		// if folder does NOT exist send error
 		} else {
 			res.status(404).send('Folder  "' + paperId + '" not found!');
 		}
 	});
 });
 
-/* Route for downloading a zip File. 
-*  /:id paperId, equals folder name 	
+/* Route for downloading a zip File.
+*  /:id paperId, equals folder name
 */
 app.get('/downloadPaper/:id/', function(req, res){
 
