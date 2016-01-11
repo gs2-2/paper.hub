@@ -26,8 +26,19 @@ var userSchema = new mongoose.Schema({
 	providerID: String
 });
 
+/**
+* @desc definition of the widget-schema
+*/
+var widgetSchema = new mongoose.Schema({
+	publicationID: String,
+	caption: String,
+	fileType: String,
+	widgetType: {type: String, enum: ['map', 'timeseries']}
+});
+
 var publicationModel = mongoose.model('Publication', publicationSchema);
 var userModel = mongoose.model('User', userSchema);
+var widgetModel = mongoose.model('Widget', widgetSchema);
 
 
 /**
@@ -48,5 +59,6 @@ exports.connect = function(dbAddress, dbName, callback) {
 /* the database models, that can be accessed for queries etc */
 exports.models = {
 	publications: publicationModel,
-	users: userModel
+	users: userModel,
+	widget: widgetModel
 };

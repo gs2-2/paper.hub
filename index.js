@@ -17,9 +17,10 @@ var ZipZipTop = require('zip-zip-top');
 
 var app = express();
 var publications = mongo.models.publications;
+var widget = mongo.models.widget;
 require('./auth.js')(app, mongo, express);
 
-/* check if the all required paths exist & create them if necessary */
+/* check if all required paths exist & create them if necessary */
 util.createPath([config.dataDir.papers, config.dataDir.widgets, config.uploadDir], function(err) {
 	if (err) {
 		console.error('couldnt find nor create data directory: ' + err);
@@ -68,9 +69,34 @@ var latexUpload = upload.fields([{
 	name: 'files'
 }]);
 
-var uploadFile = upload.single('latexDocument');
+var widgetUpload = upload.single('dataset');
 
-/* return metadata about all stored journeys */
+
+/**
+* @desc Send the HTML file of the specified paper.
+*/
+app.get('/paper/:id', function(req, res) {
+
+	//get the id from the request
+	var id = req.params.id;
+
+	//send the html file
+	res.sendFile(__dirname + '/public/paper.html');
+});
+
+/**
+* @desc Send the file for the editor page
+*/
+app.get('/editor/:id', loggedIn, function(req, res) {
+
+	//get the id from the request
+	var id = req.params.id;
+
+	//send the html file in the response
+	res.sendFile(__dirname + '/public/editor.html');
+});
+
+/* return metadata about all stored papers */
 app.get('/getPaperList', function(req, res) {
 	publications
 		.find({}, '_id title author publicationDate')
@@ -79,6 +105,68 @@ app.get('/getPaperList', function(req, res) {
 			if (err) return console.error('could not get stored papers: ' + err);
 			res.json(papers);
 		});
+});
+
+/**
+* @desc Send the metadata of the specified paper to the client
+*/
+app.get('/getPaperMetadata/:id', function(req, res) {
+	
+	//extract the id from the URL
+	var id = req.params.id;
+
+	publications.findById(id, function(err, doc) {
+		if(err) {
+			res.send('Error: ' + err);
+		}
+		res.send(doc);
+	});
+});
+
+
+/**
+* @desc Delete the DB-content of the publication
+*/
+app.delete('/deletePaper/:id', function(req, res) {
+
+	//save the id from the URL
+	var id = req.params.id;
+
+	//remove the dir from the file system
+	fs.remove(config.dataDir.papers + '/' + id, function(err) {
+		if(err) {
+			res.send('Error, could not find or delete directory.');
+		}
+	});
+
+	var dbEntry;
+
+	//find all widgets of the given publication
+	publications.findById(id, function(err, doc) {
+		if(err) {
+			res.send('Error: ' + err);
+		}
+		dbEntry = doc.widgets;
+	});
+
+	//delete all widgets, saved in the widgets array
+	for(var i = 0; i < dbEntry.length; i++) {
+
+		//remove widgets, that might be created already
+		fs.remove(config.dataDir.widgets + '/' + dbEntry[i], function(err) {
+			if(err) {
+				res.send('Error, could not find or delete widget.');
+			}
+		})
+	};
+
+	// remove the document form the DB
+	publications.remove({_id: id}, function(err) {
+		if(err) {
+			res.send('Error deleting paper: ' + err);
+		}
+		res.send('successfully deleted paper.');
+	});
 });
 
 /* Provide express route for the LaTeX Code commited by the user.
@@ -105,8 +193,11 @@ app.post('/addPaper', latexUpload, function(req, res) {
 	 */
 	function moveUploadToPaper(paperID, callback) {
 
+		var fileList;
 		// move each file (the latex doc + the utility files) to the paper dir
-		var fileList = req.files['files'];
+		if(req.files['files']) {
+			fileList = req.files['files'];
+		}
 		fileList.push(req.files['latexDocument'][0]);
 
 		async.each(fileList, function(file, cb) {
@@ -126,12 +217,11 @@ app.post('/addPaper', latexUpload, function(req, res) {
 	],
 	function(err, results) {
 		if (err) return console.error('could not save the new paper:\n%s', err);
-		res.redirect('/editor.html?id='+paperID);
+		res.redirect('/editor/' + paperID);
 		console.log('paper %s (%s) successfully uploaded and converted!',
 			texFile, paperID);
 	});
 });
-
 
 
 /*
@@ -232,6 +322,67 @@ app.get('/downloadPaper/:id/', function(req, res){
 });
 
 
+/**
+* @desc Upload a dataset, that is part of the publication.
+* 		The dataset is parsed and saved in the file system.
+*/
+app.post('/addDataset', widgetUpload, function(req, res) {
+	
+	//get the file extension of the uploaded file
+	var fileExt = req.file.filename.split('.').pop().toLowerCase();
+	
+	//create a DB entry for the dataset
+	var uploadedWidget = new widget({
+		publicationID: req.body.publication,
+		caption: req.body.caption,
+		fileType: fileExt,
+		widgetType: req.body.type
+	});
+
+	var widgetID = uploadedWidget._id
+	var filename = req.file.filename;
+	var movePath = config.dataDir.papers + '/' + req.body.publication + '/datasets/';
+
+	/**
+	* @desc Helper function, that calls the script to parse the given file to a widget
+	*/
+	function useWidgetScript(file, callback) {
+
+		if(uploadedWidget.widgetType == 'map') {
+			widgets.map(movePath + filename, config.dataDir.widgets + '/' + widgetID, function(err) {
+				if(err) console.log(err);
+			});
+		}
+		else if(uploadedWidget.widgetType == 'timeseries') {
+			widgets.timeseries(movePath + filename, config.dataDir.widgets + '/' + widgetID + '.html');
+		}
+		else {
+			console.error('The file can not be parsed to a widget');
+			return callback('Error filetype not available');
+		}
+		callback(null);
+	};
+	
+	//perform task in an asynchronous series, one after another
+	async.series([
+		//move the file to the paperDir of the related paper
+		async.apply(fs.move, req.file.path, movePath + filename, {clobber: true}),
+		//start the conversion of the dataset for any format
+		async.apply(useWidgetScript, filename),
+		//save the DB entry for the file.
+		async.apply(uploadedWidget.save),
+		//save the widget in the widgets-array of the publication
+		//async.apply(publications.update, {_id: req.body.publication}, {$push: {'widgets': widgetID}}, {})
+		function(callback) {
+			publications.update( {_id: req.body.publication}, {$push: {'widgets': widgetID}}, {}, callback);
+		}
+	],
+	function(err, results) {
+		if(err) return console.error('Could not save the new widget:\n%s', err)
+		res.send(widgetID)
+		console.log('Widget %s (%s) successfully created and saved.', filename, widgetID);
+	});
+});
 
 
 /* serve the static pages of the site under '/' */
@@ -246,13 +397,6 @@ function loggedIn(req, res, next) {
     if (req.user) {
         next();
     } else {
-		res.sendfile('/index.html')
-//         res.redirect('/');
+		res.redirect('/');
     }
 }
-
-app.use('/editor', loggedIn, function(req,res,next){
-
-	res.sendfile('/editor.html');
-
-});

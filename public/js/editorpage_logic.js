@@ -1,7 +1,7 @@
 "use strict";
 
-// get the paperid from the URL query (slice(4) for '?id=')
-var paperID = window.location.search.slice(4);
+// get the paperid from the URL query
+var paperID = window.location.pathname.split('/').pop();
 
 $(document).ready(function() {
 	// load the paper into the iframe

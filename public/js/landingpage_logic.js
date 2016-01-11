@@ -126,7 +126,7 @@ $('#cancelButton').click(function(){
  * @param tablerow from the paper-table
  */
 function loadPaper(tablerow) {
-	var url = 'http://' + window.location.host + '/paper.html?id=';
+	var url = 'http://' + window.location.host + '/paper/';
 	window.location = url + $(tablerow).data('id');
 }
 
