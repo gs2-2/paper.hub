@@ -6,7 +6,7 @@ $(document).ready(function() {
 	$.ajax({
 		type: 'GET',
 		dataType: 'json',
-		url: 'http://' + window.location.host + '/getPaperList',
+		url: 'https://' + window.location.host + '/getPaperList',
 		success: function(papers, textStatus) {
 			// fill the table with publications
 			for (var i = 0; i < papers.length; i++) {
@@ -36,7 +36,7 @@ $(document).ready(function() {
  * @param tablerow from the paper-table
  */
 function loadPaper(tablerow) {
-	var url = 'http://' + window.location.host + '/paper.html?id=';
+	var url = 'https://' + window.location.host + '/paper.html?id=';
 	window.location = url + $(tablerow).data('id');
 }
 

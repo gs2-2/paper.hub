@@ -34,3 +34,5 @@ public/vendor
 
 # Should not be Public
 oauth_keys.js
+certificate.pem
+private.key

@@ -74,8 +74,6 @@ module.exports = function(app, mongo, express){
 	    callbackURL: "http://127.0.0.1:8080/auth/google/callback"
 	  },
 		  function(accessToken, refreshToken, profile, done) {
-			
-			console.log(profile);		   
 
 	        mongo.models.users.findOne({
 	            'providerID': profile.id,
