@@ -16,3 +16,20 @@ $(document).ready(function() {
 function iframeResize(iframe){
 	iframe.height = iframe.contentWindow.document.body.scrollHeight + "px";
 }
+
+/**
+ * @desc delete the uploaded files (and redirect to the landingpage)
+ */
+function deleteFiles(){
+	$.ajax({
+		type: 'DELETE',
+		url: '/deletePaperWhileEdit/' + paperID,
+		success: function(res, bla){
+			window.location = "/"
+		},
+		error: function(xhr, textStatus, errorThrown) {
+			console.error('%s: unable to get paper data: %s',
+				textStatus, errorThrown);
+		}
+	});
+}

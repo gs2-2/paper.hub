@@ -190,6 +190,33 @@ app.delete('/deletePaper/:id', loggedIn, function(req, res) {
 	});
 });
 
+/**
+ * @desc Delete the publication when editprocess is canceled
+ *	(Widgets are not deleted!)
+ */
+app.delete('/deletePaperWhileEdit/:id', loggedIn, function(req, res) {
+
+	//save the id from the URL
+	var id = req.params.id;
+
+	//remove the dir from the file system
+	fs.remove(config.dataDir.papers + '/' + id, function(err) {
+		if(err) {
+			res.send('Error, could not find or delete directory.');
+		}
+	});
+
+	var dbEntry;
+
+	// remove the document form the DB
+	publications.remove({_id: id}, function(err) {
+		if(err) {
+			res.send('Error deleting paper: ' + err);
+		}
+		res.send('successfully deleted paper.');
+	});
+});
+
 /* Provide express route for the LaTeX Code commited by the user.
    Uploaded Latex file is converted to HTML and saved in FS and DB */
 app.post('/addPaper', latexUpload, loggedIn, function(req, res) {
