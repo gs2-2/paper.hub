@@ -3,6 +3,11 @@
  */
 
 
+
+html, body {
+    height: 100%;
+}
+
 #intro{
     margin-top: 80px;
 }
@@ -36,6 +41,12 @@
     #intro{
         margin-top: 160px
     }
+}
+
+.page{
+    min-height: 100%;
+    margin: 0 auto;
+    position: relative;
 }
 
 .inputTable{

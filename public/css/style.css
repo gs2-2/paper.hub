@@ -58,6 +58,7 @@ table{
     -moz-transition: opacity 400ms ease-in;
     transition: opacity 400ms ease-in;
     pointer-events: none;
+    overflow: auto;
 }
 
 .modalDialog:target {
@@ -92,7 +93,10 @@ table{
     width: 100%;
     position : absolute;
     bottom : 0;
-    height : 25px;
+    margin-bottom: 0;
+    padding-top: 5px;
+    height : 30px;
+    background-color: #E6E6E6;
 }
 
 .baseboard .container > a{
