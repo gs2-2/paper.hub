@@ -95,7 +95,6 @@ function validateForm() {
  */
 function escapeHtml(string) {
     var entityMap = {
-        "&": "&amp;",
         "<": "&lt;",
         ">": "&gt;",
         '"': '&quot;',
@@ -103,7 +102,7 @@ function escapeHtml(string) {
         "/": '&#x2F;'
     };
 
-    return String(string).replace(/[&<>"'\/]/g, function (s) {
+    return String(string).replace(/[<>"'\/]/g, function (s) {
         return entityMap[s];
     });
 }

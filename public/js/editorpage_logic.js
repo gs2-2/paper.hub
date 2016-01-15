@@ -7,7 +7,7 @@ $(document).ready(function() {
 	paperFrame = document.getElementById('paper-frame');
 
 	// load the paper into the iframe
-	$('#paper-frame').attr('src', '/data/papers/' + paperID + '/html/' + paperID + '.html');
+	$(paperFrame).attr('src', '/data/papers/' + paperID + '/html/' + paperID + '.html');
 });
 
 /**
@@ -41,8 +41,6 @@ function addClickListeners(iframe) {
 	 * @desc append a div containing a form, where a new visualization can be created
 	 */
 	function insertVisSelector() {
-		// 'this' is the element clicked on
-
 		var div = $('<div>')
 			.addClass('visualization-selector')
 			.attr('id', 'visual-' + visualCounter++)
@@ -53,6 +51,11 @@ function addClickListeners(iframe) {
 			.css('border-radius', '4px')
 			.css('background-color', '#EEE');
 		var form = $('<form>').appendTo(div);
+		// bind submit handler to form & prevent native submit
+		$(form).on('submit', function(e) {
+		    e.preventDefault();
+		    $(this).ajaxSubmit();
+		});
 		$('<p><b>Please choose what type of visualization you want to create.</b></p>')
 			.css('margin-top', '0')
 			.appendTo(form);
@@ -66,17 +69,11 @@ function addClickListeners(iframe) {
 			+ '.geojson,.json,.geojson,.Rdata"/></p>').appendTo(form);
 		$('<p>optional caption: <input name="caption" type="text"/></p>').appendTo(form);
 		$('<button type="button">remove this visualization</button>')
-			.click(function() {
-				// TODO: remove tablerow in sidebar
-				$(this).parent().parent().remove(); // remove div
-			})
+			.click(function() { $(this).parent().parent().remove(); })
 			.appendTo(form);
 
 		// finally append the placeholder after the clicked <p>
-		$(this).after(div);
-
-		// TODO: add tablerow to sidebar
-		// $('#widget-list').append( ... );
+		$(this).after(div); // 'this' is the element clicked on
 
 		// increase paper iframe height accordingly
 		iframeResize(paperFrame);
@@ -88,28 +85,54 @@ function addClickListeners(iframe) {
  */
 function uploadDatasets() {
 	// iterate over all visualization placeholders in the iframe and submit them using ajax
-	var forms = paperFrame.contentWindow.document.forms;
+	var forms = paperFrame.contentWindow.document.forms,
+		widgetIDs = [];
 
+	// submit all form using ajax, one by one
 	async.eachSeries(forms, function(form, done) {
-		// TODO: validate form
+		$(form).ajaxSubmit({
+			beforeSubmit: function validate(fields, form, options) {
+				// TODO: check if all required fields are filled
+				//return false; // validation not successful
+				return true; // validation successful
+			},
+			success: function(id, status) {
+				if (status != 'success') return done(status);
+				widgetIDs.push(id);
+				done(null);
+			},
+			error: done,
+			data: { publication: paperID },
+			dataType: 'json',
+			type: 'POST',
+			url: '/addDataset'
+		});
 
-		// TODO: submit form with this jquery addon, as this is the cleanest way of
-		// submitting forms with fileinputs using ajax.
-		// http://jquery.malsup.com/form/
-		// return recieved ID to callback
-
-	}, function(err, results) {
-		if (err) return console.error('couldnt upload all datasets: %s', err);
+	}, function(err) {
+		if (err) return console.error('couldnt upload all datasets: %s', JSON.stringify(err));
 
 		// replace each .vis-selector with an iframe pointing to the newly created widget
-		for (var i = 0; i < forms.length; i++) {
-			var id = results[i],
-			    div = $(forms[i].parentElement);
-			div.replaceWith('<iframe width="100%" height="300px" src="/data/widgets/'
-				+ id + '.html"></iframe>');
+		while (forms.length != 0) {
+			var i = forms.length - 1;
+			var id = widgetIDs[i];
+			var div = $(forms[i].parentElement);
+
+			div.replaceWith('<iframe style="margin-top: 15px" width="100%" height="420px" src="'
+				+ '/data/widgets/' + id + '.html"></iframe>'
+				// add a caption below the visualisation
+				+ '<div style="margin-left: 60px; margin-bottom: 15px">'
+				+ $(forms[i]).find('input[name="caption"]').fieldValue()[0] + '</div>');
 		}
 
-		// TODO: get html (only body?) of iframe & post it to server
-		// paperFrame.contentWindow.document.body.outerHTML
+		// remove added style on paragraphs
+		$(paperFrame).contents().find('.ltx_para')
+			.css('cursor', '')
+			.css('user-select', '');
+
+		// get html of iframe & post it to server
+		var paperHTML = $('#paper-frame').contents().find('html').html();
+		$.post('/updatePaperHTML/' + paperID, { html: paperHTML }, function(data, status) {
+			if (status == 'success') window.location = '/paper/' + paperID;
+		});
 	});
 }
