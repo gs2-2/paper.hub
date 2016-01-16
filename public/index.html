@@ -33,88 +33,88 @@
 
 <!-- Primary Page Layout
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-
-<!-- Navbar -->
-
-<div class="navbar">
-    <div style="overflow:auto;">
-        <div class="logo">
-            <img src="img/paperhub_logo2.svg" width="auto" height="47px">
-        </div>
-        <a id="login-btn" class="button" href="#openLoginModal">Login</a>
-    </div>
-</div>
-
-
-<!-- Modals -->
-<!-- Login-modal-->
-<div id="openLoginModal" class="modalDialog">
-    <div>
-        <h4>Login</h4>
-        <p>Please choose a service you want to log in with:</p></br>
-
-        <ul>
-            <a href="/auth/github">
-                <!-- usage is allowed: https://github.com/logos -->
-                <img class="login-provider" src="img/GitHub_logo_2013.svg" alt="GitHub"/>
-            </a>
-            <a href="/auth/google">
-                <img class="login-provider" src="img/Google_logo_2015.svg" alt="GitHub"/>
-            </a>
-            <a href="/auth/linkedin">
-                <img class="login-provider" src="img/linkedin_logo_2016.png" alt="GitHub"/>
-            </a>
-        </ul>
-
-        <a href="#close" title="Cancel" class="button cancel">Cancel</a>
-    </div>
-</div>
-
-<!-- Upload-modal -->
-<div id="openUploadModal" class="modalDialog">
-    <div>
-        <h4>Upload</h4>
-        <p><b>
-            To add a paper, select a LaTeX document and additional files the document depends on.
-            Lateron you will be able to upload datasets for embedded interactive visualisations.
-        </b></p>
-        <form name="form" class="input-group" method="POST" enctype="multipart/form-data" action="/addPaper" onsubmit="return validateForm()">
-            <table class="inputTable">
-                <tr>
-                    <td class="inputTable">TeX file*: </td>
-                    <td class="inputTable"><input id="latexDocument" name="latexDocument" type="file" accept=".tex" /></td>
-                </tr>
-                <tr>
-                    <td class="inputTable">Other files:</td>
-                    <td class="inputTable"><input id="files" name="files" type="file" multiple="" /></td>
-                </tr>
-            </table>
-            <b>Add the metadata:</b><br><br>
-            <table class="inputTable">
-                <tr>
-                    <td class="inputTable">Title*:</td>
-                    <td class="inputTable"><input id="title" name="title" type="text" size="45"/></td>
-                </tr>
-                <tr>
-                    <td class="inputTable">Abstract:</td>
-                    <td class="inputTable"><input id="abstract" name="abstract" type="text" size="45"/></td>
-                </tr>
-                <tr>
-                    <td class="inputTable">Author*:</td>
-                    <td class="inputTable"><input id="author" name="author" type="text" size="45"/></td>
-                </tr>
-            </table>
-            <div id="errorMessage" style="background-color: rgba(186, 0, 0, 0.56); border-radius: 8px; padding: 5px; margin-bottom: 5px; margin-right: 3%; display: none">Please add required information and data.</div>
-            <div id="successMessage" style="background-color: rgba(111, 229, 69, 0.56); border-radius: 8px; padding: 5px; margin-bottom: 5px; margin-right: 3%; display: none">Please wait, data is being uploaded.<img src="img/loadingSymbol.svg" alt="" height="35px" width="auto"></div>
-            <a id="cancelButton" href="#close" title="Cancel" class="button cancel" style="background-color: white">Cancel</a>
-            <input class="button" type="submit" value="Upload" style="float:right; background-color: #eeeeee"/>
-        </form>
-    </div>
-</div>
-
 <div class="page">
+    <!-- Navbar -->
+
+    <div class="navbar">
+        <div style="overflow:auto;">
+            <div class="logo">
+                <img src="img/paperhub_logo2.svg" width="auto" height="47px">
+            </div>
+            <a id="login-btn" class="button" href="#openLoginModal">Login</a>
+        </div>
+    </div>
+
+
+    <!-- Modals -->
+    <!-- Login-modal-->
+    <div id="openLoginModal" class="modalDialog">
+        <div>
+            <h4>Login</h4>
+            <p>Please choose a service you want to log in with:</p></br>
+
+            <ul>
+                <a href="/auth/github">
+                    <!-- usage is allowed: https://github.com/logos -->
+                    <img class="login-provider" src="img/GitHub_logo_2013.svg" alt="GitHub"/>
+                </a>
+                <a href="/auth/google">
+                    <img class="login-provider" src="img/Google_logo_2015.svg" alt="GitHub"/>
+                </a>
+                <a href="/auth/linkedin">
+                    <img class="login-provider" src="img/linkedin_logo_2016.png" alt="GitHub"/>
+                </a>
+            </ul>
+
+            <a href="#close" title="Cancel" class="button cancel">Cancel</a>
+        </div>
+    </div>
+
+    <!-- Upload-modal -->
+    <div id="openUploadModal" class="modalDialog">
+        <div>
+            <h4>Upload</h4>
+            <p><b>
+                To add a paper, select a LaTeX document and additional files the document depends on.
+                Lateron you will be able to upload datasets for embedded interactive visualisations.
+            </b></p>
+            <form name="form" class="input-group" method="POST" enctype="multipart/form-data" action="/addPaper" onsubmit="return validateForm()">
+                <table class="inputTable">
+                    <tr>
+                        <td class="inputTable">TeX file*: </td>
+                        <td class="inputTable"><input id="latexDocument" name="latexDocument" type="file" accept=".tex" /></td>
+                    </tr>
+                    <tr>
+                        <td class="inputTable">Other files:</td>
+                        <td class="inputTable"><input id="files" name="files" type="file" multiple="" /></td>
+                    </tr>
+                </table>
+                <b>Add the metadata:</b><br><br>
+                <table class="inputTable">
+                    <tr>
+                        <td class="inputTable">Title*:</td>
+                        <td class="inputTable"><input id="title" name="title" type="text" size="45"/></td>
+                    </tr>
+                    <tr>
+                        <td class="inputTable">Abstract:</td>
+                        <td class="inputTable"><input id="abstract" name="abstract" type="text" size="45"/></td>
+                    </tr>
+                    <tr>
+                        <td class="inputTable">Author*:</td>
+                        <td class="inputTable"><input id="author" name="author" type="text" size="45"/></td>
+                    </tr>
+                </table>
+                <div id="errorMessage" style="background-color: rgba(186, 0, 0, 0.56); border-radius: 8px; padding: 5px; margin-bottom: 5px; margin-right: 3%; display: none">Please add required information and data.</div>
+                <div id="successMessage" style="background-color: rgba(111, 229, 69, 0.56); border-radius: 8px; padding: 5px; margin-bottom: 5px; margin-right: 3%; display: none">Please wait, data is being uploaded.<img src="img/loadingSymbol.svg" alt="" height="35px" width="auto"></div>
+                <a id="cancelButton" href="#close" title="Cancel" class="button cancel" style="background-color: white">Cancel</a>
+                <input class="button" type="submit" value="Upload" style="float:right; background-color: #eeeeee"/>
+            </form>
+        </div>
+    </div>
+
+
     <!-- main container -->
-    <div class="container" style="padding-bottom: 50px">
+    <div class="container" style="padding-bottom: 50px;">
 
         <!-- introduction -->
         <div class="row">
@@ -124,7 +124,7 @@
             </div>
         </div>
 
-          <!-- paper table -->
+        <!-- paper table -->
         <div class="row" style="margin-top: 3%">
             <table class="u-full-width">
                 <thead><tr>
@@ -140,10 +140,8 @@
 
     <!-- footer -->
     <div class="baseboard">
-        <div class="container">
-            <a href="aboutUs.html">About us</a>
-            <a style="float: right">Made with &hearts; for Geosoftware II at IfGI WS 15/16 </a></br>
-        </div>
+        <a href="aboutUs.html" style="color: black;">About us</a>
+        <a style="float: right; color: black; margin-right: 30px;" >Made with &hearts; for Geosoftware II at IfGI WS 15/16 </a>
     </div>
 </div>
 

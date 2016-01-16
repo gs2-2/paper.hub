@@ -2,6 +2,88 @@
  * css editor page
  */
 
+
+body{
+    background-color: rgba(255, 255, 255, 0.29);
+}
+
+/** nav bar **/
+
+.navbar {
+    position: fixed;
+    z-index: 1;
+    background-color: rgba(106, 110, 112, 0.98);
+    width: 100%;
+    padding: 6px 6px 0 10px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12) !important;
+}
+
+.logo{
+    float:left;
+    overflow:hidden;
+}
+
+.button{
+    float:right;
+    margin-top: 5px;
+    margin-right: 25px;
+    color: rgba(106, 110, 112, 0.98);
+    background: #eeeeee;
+}
+
+.button > a{
+    color: rgba(106, 110, 112, 0.98);
+    text-decoration: none;
+}
+
+
+
+/** Modal**/
+
+.modalDialog {
+    position: fixed;
+    font-family: Helvetica, Arial, sans-serif;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(41, 41, 41, 0.8);
+    z-index: 99999;
+    opacity:0;
+    -webkit-transition: opacity 400ms ease-in;
+    -moz-transition: opacity 400ms ease-in;
+    transition: opacity 400ms ease-in;
+    pointer-events: none;
+    overflow: auto;
+}
+
+.modalDialog:target {
+    opacity:1;
+    pointer-events: auto;
+}
+
+.modalDialog > div {
+    width: 500px;
+    position: relative;
+    margin: 3% auto;
+    padding: 5px 20px 13px 20px;
+    border-radius: 10px;
+    background: #fff;
+}
+
+.modalDialog > div > h4 {
+    margin-top: 10px;
+}
+
+.cancel{
+    float: none;
+}
+
+
+/**
+ * css editor page
+ */
+
 /* wider container on the editor page*/
 .container{
     max-width: 1754px;

@@ -1,9 +1,18 @@
 /**
- * css for all pages
+ * css for all pages (except editorpage)
  */
+
+html{
+
+}
 
 body{
     background-color: rgba(255, 255, 255, 0.29);
+    min-height: 100%
+}
+
+.page{
+    min-height: 100%;
 }
 
 table{
@@ -14,10 +23,8 @@ table{
 /** nav bar **/
 
 .navbar {
-    position: fixed;
     z-index: 1;
     background-color: rgba(106, 110, 112, 0.98);
-    width: 100%;
     padding: 6px 6px 0 10px;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12) !important;
 }
@@ -80,7 +87,7 @@ table{
 }
 
 .cancel{
-	float: none;
+    float: none;
 }
 
 
@@ -90,19 +97,15 @@ table{
     border-top-style: solid;
     border-width: 2px;
     border-color: #6a6e70;
-    width: 100%;
-    position : absolute;
     bottom : 0;
-    margin-bottom: 0;
-    padding-top: 5px;
-    height : 30px;
+    padding: 5px 20px 8px 20px;
     background-color: #E6E6E6;
-}
-
-.baseboard .container > a{
     color: black;
+    overflow: auto;
 }
 
+
+/** login **/
 .login-provider {
     display: block;
     margin-left: auto;

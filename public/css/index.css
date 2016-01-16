@@ -3,16 +3,16 @@
  */
 
 
-
-html, body {
-    height: 100%;
-}
-
 #intro{
-    margin-top: 80px;
+    margin-top: 8%;
 }
 
 
+.inputTable{
+    padding: 0px 10px;
+    text-align: left;
+    border-bottom: 0px solid #E1E1E1;
+}
 
 /*  Upload-button with nice style, but without upload info
 #button-file {
@@ -36,21 +36,4 @@ html, body {
 }*/
 
 
-/* bigger margin at the top if there is a break in the top nav-bar */
-@media (max-width: 341px) {
-    #intro{
-        margin-top: 160px
-    }
-}
 
-.page{
-    min-height: 100%;
-    margin: 0 auto;
-    position: relative;
-}
-
-.inputTable{
-    padding: 0px 10px;
-    text-align: left;
-    border-bottom: 0px solid #E1E1E1;
-}
