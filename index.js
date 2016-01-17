@@ -214,7 +214,7 @@ app.post('/addPaper', latexUpload, loggedIn, function(req, res) {
 	 */
 	function moveUploadToPaper(paperID, callback) {
 
-		var fileList;
+		var fileList = [];
 		// move each file (the latex doc + the utility files) to the paper dir
 		if(req.files['files']) {
 			fileList = req.files['files'];
