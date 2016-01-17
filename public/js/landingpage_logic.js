@@ -76,17 +76,20 @@ function validateForm() {
         $('#author').css('background-color', 'white');
     }
 	if (showErrorMessage) {
-        $('#errorMessage').css('display', 'block');
+        $('#message').addClass('error').html('Please add all required information!');
         return false;
 	} else {
 		// show success message and hide errorMessage if all reqired fields are filled
-        $('#errorMessage').css('display', 'none');
-        $('#successMessage').css('display', 'block');
+        $('#message')
+            .removeClass('error').addClass('success')
+            .html('Please wait, data is being uploaded.'
+            + '<img src="/img/loadingSymbol.svg" alt="" height="35px" width="auto">');
 
         // escape htmlCode in the textFields
         document.forms["form"]["title"].value = escapeHtml(titleValue);
         document.forms["form"]["author"].value = escapeHtml(authorValue);
         document.forms["form"]["abstract"].value = escapeHtml(abstractValue);
+        return true;
     }
 }
 

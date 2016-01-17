@@ -51,11 +51,6 @@ function addClickListeners(iframe) {
 			.css('border-radius', '4px')
 			.css('background-color', '#EEE');
 		var form = $('<form>').appendTo(div);
-		// bind submit handler to form & prevent native submit
-		$(form).on('submit', function(e) {
-			e.preventDefault();
-			$(this).ajaxSubmit();
-		});
 		$('<p><b>Please choose what type of visualization you want to create.</b></p>')
 			.css('margin-top', '0')
 			.appendTo(form);
@@ -86,12 +81,12 @@ function addClickListeners(iframe) {
 function uploadDatasets() {
 	// iterate over all visualization placeholders in the iframe and submit them using ajax
 	var forms = paperFrame.contentWindow.document.forms,
-		widgetIDs = [];
+		widgetIDs = [],
+        valid = true;
 
 	// validation
-	var valid = true;
-	for(var form=0;form<forms.length;form++){
-		var val = forms[form].elements[1].value;
+	for(var form = 0; form < forms.length; form++) {
+		var val = forms[form].elements[1].value; // value of file input
 		if (val == ""){
 			$(forms[form]).css('background-color', '#CD5C5C');
 			valid = false;
@@ -99,11 +94,16 @@ function uploadDatasets() {
 			$(forms[form]).css('background-color', '#EEE');
 		}
 	}
-	if(valid == false){
-		alert('Please select a dataset in each upload-form.');
-		return false; // validation not successful
-	}else{
+	if (!valid) {
+		$('#message').addClass('error').html('Please select a dataset in each upload-form.');
+	} else {
 		// validation successful
+        // insert loading symbol
+        $('#message')
+            .removeClass('error').addClass('success')
+            .html('Please wait, data is being uploaded.<br>'
+            + '<img src="/img/loadingSymbol.svg" alt="" height="35px" width="auto">');
+        
 		// submit all form using ajax, one by one
 		async.eachSeries(forms, function(form, done) {
 			$(form).ajaxSubmit({
@@ -125,9 +125,9 @@ function uploadDatasets() {
 
 			// replace each .vis-selector with an iframe pointing to the newly created widget
 			while (forms.length != 0) {
-				var i = forms.length - 1;
-				var id = widgetIDs[i];
-				var div = $(forms[i].parentElement);
+				var i   = forms.length - 1,
+				    id  = widgetIDs[i],
+				    div = $(forms[i].parentElement);
 
 				div.replaceWith('<iframe style="margin-top: 15px" width="100%" height="420px" src="'
 					+ '/data/widgets/' + id + '.html"></iframe>'
