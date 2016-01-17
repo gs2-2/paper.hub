@@ -53,8 +53,8 @@ function addClickListeners(iframe) {
 		var form = $('<form>').appendTo(div);
 		// bind submit handler to form & prevent native submit
 		$(form).on('submit', function(e) {
-		    e.preventDefault();
-		    $(this).ajaxSubmit();
+			e.preventDefault();
+			$(this).ajaxSubmit();
 		});
 		$('<p><b>Please choose what type of visualization you want to create.</b></p>')
 			.css('margin-top', '0')
@@ -88,51 +88,64 @@ function uploadDatasets() {
 	var forms = paperFrame.contentWindow.document.forms,
 		widgetIDs = [];
 
-	// submit all form using ajax, one by one
-	async.eachSeries(forms, function(form, done) {
-		$(form).ajaxSubmit({
-			beforeSubmit: function validate(fields, form, options) {
-				// TODO: check if all required fields are filled
-				//return false; // validation not successful
-				return true; // validation successful
-			},
-			success: function(id, status) {
-				if (status != 'success') return done(status);
-				widgetIDs.push(id);
-				done(null);
-			},
-			error: done,
-			data: { publication: paperID },
-			dataType: 'json',
-			type: 'POST',
-			url: '/addDataset'
-		});
-
-	}, function(err) {
-		if (err) return console.error('couldnt upload all datasets: %s', JSON.stringify(err));
-
-		// replace each .vis-selector with an iframe pointing to the newly created widget
-		while (forms.length != 0) {
-			var i = forms.length - 1;
-			var id = widgetIDs[i];
-			var div = $(forms[i].parentElement);
-
-			div.replaceWith('<iframe style="margin-top: 15px" width="100%" height="420px" src="'
-				+ '/data/widgets/' + id + '.html"></iframe>'
-				// add a caption below the visualisation
-				+ '<div style="margin-left: 60px; margin-bottom: 15px">'
-				+ $(forms[i]).find('input[name="caption"]').fieldValue()[0] + '</div>');
+	// validation
+	var valid = true;
+	for(var form=0;form<forms.length;form++){
+		var val = forms[form].elements[1].value;
+		if (val == ""){
+			$(forms[form]).css('background-color', '#CD5C5C');
+			valid = false;
+		} else {
+			$(forms[form]).css('background-color', '#EEE');
 		}
+	}
+	if(valid == false){
+		alert('Please select a dataset in each upload-form.');
+		return false; // validation not successful
+	}else{
+		// validation successful
+		// submit all form using ajax, one by one
+		async.eachSeries(forms, function(form, done) {
+			$(form).ajaxSubmit({
+				success: function(id, status) {
+					if (status != 'success') return done(status);
+					widgetIDs.push(id);
+					done(null);
+					console.log('done');
+				},
+				error: done,
+				data: { publication: paperID },
+				dataType: 'json',
+				type: 'POST',
+				url: '/addDataset'
+			});
 
-		// remove added style on paragraphs
-		$(paperFrame).contents().find('.ltx_para')
-			.css('cursor', '')
-			.css('user-select', '');
+		}, function(err) {
+			if (err) return console.error('couldnt upload all datasets: %s', JSON.stringify(err));
 
-		// get html of iframe & post it to server
-		var paperHTML = $('#paper-frame').contents().find('html').html();
-		$.post('/updatePaperHTML/' + paperID, { html: paperHTML }, function(data, status) {
-			if (status == 'success') window.location = '/paper/' + paperID;
+			// replace each .vis-selector with an iframe pointing to the newly created widget
+			while (forms.length != 0) {
+				var i = forms.length - 1;
+				var id = widgetIDs[i];
+				var div = $(forms[i].parentElement);
+
+				div.replaceWith('<iframe style="margin-top: 15px" width="100%" height="420px" src="'
+					+ '/data/widgets/' + id + '.html"></iframe>'
+						// add a caption below the visualisation
+					+ '<div style="margin-left: 60px; margin-bottom: 15px">'
+					+ $(forms[i]).find('input[name="caption"]').fieldValue()[0] + '</div>');
+			}
+
+			// remove added style on paragraphs
+			$(paperFrame).contents().find('.ltx_para')
+				.css('cursor', '')
+				.css('user-select', '');
+
+			// get html of iframe & post it to server
+			var paperHTML = $('#paper-frame').contents().find('html').html();
+			$.post('/updatePaperHTML/' + paperID, { html: paperHTML }, function(data, status) {
+				if (status == 'success') window.location = '/paper/' + paperID;
+			});
 		});
-	});
+	}
 }
