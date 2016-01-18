@@ -216,10 +216,10 @@ app.post('/addPaper', latexUpload, loggedIn, function(req, res) {
 
 		var fileList = [];
 		// move each file (the latex doc + the utility files) to the paper dir
-		if(req.files['files']) {
+		if(req.files['files'] && req.files['files'].indexOf(req.files['latexDocument'][0]) != -1) {
 			fileList = req.files['files'];
 		}
-		else if(req.file['files'].some(req.files['latexDocument'][0]) == false) {
+		else if(req.files['files']) {
 			fileList.push(req.files['latexDocument'][0]);
 		}
 		else {
