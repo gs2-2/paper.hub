@@ -1,23 +1,27 @@
 /**
- * css for all pages
+ * css for all pages (except editorpage)
  */
+
+html{
+    height: 100%;
+}
 
 body{
     background-color: rgba(255, 255, 255, 0.29);
+    height: 100%;
+    margin:0;
+    padding:0;
 }
 
 table{
     border-bottom: 1px solid #acacac;
 }
 
-
 /** nav bar **/
 
 .navbar {
-    position: fixed;
     z-index: 1;
     background-color: rgba(106, 110, 112, 0.98);
-    width: 100%;
     padding: 6px 6px 0 10px;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12) !important;
 }
@@ -58,6 +62,7 @@ table{
     -moz-transition: opacity 400ms ease-in;
     transition: opacity 400ms ease-in;
     pointer-events: none;
+    overflow: auto;
 }
 
 .modalDialog:target {
@@ -79,26 +84,11 @@ table{
 }
 
 .cancel{
-	float: none;
+    float: none;
 }
 
 
-
-/** baseboard **/
-.baseboard {
-    border-top-style: solid;
-    border-width: 2px;
-    border-color: #6a6e70;
-    width: 100%;
-    position : absolute;
-    bottom : 0;
-    height : 25px;
-}
-
-.baseboard .container > a{
-    color: black;
-}
-
+/** login **/
 .login-provider {
     display: block;
     margin-left: auto;

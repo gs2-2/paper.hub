@@ -29,27 +29,21 @@ util.createPath([config.dataDir.papers, config.dataDir.widgets, config.uploadDir
 	}
 });
 
+// SSL Integration, if enabled in config. must be run before app.listen()
+if (config.enableHttps) {
+	require('https').createServer({
+		key: fs.readFileSync('private.key'),
+		cert: fs.readFileSync('certificate.pem')
+	}, app).listen(config.httpsPort);
 
-
-
-/* SSL Integration */
-
-var https = require('https');
-var httpsServer = https.createServer({
-	key: fs.readFileSync('private.key'),
-	cert: fs.readFileSync('certificate.pem')
-}, app).listen(config.httpsPort);
-
-/* Redirect all traffic over :8080 to SSL Port */
-// TODO: generate SSL cert in installscript
-// TODO: move httpsPort to config.js
-
-app.set('port_https', config.httpsPort);
-// Secure traffic only
-app.all('*', function(req, res, next){
- 	if (req.secure) return next();
-	res.redirect("https://" + req.hostname + ":" + config.httpsPort + req.url);
-});
+	/* Redirect all traffic over SSL */
+	app.set('port_https', config.httpsPort);
+	app.all('*', function(req, res, next){
+		if (req.secure) return next();
+		res.redirect("https://" + req.hostname + ":" + config.httpsPort + req.url);
+	});
+	console.log('https server now listening on port ' + config.httpsPort);
+}
 
 /* connect to mongoDB & launch express webserver */
 mongo.connect(
@@ -68,7 +62,6 @@ mongo.connect(
 		});
 	}
 );
-
 
 //set the destination of the upload and the file-rename function
 var storage = multer.diskStorage({
@@ -182,6 +175,33 @@ app.delete('/deletePaper/:id', loggedIn, function(req, res) {
 			}
 		})
 	};
+
+	// remove the document form the DB
+	publications.remove({_id: id}, function(err) {
+		if(err) {
+			res.send('Error deleting paper: ' + err);
+		}
+		res.send('successfully deleted paper.');
+	});
+});
+
+/**
+ * @desc Delete the publication when editprocess is canceled
+ *	(Widgets are not deleted!)
+ */
+app.delete('/deletePaperWhileEdit/:id', loggedIn, function(req, res) {
+
+	//save the id from the URL
+	var id = req.params.id;
+
+	//remove the dir from the file system
+	fs.remove(config.dataDir.papers + '/' + id, function(err) {
+		if(err) {
+			res.send('Error, could not find or delete directory.');
+		}
+	});
+
+	var dbEntry;
 
 	// remove the document form the DB
 	publications.remove({_id: id}, function(err) {

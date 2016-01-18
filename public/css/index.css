@@ -2,13 +2,35 @@
  * css landing page
  */
 
+body{
+    overflow-x: hidden;
+}
 
 #intro{
-    margin-top: 80px;
+    margin-top: 8%;
 }
 
 
+.inputTable{
+    padding: 0px 10px;
+    text-align: left;
+    border-bottom: 0px solid #E1E1E1;
+}
 
+
+/** baseboard **/
+.baseboard {
+    width:100%;
+    position: absolute;
+    border-top-style: solid;
+    border-width: 2px;
+    border-color: #6a6e70;
+    bottom : 0;
+    padding: 5px 20px 8px 20px;
+    background-color: #E6E6E6;
+    color: black;
+    overflow: auto;
+}
 /*  Upload-button with nice style, but without upload info
 #button-file {
     color: #fff;
@@ -31,15 +53,4 @@
 }*/
 
 
-/* bigger margin at the top if there is a break in the top nav-bar */
-@media (max-width: 341px) {
-    #intro{
-        margin-top: 160px
-    }
-}
 
-.inputTable{
-    padding: 0px 10px;
-    text-align: left;
-    border-bottom: 0px solid #E1E1E1;
-}

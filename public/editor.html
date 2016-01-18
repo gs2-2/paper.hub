@@ -21,7 +21,6 @@
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <link rel="stylesheet" href="/vendor/skeleton/css/normalize.css">
     <link rel="stylesheet" href="/vendor/skeleton/css/skeleton.css">
-    <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/editor.css">
 
     <!-- JS includes
@@ -33,8 +32,7 @@
 
     <!-- Favicon
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <link rel="icon" type="image/png" href="/img/paperhub_favicon.svg">
-
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
 </head>
 <body>
 
@@ -48,12 +46,19 @@
         <div class="logo">
             <img src="/img/paperhub_logo2.svg" width="auto" height="47px">
         </div>
-        <div class='button' >
-            <a>Logout</a> <!-- todo: logout-functionality -->
-        </div>
+        <a href="#openCancelModal" class="button">Cancel</a>
     </div>
 </div>
 
+<!-- Login-modal-->
+<div id="openCancelModal" class="modalDialog">
+    <div>
+        <p>Are you sure you want to cancel and delete all uploaded files?</p></br>
+
+        <button type="button" onclick="deleteFiles()">Yes</button>
+        <a href="#close" class="button cancel">No</a>
+    </div>
+</div>
 
 <!-- main container -->
 <div class="container">
