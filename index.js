@@ -13,7 +13,8 @@ var async   = require('async');
 var express = require('express');
 var multer  = require('multer');
 var fs      = require('fs-extra');
-var ZipZipTop = require('zip-zip-top');
+var bodyParser = require('body-parser');
+
 
 var app = express();
 var publications = mongo.models.publications;
@@ -91,6 +92,7 @@ var latexUpload = upload.fields([{
 }]);
 
 var widgetUpload = upload.single('dataset');
+var htmlUpload = bodyParser.urlencoded({ extended: true, limit: '4mb' });
 
 
 /**
@@ -244,59 +246,24 @@ app.post('/addPaper', latexUpload, loggedIn, function(req, res) {
 	});
 });
 
-
-/*
- * @desc zips the folder where uploaded files are stored
- * @param id the id of publication
+/**
+ * @desc accepts a html string, wich replaces the body of a given papers' html
+ *       also creates / updates the zip package of the paper
  */
-function zipIt(id){
-	// set path of local folders
-	var localpath = config.dataDir.papers + '/' + id;
+app.post('/updatePaperHTML/:id/', loggedIn, htmlUpload, function(req, res){
+	var paperId   = req.params.id,
+	    paperPath = config.dataDir.papers + '/' + paperId + '/html/' + paperId + '.html',
+	    paperHTML = '<!DOCTYPE html><html>' + req.body.html + '</html>';
 
-	// set target path for .zip
-	var zippath = config.dataDir.papers + '/' + id + '.zip';
-
-	// new ZipZipTip instance
-	var zip = new ZipZipTop();
-
-	// define folder to be zipped
-	zip.zipFolder(localpath, function(err){
-
-		// if error occurs, make console.log
-		if (err) return console.log(err);
-
-		// write zip to target path
-		zip.writeToFile(zippath, function(err){
-			// if error occurs, make console.log
-			if (err) return console.log(err);
-
-			// debugging
-			console.log("Zipped folder: " + id/*need to add paperId*/);
-		});
-	});
-
-}
-
-/* Route for zipping a folder
-*  /:id paperId, equals folder name
-*/
-app.get('/zipFolder/:id/', function(req, res){
-	// variable to content of param :id
-	var paperId = req.params.id;
-
-	// define path of folder to be zipped for error handling
-	var zipPath = config.dataDir.papers + '/' + paperId;
-
-	// check if folder exists
-	fs.access(zipPath, fs.F_OK, function(err){
-		// if folder exists zip it
-		if (!err){
-			zipIt(paperId);
-			res.end();
-		} else {
-			// if folder does NOT exist send error
-			res.status(404).send('Folder  "' + paperId + '" not found!');
-		}
+	async.series([
+		// replace the papers html file with recieved data
+		async.apply(fs.writeFile, paperPath, paperHTML),
+		// zip the publication (again), so its available for download
+		async.apply(util.zipPaper, config.dataDir.papers, paperId)
+	],
+	function (err, results) {
+		if (err) res.status(500).send('unable to update the paper: %s', err);
+		res.send(paperId);
 	});
 });
 
@@ -317,7 +284,6 @@ app.get('/downloadPaper/:id/', function(req, res){
 		// if file found download it
 		if (!err){
 			// define as Download
-			//res.setHeader('Content-disposition', 'attachment; filename= ' + zipPath);
 			res.setHeader('Content-type', 'application-zip, application/octet-stream');
 
 			// start download
@@ -337,7 +303,7 @@ app.get('/downloadPaper/:id/', function(req, res){
 * @desc Upload a dataset, that is part of the publication.
 * 		The dataset is parsed and saved in the file system.
 */
-app.post('/addDataset', widgetUpload, function(req, res) {
+app.post('/addDataset', loggedIn, widgetUpload, function(req, res) {
 
 	//get the file extension of the uploaded file
 	var fileExt = req.file.filename.split('.').pop().toLowerCase();
@@ -360,7 +326,7 @@ app.post('/addDataset', widgetUpload, function(req, res) {
 	function useWidgetScript(file, callback) {
 
 		if(uploadedWidget.widgetType == 'map') {
-			widgets.map(movePath + filename, config.dataDir.widgets + '/' + widgetID, function(err) {
+			widgets.map(movePath + filename, config.dataDir.widgets + '/' + widgetID + '.html', function(err) {
 				if(err) console.log(err);
 			});
 		}
@@ -406,6 +372,7 @@ function loggedIn(req, res, next) {
     if (req.user) {
         next();
     } else {
+		console.log('UNAUTHORIZED REQUEST TO %s FROM %s!', req.originalUrl, req.ip);
 		res.redirect('/');
     }
 }

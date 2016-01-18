@@ -6,6 +6,8 @@
 
 var fs    = require('fs-extra');
 var async = require('async');
+var Zip   = require('zip-zip-top');
+
 
 /**
  * @desc  checks if a path exists, and creates it if not
@@ -33,3 +35,23 @@ exports.newPaperDir = function(parentPath, UID, callback) {
 	];
 	exports.createPath(paths, callback);
 };
+
+/*
+ * @desc zips the folder where uploaded files are stored
+ * @param id the id of publication
+ * @param callback node style callback
+ */
+exports.zipPaper = function(parentPath, id, callback){
+	// set path of local folders
+	var localpath = parentPath + '/' + id;
+	// set target path for .zip
+	var zippath = parentPath + '/' + id + '.zip';
+
+	// zip the whole paper folder
+	var zip = new Zip();
+	zip.zipFolder(localpath, function(err){
+		if (err) return callback(err);
+		// write zip to target path
+		zip.writeToFile(zippath, callback);
+	});
+}
