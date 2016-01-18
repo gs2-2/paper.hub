@@ -204,12 +204,17 @@ app.post('/addPaper', latexUpload, loggedIn, function(req, res) {
 	 */
 	function moveUploadToPaper(paperID, callback) {
 
-		var fileList;
+		var fileList = [];
 		// move each file (the latex doc + the utility files) to the paper dir
-		if(req.files['files']) {
+		if(req.files['files'] && req.files['files'].indexOf(req.files['latexDocument'][0]) != -1) {
 			fileList = req.files['files'];
 		}
-		fileList.push(req.files['latexDocument'][0]);
+		else if(req.files['files']) {
+			fileList.push(req.files['latexDocument'][0]);
+		}
+		else {
+			fileList.push(req.files['latexDocument'][0]);
+		}
 
 		async.each(fileList, function(file, cb) {
 			fs.move(file.path, texPath + file.filename, {clobber: true}, cb);
