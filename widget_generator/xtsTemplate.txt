@@ -1,21 +1,21 @@
 <!doctype>
 <head>
-	<link rel="stylesheet" type="text/css" href="vendor/jquery-ui/themes/base/all.css">
-	<link rel="stylesheet" type="text/css" href="vendor/rickshaw/rickshaw.css">
-	<link rel="stylesheet" type="text/css" href="vendor/rickshaw/src/css/graph.css">
-	<link rel="stylesheet" type="text/css" href="vendor/rickshaw/src/css/detail.css">
-	<link rel="stylesheet" type="text/css" href="vendor/rickshaw/src/css/legend.css">
+	<link rel="stylesheet" type="text/css" href="/vendor/jquery-ui/themes/base/all.css">
+	<link rel="stylesheet" type="text/css" href="/vendor/rickshaw/rickshaw.css">
+	<link rel="stylesheet" type="text/css" href="/vendor/rickshaw/src/css/graph.css">
+	<link rel="stylesheet" type="text/css" href="/vendor/rickshaw/src/css/detail.css">
+	<link rel="stylesheet" type="text/css" href="/vendor/rickshaw/src/css/legend.css">
 
-	<script src="js/moment.js"></script>
-	<script src="vendor/rickshaw/vendor/d3.min.js"></script>
-	<script src="vendor/rickshaw/vendor/d3.layout.min.js"></script>
+	<script src="/vendor/moment/moment.js"></script>
+	<script src="/vendor/rickshaw/vendor/d3.min.js"></script>
+	<script src="/vendor/rickshaw/vendor/d3.layout.min.js"></script>
 
-	<script src="vendor/jquery/dist/jquery.min.js"></script>
-	<script src="vendor/jquery-ui/jquery-ui.min.js"></script>
+	<script src="/vendor/jquery/dist/jquery.min.js"></script>
+	<script src="/vendor/jquery-ui/jquery-ui.min.js"></script>
 
 
-	<script src="vendor/rickshaw/rickshaw.js"></script>
-	<script src="vendor/rickshaw/src/js/Rickshaw.Color.Palette.js"></script>
+	<script src="/vendor/rickshaw/rickshaw.js"></script>
+	<script src="/vendor/rickshaw/src/js/Rickshaw.Color.Palette.js"></script>
 	
 	<style>
 
@@ -118,15 +118,8 @@ var content = {
 	element: document.getElementById("chart"),
 	
 	
-	renderer: "area", /* replace "area" with "InserTypeHere" to put visualisation type into */
-	series:/*InsertValuesHere*/[{
-		data: [{x:'2010-06-14 14:55:00', y:19},{x:'2010-06-15 14:55:00', y:20},{x:'2010-06-16 14:55:00', y:13},{x:'2010-06-17 14:55:00', y:59},{x:'2010-06-18 14:55:00', y:55}],
-		name: "my series"
-	},
-	{
-		data: [{x:'2010-06-14 14:55:00', y:23},{x:'2010-06-15 14:55:00', y:13},{x:'2010-06-16 14:55:00', y:45},{x:'2010-06-17 14:55:00', y:35},{x:'2010-06-18 14:55:00', y:45}],
-		name: "my series 2"
-	}]
+	renderer: InsertTypeHere
+	series: InsertValuesHere
 	
 	
 };
@@ -153,6 +146,9 @@ function setFormat(){
 
 			/* overwrite x-values of each data */
 			content.series[j].data[k]["x"] = time;
+
+			var yValue = parseFloat(content.series[j].data[k].x);
+			content.series[j].data[k]["y"] = yValue;
 		}
 	}
 }
@@ -230,3 +226,4 @@ yAxis.render();
 </script>
 
 </body>
+

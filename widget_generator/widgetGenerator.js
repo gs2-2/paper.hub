@@ -28,12 +28,14 @@ exports.map = function (inPaths, outPath, callback) {
  * @desc  generates an interactive timeseries in an HTML file for the specified dataset
  * @param inPath   String absolute paths to the datasets
  * @param outPath  absolute path to the output HTML file
+ * @param type 	   one of the following ['area', 'line', 'bar', 'scatterplot']
  * @param callback function that is called after execution of the script with param 'error'
  */
-exports.timeseries = function (inPath, outPath, callback) {
+exports.timeseries = function (inPath, outPath, type, callback) {
 	// will contain the data from inPath as json
 	var jsonData = [];
-
+	// will contain the exit code from Rscript
+	var isXts;
 	// will contain the string for the graph-html template
 	var graphTemplate;
 	async.series([
@@ -41,7 +43,13 @@ exports.timeseries = function (inPath, outPath, callback) {
 		function(done) {
 			var cmd = 'Rscript ' + __dirname + '/R2csv.r'
 				+ ' --input "' + inPath + '" --output ' + inPath + '.csv';
-			cp.exec(cmd, done);
+			cp.exec(cmd, {}, function(error){
+				if (error && error.code == 12) isXts = false;
+				if (error && error.code == 11) isXts = true;
+				if (error && error.code ==13) done('invalid data type of file: ' inPath);
+				else return done(error);
+				done(null);
+			});
 		},
 		// read csv file & parse csv to json 2d array
 		function(done) {
@@ -55,18 +63,30 @@ exports.timeseries = function (inPath, outPath, callback) {
 		function (done) { fs.remove(inPath + '.csv', done); },
 		// load JS & HTML template as strings
 		function(done) {
-			fs.readFile(__dirname + '/graphTemplate.txt', function(err, data){
+			// check if xts or zoo template is needed and change path according to cases
+			var templatePath;
+			if (isXts){
+				templatePath = '/xtsTemplate.txt';
+			} else {
+				templatePath = '/zooTemplate.txt';
+			}
+
+			fs.readFile(__dirname + templatePath, function(err, data){
 				if (err) done(err);
 				graphTemplate = data.toString('utf8');
 				done(null);
 			});
 
 		}
-	], function(err) {
+	], function done(err) {
 		if (err) return callback(err);
 
+		// insert value for series type
+		var seriesType = 'var seriesType = ' + type;
+
+
 		//insert values into JS template
-		var addedValues = graphTemplate.replace('InsertValuesHere', jsonData);
+		var addedValues = graphTemplate.replace('InsertValuesHere', jsonData).replace('InsertTypeHere', seriesType);
 
 		// save HTML
 		fs.writeFile(outPath, addedValues, callback);
