@@ -146,70 +146,38 @@ app.get('/getPaperMetadata/:id', function(req, res) {
 app.delete('/deletePaper/:id', loggedIn, function(req, res) {
 
 	//save the id from the URL
-	var id = req.params.id;
+	var id = req.params.id,
+	    widgets;
 
-	//remove the dir from the file system
-	fs.remove(config.dataDir.papers + '/' + id, function(err) {
-		if(err) {
-			res.send('Error, could not find or delete directory.');
-		}
-	});
-
-	var dbEntry;
-
-	//find all widgets of the given publication
-	publications.findById(id, function(err, doc) {
-		if(err) {
-			res.send('Error: ' + err);
-		}
-		dbEntry = doc.widgets;
-	});
-
-	//delete all widgets, saved in the widgets array
-	for(var i = 0; i < dbEntry.length; i++) {
-
-		//remove widgets, that might be created already
-		fs.remove(config.dataDir.widgets + '/' + dbEntry[i], function(err) {
-			if(err) {
-				res.send('Error, could not find or delete widget.');
-			}
-		})
-	};
-
-	// remove the document form the DB
-	publications.remove({_id: id}, function(err) {
-		if(err) {
-			res.send('Error deleting paper: ' + err);
-		}
-		res.send('successfully deleted paper.');
-	});
-});
-
-/**
- * @desc Delete the publication when editprocess is canceled
- *	(Widgets are not deleted!)
- */
-app.delete('/deletePaperWhileEdit/:id', loggedIn, function(req, res) {
-
-	//save the id from the URL
-	var id = req.params.id;
-
-	//remove the dir from the file system
-	fs.remove(config.dataDir.papers + '/' + id, function(err) {
-		if(err) {
-			res.send('Error, could not find or delete directory.');
-		}
-	});
-
-	var dbEntry;
-
-	// remove the document form the DB
-	publications.remove({_id: id}, function(err) {
-		if(err) {
-			res.send('Error deleting paper: ' + err);
-		}
-		res.send('successfully deleted paper.');
-	});
+    async.series([
+        // find given publication and all widgets
+        function(done) {
+            publications.findById(id, function(err, doc) {
+                if(err) return done(err);
+                widgets = doc.widgets || [];
+                done(null);
+            });
+        },
+        // remove the paper from the file system
+        function(done) {
+            fs.remove(config.dataDir.papers + '/' + id, done);
+        },
+        //delete all widgets stored in the widgets array & remove DB entry
+        function(done) {
+            // remove widgets, that might be created already
+            for(var i = 0; i < widgets.length; i++) {
+                fs.remove(config.dataDir.widgets + '/' + widgets[i], function(err) {
+                    if (err) return done(err);
+                });
+            };
+                        
+            // remove the document form the DB
+            publications.remove({_id: id}, done);
+        },
+    ], function(err) {
+        if (err) console.error('error while deleting paper %s: %s', id, err);
+        res.send('');
+    });
 });
 
 /* Provide express route for the LaTeX Code commited by the user.

@@ -76,14 +76,12 @@ function validateForm() {
         $('#author').css('background-color', 'white');
     }
 	if (showErrorMessage) {
-        $('#message').addClass('error').html('Please add all required information!');
+        $('#errorMessage').css('display', 'block');
         return false;
 	} else {
-		// show success message and hide errorMessage if all reqired fields are filled
-        $('#message')
-            .removeClass('error').addClass('success')
-            .html('Please wait, data is being uploaded.'
-            + '<img src="/img/loadingSymbol.svg" alt="" height="35px" width="auto">');
+        // show success message and hide errorMessage if all reqired fields are filled
+        $('#errorMessage').css('display', 'none');
+        $('#successMessage').css('display', 'block');
 
         // escape htmlCode in the textFields
         document.forms["form"]["title"].value = escapeHtml(titleValue);

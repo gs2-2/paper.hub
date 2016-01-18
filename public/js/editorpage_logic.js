@@ -156,7 +156,7 @@ function uploadDatasets() {
 function deleteFiles(){
 	$.ajax({
 		type: 'DELETE',
-		url: '/deletePaperWhileEdit/' + paperID,
+		url: '/deletePaper/' + paperID,
 		success: function(res, bla){
 			window.location = "/"
 		},
