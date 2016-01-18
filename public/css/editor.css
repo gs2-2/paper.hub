@@ -145,3 +145,23 @@ nav{
         display: none;
     }
 }
+
+
+/** user feedback messages **/
+.message {
+    border-radius: 8px;
+    padding: 5px;
+    margin-bottom: 5px;
+    margin-right: 3%;
+    display: none;
+}
+
+.success {
+    background-color: rgba(111, 229, 69, 0.56);
+    display: block;
+}
+
+.error {
+    background-color: rgba(186, 0, 0, 0.56);
+    display: block;
+}
