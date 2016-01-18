@@ -219,7 +219,12 @@ app.post('/addPaper', latexUpload, loggedIn, function(req, res) {
 		if(req.files['files']) {
 			fileList = req.files['files'];
 		}
-		fileList.push(req.files['latexDocument'][0]);
+		else if(req.file['files'].some(req.files['latexDocument'][0]) == false) {
+			fileList.push(req.files['latexDocument'][0]);
+		}
+		else {
+			fileList.push(req.files['latexDocument'][0]);
+		}
 
 		async.each(fileList, function(file, cb) {
 			fs.move(file.path, texPath + file.filename, {clobber: true}, cb);
