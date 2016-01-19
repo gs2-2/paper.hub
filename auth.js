@@ -10,12 +10,18 @@ module.exports = function(app, mongo, express){
 	/* OAuth Key-File */
 	var config = require('./config.js');
 	var oauth_keys = require('./oauth_keys.js');
+	//var cookieParser = require('cookie-parser');
 	var session = require('express-session');
+	
+	//app.use(cookieParser(oauth_keys.session_secret.secret));
+	
+
 	app.use(session({
-		secret: oauth_keys.session_secret,
+		secret: oauth_keys.session_secret.secret,
 		resave: false,
 		saveUninitialized: false
 	}));
+
 
 	/* Passport & Login Strategies */
 	var passport = require('passport');
@@ -23,16 +29,15 @@ module.exports = function(app, mongo, express){
 	var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 	var LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
 
-
 	app.use(passport.initialize());
 	app.use(passport.session());
-
+	
 	/** GITHUB STRATEGY **/
 	passport.use(new GitHubStrategy({
 		clientID: oauth_keys.GITHUB_CLIENT_ID,
 		clientSecret: oauth_keys.GITHUB_CLIENT_SECRET,
-		callbackURL: 'http://' + config.hostname + ':' + config.httpPort
-			+ '/auth/github/callback'
+		callbackURL: 'https://' + config.hostname + ':' + config.httpsPort
+			+ '/auth/github/callback/'
 	},
 	function(accessToken, refreshToken, profile, done) {
 		//First we need to check if the user logs in for the first time
@@ -67,7 +72,8 @@ module.exports = function(app, mongo, express){
 	passport.use(new GoogleStrategy({
 		clientID: oauth_keys.GOOGLE_CLIENT_ID,
 		clientSecret: oauth_keys.GOOGLE_CLIENT_SECRET,
-		callbackURL: "http://127.0.0.1:8080/auth/google/callback"
+		callbackURL: 'https://' + config.hostname + ':' + config.httpsPort
+			+ '/auth/google/callback/'
 	},
 	function(accessToken, refreshToken, profile, done) {
 
@@ -107,7 +113,8 @@ module.exports = function(app, mongo, express){
 	passport.use(new LinkedInStrategy({
 		clientID: oauth_keys.LINKEDIN_KEY,
 		clientSecret: oauth_keys.LINKEDIN_SECRET,
-		callbackURL: "http://localhost:8080/auth/linkedin/callback",
+		callbackURL: 'https://' + config.hostname + ':' + config.httpsPort
+			+ '/auth/linkedin/callback/',
 		scope: ['r_emailaddress', 'r_basicprofile']
 	}, function(accessToken, refreshToken, profile, done) {
 		mongo.models.users.findOne({

@@ -32,7 +32,6 @@ $(document).ready(function() {
 		type: 'GET',
 		url: '/getAuthStatus',
 		success: function(data) {
-			console.log(data);
 			if(data === 'Auth successful'){
 				// transform the loginbutton to an "logout" button
 				$('#login-btn').text('Log Out');
