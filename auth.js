@@ -17,7 +17,7 @@ module.exports = function(app, mongo, express){
 	
 
 	app.use(session({
-		secret: oauth_keys.session_secret.secret,
+		secret: oauth_keys.session_secret,
 		resave: false,
 		saveUninitialized: false
 	}));
