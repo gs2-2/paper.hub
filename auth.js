@@ -10,11 +10,7 @@ module.exports = function(app, mongo, express){
 	/* OAuth Key-File */
 	var config = require('./config.js');
 	var oauth_keys = require('./oauth_keys.js');
-	//var cookieParser = require('cookie-parser');
-	var session = require('express-session');
-	
-	//app.use(cookieParser(oauth_keys.session_secret.secret));
-	
+	var session = require('express-session');		
 
 	app.use(session({
 		secret: oauth_keys.session_secret,
