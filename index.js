@@ -107,16 +107,14 @@ app.get('/editor/:id', loggedIn, function(req, res) {
 
 	//get the id from the request
 	var id = req.params.id;
-	var providerID;
+
 	// Check if you are the author and eligible to edit the paper
-	
 	publications.findById(id, function(err, doc) {
-        if(err) return done(err);
-    // if you're not the author of the paper you'll get a 403.
-    	if(req.user.providerID != doc.authorID){ 
+        if (err) return res.sendStatus(500);
+    	if (req.user.providerID != doc.authorID){
+			// if you're not the author of the paper you'll get a 403.
 	        res.sendStatus(403);
-	    }else{
-	//send the html file in the response
+	    } else {
 	    	res.sendFile(__dirname + '/public/editor.html');
 	    }
     });
@@ -166,7 +164,10 @@ app.delete('/deletePaper/:id', loggedIn, function(req, res) {
             publications.findById(id, function(err, doc) {
                 if(err) return done(err);
                 // if you're not the author of the paper you'll get a 403.
-                if(req.user.providerID != doc.authorID) res.sendStatus(403);
+                if(req.user.providerID != doc.authorID) {
+                	res.sendStatus(403);
+                	return done('requesting user & paper author dont match');
+            	}
                 widgets = doc.widgets || [];
                 done(null);
             });
@@ -183,7 +184,7 @@ app.delete('/deletePaper/:id', loggedIn, function(req, res) {
                     if (err) return done(err);
                 });
             };
-                        
+
             // remove the document form the DB
             publications.remove({_id: id}, done);
         },
@@ -220,10 +221,10 @@ app.post('/addPaper', latexUpload, loggedIn, function(req, res) {
 
 		var fileList = [];
 		// move each file (the latex doc + the utility files) to the paper dir
-		if(req.files['files'] && req.files['files'].indexOf(req.files['latexDocument'][0]) != -1) {
+		if (req.files['files'] && req.files['files'].indexOf(req.files['latexDocument'][0]) != -1) {
 			fileList = req.files['files'];
 		}
-		else if(req.files['files']) {
+		else if (req.files['files']) {
 			fileList.push(req.files['latexDocument'][0]);
 		}
 		else {
@@ -269,7 +270,7 @@ app.post('/updatePaperHTML/:id/', loggedIn, htmlUpload, function(req, res){
 		async.apply(util.zipPaper, config.dataDir.papers, paperId)
 	],
 	function (err, results) {
-		if (err) res.status(500).send('unable to update the paper: %s', err);
+		if (err) return res.status(500).send('unable to update the paper: %s', err);
 		res.send(paperId);
 	});
 });
@@ -301,8 +302,6 @@ app.get('/downloadPaper/:id/', function(req, res){
 			res.status(404).send('File not found');
 		}
 	});
-
-
 });
 
 
@@ -332,19 +331,18 @@ app.post('/addDataset', loggedIn, widgetUpload, function(req, res) {
 	*/
 	function useWidgetScript(file, callback) {
 
-		if(uploadedWidget.widgetType == 'map') {
-			widgets.map(movePath + filename, config.dataDir.widgets + '/' + widgetID + '.html', function(err) {
-				if(err) console.log(err);
-			});
+		if (uploadedWidget.widgetType == 'map') {
+			widgets.map(movePath + file, config.dataDir.widgets + '/' + widgetID + '.html', callback);
+		} else if (uploadedWidget.widgetType == 'timeseries') {
+			widgets.timeseries(
+				movePath + file,
+				config.dataDir.widgets + '/' + widgetID + '.html',
+				'line',
+				callback
+			);
+		} else {
+			return callback('filetype not available for %s', file);
 		}
-		else if(uploadedWidget.widgetType == 'timeseries') {
-			widgets.timeseries(movePath + filename, config.dataDir.widgets + '/' + widgetID + '.html');
-		}
-		else {
-			console.error('The file can not be parsed to a widget');
-			return callback('Error filetype not available');
-		}
-		callback(null);
 	};
 
 	//perform task in an asynchronous series, one after another
@@ -356,7 +354,6 @@ app.post('/addDataset', loggedIn, widgetUpload, function(req, res) {
 		//save the DB entry for the file.
 		async.apply(uploadedWidget.save),
 		//save the widget in the widgets-array of the publication
-		//async.apply(publications.update, {_id: req.body.publication}, {$push: {'widgets': widgetID}}, {})
 		function(callback) {
 			publications.update( {_id: req.body.publication}, {$push: {'widgets': widgetID}}, {}, callback);
 		}
