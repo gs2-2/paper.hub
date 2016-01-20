@@ -95,7 +95,7 @@ app.get('/paper/:id', function(req, res) {
 
 	//get the id from the request
 	var id = req.params.id;
-
+	
 	//send the html file
 	res.sendFile(__dirname + '/public/paper.html');
 });
@@ -107,9 +107,20 @@ app.get('/editor/:id', loggedIn, function(req, res) {
 
 	//get the id from the request
 	var id = req.params.id;
-
+	var providerID;
+	// Check if you are the author and eligible to edit the paper
+	
+	publications.findById(id, function(err, doc) {
+        if(err) return done(err);
+    // if you're not the author of the paper you'll get a 403.
+    	if(req.user.providerID != doc.authorID){ 
+	        res.sendStatus(403);
+	    }else{
 	//send the html file in the response
-	res.sendFile(__dirname + '/public/editor.html');
+	    	res.sendFile(__dirname + '/public/editor.html');
+	    }
+    });
+
 });
 
 /* return metadata about all stored papers */
@@ -144,7 +155,7 @@ app.get('/getPaperMetadata/:id', function(req, res) {
 * @desc Delete the DB-content of the publication
 */
 app.delete('/deletePaper/:id', loggedIn, function(req, res) {
-
+		
 	//save the id from the URL
 	var id = req.params.id,
 	    widgets;
@@ -154,6 +165,8 @@ app.delete('/deletePaper/:id', loggedIn, function(req, res) {
         function(done) {
             publications.findById(id, function(err, doc) {
                 if(err) return done(err);
+                // if you're not the author of the paper you'll get a 403.
+                if(req.user.providerID != doc.authorID) res.sendStatus(403);
                 widgets = doc.widgets || [];
                 done(null);
             });
@@ -189,6 +202,7 @@ app.post('/addPaper', latexUpload, loggedIn, function(req, res) {
 		title:    req.body.title,
 		abstract: req.body.abstract,
 		author:   req.body.author,
+		authorID: req.user.providerID,
 		publicationDate: new Date(),
 		widgets: [] //insert widgets, when they are generated after the upload
 	});

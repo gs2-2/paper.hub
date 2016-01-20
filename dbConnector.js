@@ -12,6 +12,7 @@ var publicationSchema = new mongoose.Schema({
 	title: String,
 	abstract: String,
 	author: String,
+	authorID: String,
 	publicationDate: Date,
 	widgets: [mongoose.Schema.Types.ObjectId]
 });
