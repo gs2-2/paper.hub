@@ -28,18 +28,19 @@ createCSV <- function(inputPath, outputPath){
     write.zoo(object, outputPath, row.names=FALSE, sep=",")
     
     # do quit code for xts
-    quit(11)
+    quit(save="no", status=11, runLast=FALSE)
     
   } else { # is of type zoo //check if index is of type number, check if #digits is 8, convert to date, else leave it as it is
     
     # check if index is of type number
     if (is.numeric(object[1,0])){
       
-      indexChar <- as.character(object[1,0])
-    
+      indexChar <- as.character(index(object[1,0]))
+      
       
       # check number of digits
       digits <- nchar(indexChar)
+      
     
     
       # if number = 8 -> date
@@ -50,7 +51,7 @@ createCSV <- function(inputPath, outputPath){
         write.zoo(object, outputPath, row.names=FALSE, sep=",")
         
         # do quit code for type date
-        quit(11)
+        quit(save="no", status=11, runLast=FALSE)
         
       } else {
         
@@ -59,15 +60,16 @@ createCSV <- function(inputPath, outputPath){
           write.zoo(object, outputPath, row.names=FALSE, sep=",")
           
           # do quit code for type number
-          quit(12)
+          quit(save="no", status=12, runLast=FALSE)
         }
     } else {
       
       # if index is not a number, data will not be accepted
-      quit(13)
+      quit(save="no", status=13, runLast=FALSE)
     }
   }
 }
 
 args <- commandArgs(asValues = TRUE)
 createCSV(args$input, args$output)
+#createCSV('/home/jan/Dokumente/paper.hub/data/papers/Meaningful/fig-8-zoo.Rdata', '/home/jan/Dokumente/paper.hub/data/widgets/test.csv')
