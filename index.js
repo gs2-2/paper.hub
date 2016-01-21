@@ -367,8 +367,8 @@ function loggedIn(req, res, next) {
 //-----------Delete-------------------------------
 app.get('/testR2Graph', function(req, res){
 	
-	var inpath = __dirname + '/data/papers/Zeitreihenbeispiel/fig01.Rdata';
-	var outpath = __dirname + '/data/widgets/fig01vers2.html';
+	var inpath = __dirname + '/data/papers/Meaningful/fig-8-zoo.Rdata';
+	var outpath = __dirname + '/data/widgets/fig8vers2.html';
 	var type = 'area';
 	widgets.timeseries(inpath, outpath, type, function(error, result){
 		if (error) console.log(error);

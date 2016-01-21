@@ -124,8 +124,9 @@ var content = {
 	
 };
 
+
 /*
-* @Desc changes format of xValues from Date into seconds and sets colorScheme
+* @Desc changes format of xValues and yValues from Date into seconds and sets colorScheme
 */
 function setFormat(){
 
@@ -134,22 +135,6 @@ function setFormat(){
 
 		/* set color for each timeseries */
 		content.series[j]["color"] = palette.color();
-
-		/* iterate over all data of series */
-		for(var k=0; k<content.series[0].data.length; k++){
-
-			/* convert string into dateformat */
-			var time = moment(content.series[j].data[k]["x"]);
-
-			/* convert dateformat into seconds */
-			var time = time._d.getTime()/1000;
-
-			/* overwrite x-values of each data */
-			content.series[j].data[k]["x"] = time;
-
-			var yValue = parseFloat(content.series[j].data[k].y);
-			content.series[j].data[k]["y"] = yValue;
-		}
 	}
 }
 

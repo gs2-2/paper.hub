@@ -7,6 +7,7 @@
 var cp = require('child_process');
 var fs = require('fs-extra');
 var async = require('async');
+var moment = require('moment');
 
 /**
  * @desc  generates an interactive map in an HTML file for the specified datasets
@@ -57,7 +58,7 @@ exports.timeseries = function (inPath, outPath, type, callback) {
 		function(done) {
 			fs.readFile(inPath + '.csv', function(err, data) {
 				if (err) done(err);
-				jsonData = csv2rickshaw(data.toString('utf8'));
+				jsonData = csv2rickshaw(data.toString('utf8'), isXts);
 				done(null);
 			});
 		},
@@ -96,9 +97,10 @@ exports.timeseries = function (inPath, outPath, type, callback) {
 /**
  * @desc    parses a string containing CSV data to a format accepted by rickshaw.js
  * @param   csv data as String
+ * @param   xts boolean which indicates if data is xts or zoo object. TRUE = xts, FALSE = zoo
  * @returns a rickshaw.js compatible json object
  */
- function csv2rickshaw(csv) {
+ function csv2rickshaw(csv, xts) {
  	// convert csv string to 2d json array
  	var csvMatrix = [];
  	var lines = csv.split('\n');
@@ -111,16 +113,41 @@ exports.timeseries = function (inPath, outPath, type, callback) {
  	// skip first column, as it contains the time index
  	// skip first row, as it contains the column names
  	var result = [];
- 	for (var col = 1; col < csvMatrix[0].length; col++) {
- 		// add a separate line for each column (aka measurement)
- 		var series = { data: [], name: String};
+ 	if(xts){
+	 	for (var col = 1; col < csvMatrix[0].length; col++) {
+	 		// add a separate line for each column (aka measurement)
+	 		var series = { data: [], name: String};
 
- 		for (var row = 1; row < csvMatrix.length; row++) {
- 			series.data.push( { x: csvMatrix[row][0], y: csvMatrix[row][col] } );
- 		}
- 		// add name attribute to series
- 		series.name = csvMatrix[0][col];
- 		result.push(series);
+	 		for (var row = 1; row < csvMatrix.length-1; row++) {
+	 			// convert x value into unix dateformat
+	 			var time = moment(csvMatrix[row][0]);
+
+	 			// convert dateformat into unix seconds
+	 			var seconds = time._d.getTime()/1000;
+
+	 			// push parsed values into var series	
+	 			series.data.push( { x: seconds, y: parseFloat(csvMatrix[row][col]) });	 			
+
+	 		}
+	 		// add name attribute to series
+	 		series.name = csvMatrix[0][col];
+	 		result.push(series);
+	 	}
+ 	} else {
+ 		for (var col = 1; col < csvMatrix[0].length; col++) {
+	 		// add a separate line for each column (aka measurement)
+	 		var series = { data: [], name: String};
+
+	 		for (var row = 1; row < csvMatrix.length-1; row++) {
+	 		
+	 			// push parsed values into var series
+	 			series.data.push( { x: parseFloat(csvMatrix[row][0]), y: parseFloat(csvMatrix[row][col]) });	 			
+
+	 		}
+	 		// add name attribute to series
+	 		series.name = csvMatrix[0][col];
+	 		result.push(series);
+	 	}
  	}
  	return result;
  }

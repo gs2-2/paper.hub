@@ -134,16 +134,6 @@ function setFormat(){
 
 		/* set color for each timeseries */
 		content.series[j]["color"] = palette.color();
-
-		/* iterate over all data of series */
-		for(var k=0; k<content.series[0].data.length; k++){
-
-			var xValue = parseFloat(content.series[j].data[k].x);
-			var yValue = parseFloat(content.series[j].data[k].y);
-			/* overwrite x-values of each data */
-			content.series[j].data[k]["x"] = xValue;
-			content.series[j].data[k]["y"] = yValue;
-		}
 	}
 }
 
