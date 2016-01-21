@@ -44,9 +44,11 @@ exports.timeseries = function (inPath, outPath, type, callback) {
 			var cmd = 'Rscript ' + __dirname + '/R2csv.r'
 				+ ' --input "' + inPath + '" --output ' + inPath + '.csv';
 			cp.exec(cmd, {}, function(error){
-				if (error && error.code == 12) isXts = false;
-				if (error && error.code == 11) isXts = true;
-				if (error && error.code ==13) done('invalid data type of file: ' inPath);
+				console.log(error.code);
+				console.log('type: ' + typeof error.code);
+				if (error && error.code == 12) {isXts = false; console.log('is here');}
+				else if (error && error.code == 11) isXts = true;
+				else if (error && error.code ==13) done('invalid data type of file: ' + inPath);
 				else return done(error);
 				done(null);
 			});
@@ -81,12 +83,9 @@ exports.timeseries = function (inPath, outPath, type, callback) {
 	], function done(err) {
 		if (err) return callback(err);
 
-		// insert value for series type
-		var seriesType = 'var seriesType = ' + type;
-
 
 		//insert values into JS template
-		var addedValues = graphTemplate.replace('InsertValuesHere', jsonData).replace('InsertTypeHere', seriesType);
+		var addedValues = graphTemplate.replace('InsertValuesHere', JSON.stringify(jsonData)).replace('InsertTypeHere', type);
 
 		// save HTML
 		fs.writeFile(outPath, addedValues, callback);
