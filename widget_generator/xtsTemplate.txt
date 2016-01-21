@@ -118,7 +118,7 @@ var content = {
 	element: document.getElementById("chart"),
 	
 	
-	renderer: InsertTypeHere
+	renderer: 'InsertTypeHere',
 	series: InsertValuesHere
 	
 	
@@ -147,7 +147,7 @@ function setFormat(){
 			/* overwrite x-values of each data */
 			content.series[j].data[k]["x"] = time;
 
-			var yValue = parseFloat(content.series[j].data[k].x);
+			var yValue = parseFloat(content.series[j].data[k].y);
 			content.series[j].data[k]["y"] = yValue;
 		}
 	}

@@ -100,7 +100,7 @@ var palette = new Rickshaw.Color.Palette({scheme: "munin"});
 	$('#colorwheel').click(function(){
 		console.log('in function wheelchanger');
 		palette = new Rickshaw.Color.Palette({scheme: "colorwheel"});
-		$('#graph').empty().append('<div id="chart"></div>');
+		$('#graph').empty().append('<div id="y_Axis"></div><div id="chart"></div><div id="x_Axis"></div>');
 		console.log(palette.scheme);
 		graph = new Rickshaw.Graph(content);
 		graph.render();
@@ -120,12 +120,8 @@ var content = {
 	
 	renderer: "area", /* replace "area" with "InserTypeHere" to put visualisation type into */
 	series:/*InsertValuesHere*/[{
-		data: [{x:'2010-06-14 14:55:00', y:19},{x:'2010-06-15 14:55:00', y:20},{x:'2010-06-16 14:55:00', y:13},{x:'2010-06-17 14:55:00', y:59},{x:'2010-06-18 14:55:00', y:55}],
+		data: [{x:2001, y:19},{x:2002,y:20},{x:2003, y:13},{x:2004, y:59}],
 		name: "my series"
-	},
-	{
-		data: [{x:'2010-06-14 14:55:00', y:23},{x:'2010-06-15 14:55:00', y:13},{x:'2010-06-16 14:55:00', y:45},{x:'2010-06-17 14:55:00', y:35},{x:'2010-06-18 14:55:00', y:45}],
-		name: "my series 2"
 	}]
 	
 	
@@ -146,19 +142,19 @@ function setFormat(){
 		for(var k=0; k<content.series[0].data.length; k++){
 
 			/* convert string into dateformat */
-			var time = moment(content.series[j].data[k]["x"]);
+			//var time = moment(content.series[j].data[k]["x"]);
 
 			/* convert dateformat into seconds */
 			var time = time._d.getTime()/1000;
 
 			/* overwrite x-values of each data */
 			content.series[j].data[k]["x"] = time;
-		}
+		}su
 	}
 }
 
 /* call function for formatting dataformat */
-setFormat();
+//setFormat();
 
 /* instantiate new Graph */
 var graph = new Rickshaw.Graph(content);
@@ -166,7 +162,7 @@ var graph = new Rickshaw.Graph(content);
 
 /*render Graph */
 graph.render();
-
+console.log(content.series);
 /* Create legend */
 var legend = new Rickshaw.Graph.Legend( {
 	graph: graph,
@@ -211,7 +207,7 @@ var hoverDetail = new Rickshaw.Graph.HoverDetail({
 //var time = new Rickshaw.Fixtures.Time();
 //var minutes = time.unit('year');
 */
-var xAxis = new Rickshaw.Graph.Axis.Time({
+var xAxis = new Rickshaw.Graph.Axis.X({
 	graph: graph
 /*	timeUnit: minutes */
 });
@@ -226,6 +222,8 @@ var yAxis = new Rickshaw.Graph.Axis.Y({
 });
 
 yAxis.render();
+
+
 
 </script>
 

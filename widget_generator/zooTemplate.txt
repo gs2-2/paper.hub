@@ -118,7 +118,7 @@ var content = {
 	element: document.getElementById("chart"),
 	
 	
-	renderer: InsertTypeHere
+	renderer: 'InsertTypeHere',
 	series: InsertValuesHere
 	
 	
@@ -188,7 +188,9 @@ var slider = new Rickshaw.Graph.RangeSlider({
 	element: document.getElementById("slider")
 })
 
+
 /* add Hover Details */
+
 var hoverDetail = new Rickshaw.Graph.HoverDetail({
 	graph: graph
 });

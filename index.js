@@ -366,13 +366,13 @@ function loggedIn(req, res, next) {
 
 //-----------Delete-------------------------------
 app.get('/testR2Graph', function(req, res){
-	var inpath = 'C:/Users/Jan/paper.hub/delete/meto.Rdata';
-	var outpath = 'C:/Users/Jan/paper.hub/delete';
-	var mytitle = 'test';
-	var filling = 'TRUE';
-	widget.R2Graph(inpath, outpath, mytitle, filling, function(err){
-		if (err) res.send('did not work:<br>' + err);
-		else res.redirect('/data/widgets/test.html');
+	
+	var inpath = __dirname + '/data/papers/Zeitreihenbeispiel/fig01.Rdata';
+	var outpath = __dirname + '/data/widgets/fig01vers2.html';
+	var type = 'area';
+	widgets.timeseries(inpath, outpath, type, function(error, result){
+		if (error) console.log(error);
+		res.send(result);
 	});
 });
 
