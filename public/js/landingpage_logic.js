@@ -127,3 +127,16 @@ $('#cancelButton').click(function(){
 function loadPaper(tablerow) {
 	window.location = '/paper/' + $(tablerow).data('id');
 }
+
+/**
+ * @desc prevent second scrollbar while uploadModal is shown
+ */
+onhashchange = function() {
+	var newHash = window.location.hash;
+	if (newHash == '#openLoginModal' || '#openUploadModal') {
+		$('body').css('overflow', 'hidden');
+	}
+	if (newHash == '#close') {
+		$('body').css('overflow', '');
+	}
+};
