@@ -43,6 +43,19 @@ $(document).ready(function() {
 		}
 	});
 
+
+	/**
+	 * @desc delete validation hints and input when cancel button is pressed
+	 */
+	$('#cancelButton').on('click', function(){ //todo tuts nicht, einfache lösung unten alles reinkopieren
+		$('#latexDocument').css('background-color', 'white').val('');
+		$('#files').val('');
+		$('#title').css('background-color', 'white').val('');
+		$('#abstract').val('');
+		$('#author').css('background-color', 'white').val('');
+		$('#errorMessage').css('display', 'none');
+	});
+
 });
 
 
@@ -106,19 +119,6 @@ function escapeHtml(string) {
         return entityMap[s];
     });
 }
-
-
-/**
- * @desc delete validation hints and input when cancel button is pressed
- */
-$('#cancelButton').click(function(){
-    $('#latexDocument').css('background-color', 'white').val('');
-    $('#files').val('');
-    $('#title').css('background-color', 'white').val('');
-    $('#abstract').val('');
-    $('#author').css('background-color', 'white').val('');
-    $('#errorMessage').css('display', 'none');
-});
 
 /**
  * @desc  loads the given paper page, when a tablerow was clicked
