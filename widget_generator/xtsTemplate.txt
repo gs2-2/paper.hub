@@ -16,6 +16,8 @@
 
 	<script src="/vendor/rickshaw/rickshaw.js"></script>
 	<script src="/vendor/rickshaw/src/js/Rickshaw.Color.Palette.js"></script>
+	<script src="/js/changeColor.js"></script>
+
 	
 	<style>
 
@@ -77,6 +79,18 @@
 		<div id="legend"></div>
 	</div>
 	<div id="color_chooser">
+		<form id="color_form" class="rickshaw_legend" style="height: 60px, width: 60px">
+			<h4>Choose color</h4>
+			<div id="renderer_form" class="toggler">
+				<input type="radio" name="color" id="munin" value="Munin" checked>
+				<label for="munin">Munin</label>
+				<input type="radio" name="color" id="colorwheel" value="Colorwheel">
+				<label for="colorwheel">Colorwheel</label>
+				<input type="radio" name="color" id="spectrum14" value="Spectrum14">
+				<label for="spectrum14">Spectrum14</label>
+			</div>
+		</form>
+		<!--
 		<div id="styles" class="rickshaw_legend" style="height: 60px;"><b>Style</b>
 			<ul class="ui-sortable">
 				<li id="munin" class="line ui-sortable-handle"><span class="label">Munin</span></li>
@@ -84,7 +98,7 @@
 				<li id="spectrum14" class="line ui-sortable-handle"><span class="label">Spectrum14</span></li>
 
 			</ul>
-		</div>
+		</div>-->
 	</div>
 	<div id="slider"></div>
 </div>
@@ -95,7 +109,7 @@
 /* define color schemes: colorwheel, munin, spectrum14 */
 var palette = new Rickshaw.Color.Palette({scheme: "munin"});
 
-/* test */
+/* test 
 
 	$('#colorwheel').click(function(){
 		console.log('in function wheelchanger');
@@ -208,6 +222,10 @@ var yAxis = new Rickshaw.Graph.Axis.Y({
 
 yAxis.render();
 
+var controls = new colorControls( {
+	element: document.querySelector('form'),
+	graph: graph
+});
 </script>
 
 </body>
