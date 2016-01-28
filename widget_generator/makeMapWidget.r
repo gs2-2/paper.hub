@@ -94,12 +94,14 @@ addSingleLayerRaster <- function(map, rasterbrick, doProjection) {
     	addTiles(group = "OSM (default)") %>%
     	addProviderTiles("Stamen.Toner", group = "Toner") %>%
     	addProviderTiles("Stamen.TonerLite", group = "Toner Lite") %>%
-	addProviderTiles("CartoDB.Positron", group = "Positron") %>%
+	    addProviderTiles("CartoDB.Positron", group = "Positron") %>%
+	    addProviderTiles("OpenTopoMap", group = "TopoMap") %>%
+
         # Layers control
         addLayersControl(
-          baseGroups = c("OSM (default)", "Toner", "Toner Lite", "Positron"),
+          baseGroups = c("OSM (default)", "Toner", "Toner Lite", "Positron", "TopoMap"),
           overlayGroups = c("geoTIFF"),
-          options = layersControlOptions(collapsed = FALSE)
+          options = layersControlOptions(collapsed = TRUE)
     )
 }
 
@@ -132,11 +134,12 @@ addMultiLayerRaster <- function(map, rasterbrick, doProjection) {
     	addProviderTiles("Stamen.Toner", group = "Toner") %>%
     	addProviderTiles("Stamen.TonerLite", group = "Toner Lite") %>%
         addProviderTiles("CartoDB.Positron", group = "Positron") %>%
+	    addProviderTiles("OpenTopoMap", group = "TopoMap") %>%
         # Layers control
         addLayersControl(
-          baseGroups = c("OSM (default)", "Toner", "Toner Lite", "Positron"),
+          baseGroups = c("OSM (default)", "Toner", "Toner Lite", "Positron", "TopoMap"),
           overlayGroups = c("geoTIFF"),
-          options = layersControlOptions(collapsed = FALSE)
+          options = layersControlOptions(collapsed = TRUE)
         )
 }
 
@@ -152,11 +155,12 @@ geoJSONLayer <- function(map, path) {
     addProviderTiles("Stamen.Toner", group = "Toner") %>%
     addProviderTiles("Stamen.TonerLite", group = "Toner Lite") %>%
     addProviderTiles("CartoDB.Positron", group = "Positron") %>%
+    addProviderTiles("OpenTopoMap", group = "TopoMap") %>%
     # Layers control
     addLayersControl(
-       baseGroups = c("OSM (default)", "Toner", "Toner Lite", "Positron"),
+       baseGroups = c("OSM (default)", "Toner", "Toner Lite", "Positron", "TopoMap"),
        overlayGroups = c("geoJSON"),
-       options = layersControlOptions(collapsed = FALSE)
+       options = layersControlOptions(collapsed = TRUE)
     )
 }
 
@@ -179,11 +183,12 @@ spLayer <- function(map, path) {
     addProviderTiles("Stamen.Toner", group = "Toner") %>%
     addProviderTiles("Stamen.TonerLite", group = "Toner Lite") %>%
     addProviderTiles("CartoDB.Positron", group = "Positron") %>%
+    addProviderTiles("OpenTopoMap", group = "TopoMap") %>%
     # Layers control
     addLayersControl(
-       baseGroups = c("OSM (default)", "Toner", "Toner Lite", "Positron"),
+       baseGroups = c("OSM (default)", "Toner", "Toner Lite", "Positron", "TopoMap"),
        overlayGroups = c("spObject"),
-       options = layersControlOptions(collapsed = FALSE)
+       options = layersControlOptions(collapsed = TRUE)
     )
 
 }
