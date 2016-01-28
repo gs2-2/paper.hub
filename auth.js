@@ -67,7 +67,7 @@ module.exports = function(app, mongo, express){
 	passport.use(new GoogleStrategy({
 		clientID: oauth_keys.GOOGLE_CLIENT_ID,
 		clientSecret: oauth_keys.GOOGLE_CLIENT_SECRET,
-		callbackURL: "http://127.0.0.1:8080/auth/google/callback"
+		callbackURL: "http://127.0.0.1:8080/auth/google/callback/"
 	},
 	function(accessToken, refreshToken, profile, done) {
 

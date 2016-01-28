@@ -313,7 +313,7 @@ app.post('/addDataset', loggedIn, widgetUpload, function(req, res) {
 	function useWidgetScript(file, callback) {
 
 		if(uploadedWidget.widgetType == 'map') {
-			widgets.map(movePath + filename, config.dataDir.widgets + '/' + widgetID + '.html', function(err) {
+			widgets.map(movePath + filename, config.dataDir.widgets + '/' + widgetID + '.html', 'area', function(err) {
 				if(err) console.log(err);
 			});
 		}
@@ -367,8 +367,9 @@ function loggedIn(req, res, next) {
 //-----------Delete-------------------------------
 app.get('/testR2Graph', function(req, res){
 	
-	var inpath = __dirname + '/data/papers/Meaningful/fig-8-zoo.Rdata';
-	var outpath = __dirname + '/data/widgets/fig8vers2.html';
+	//var inpath = __dirname + '/data/papers/Meaningful/fig-8-zoo.Rdata';
+	var inpath = __dirname + '/data/papers/test01-zeitreihenbeispiel/data/fig01.Rdata';
+	var outpath = __dirname + '/data/widgets/fig1xtsflot2.html';
 	var type = 'area';
 	widgets.timeseries(inpath, outpath, type, function(error, result){
 		if (error) console.log(error);

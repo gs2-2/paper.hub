@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>My test</title>
+	<script language="javascript" type="text/javascript" src="/vendor/jquery/dist/jquery.min.js"></script>
+	<script language="javascript" type="text/javascript" src="/js/flot.js/jquery.flot.min.js"></script>
+	<script language="javascript" type="text/javascript" src="/js/flot.js/jquery.flot.time.min.js"></script>
+	<script language="javascript" type="text/javascript" src="/js/flot.js/jquery.flot.navigate.min.js"></script>
+	<script language="javascript" type="text/javascript" src="/vendor/moment/moment.js"></script>
+
+	<script type="text/javascript">
+
+	$(function() {
+
+		// create example datasets
+		var datasets = InsertValueHere;
+
+		
+		// add checkboxes for each series
+		$.each(datasets, function(key, val){
+			$('#lineSelector').append("<br/><input type='checkbox' name='" + key + "' checked='checked' id='id" + key + "'></input>" + "<label for='id" + key + "'>" + val.label + "</label>");
+		});
+
+		// on click update graph and only show selected series
+		$('#lineSelector').find('input').click(plotSelection);
+
+		// draw graph
+		function plotSelection(){
+			var data = [];
+
+			// check which series are selected
+			$('#lineSelector').find('input:checked').each(function(){
+				var key = $(this).attr('name');
+				if (key && datasets[key]){
+					data.push(datasets[key]);
+				}
+			});
+
+			// if series exist, plot them
+			if(data.length > 0){
+				$.plot('#placeholder', data, {
+					xaxis: {mode: 'time'},
+					grid: {hoverable: true},
+					series: {
+						lines: {show: true},
+						points: {show: true}
+					},
+					zoom: {interactive: true}
+				});
+			}
+
+			// add tooltip
+			$('<div id="tooltip"></div>').css({
+				position: 'absolute',
+				display: 'none',
+				border: '1px solid #fdd',
+				padding: '2px',
+				'background-color' : '#fee',
+				opacity: 0.80
+			}).appendTo('body');
+
+			// add tooltip hover functionality
+			$('#placeholder').bind('plothover', function(event, pos, item){
+				if(item){
+					var x = item.datapoint[0].toFixed(2),
+					y = item.datapoint[1].toFixed(2);
+					x = parseInt(x);
+					var date = moment(x).format('MMM Do YYYY HH:mm:ss');
+					$('#tooltip').html('<b>' + item.series.label + '</b><br>' + date.toString() + '<br> y: ' + y).css({top: item.pageY+5, left: item.pageX+5}).fadeIn(200);
+				} else {
+					$('#tooltip').hide();
+				}
+			});
+		}
+
+		plotSelection();
+
+
+		
+
+	});
+
+	</script>
+</head>
+<body>
+		<div id="outer" style="width: 1100px; height: 600px; border-style: solid">
+		<div id="placeholder" style="width: 900px; height: 500px"></div>
+		<p id="lineSelector" style="float:right; width:135px"></p>
+		</div>
+</body>
+</html>

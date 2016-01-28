@@ -69,9 +69,10 @@ exports.timeseries = function (inPath, outPath, type, callback) {
 			// check if xts or zoo template is needed and change path according to cases
 			var templatePath;
 			if (isXts){
-				templatePath = '/xtsTemplate.txt';
+				//templatePath = '/xtsTemplate.txt';
+				templatePath = '/zooTemplate2.txt';
 			} else {
-				templatePath = '/zooTemplate.txt';
+				templatePath = '/zooTemplate2.txt';
 			}
 
 			fs.readFile(__dirname + templatePath, function(err, data){
@@ -86,8 +87,8 @@ exports.timeseries = function (inPath, outPath, type, callback) {
 
 
 		//insert values into JS template
-		var addedValues = graphTemplate.replace('InsertValuesHere', JSON.stringify(jsonData)).replace('InsertTypeHere', type);
-
+		//var addedValues = graphTemplate.replace('InsertValuesHere', JSON.stringify(jsonData)).replace('InsertTypeHere', type);
+		var addedValues = graphTemplate.replace('InsertValueHere', JSON.stringify(jsonData));
 		// save HTML
 		fs.writeFile(outPath, addedValues, callback);
 		callback(null);
@@ -114,40 +115,28 @@ exports.timeseries = function (inPath, outPath, type, callback) {
  	// skip first row, as it contains the column names
  	var result = [];
  	if(xts){
-	 	for (var col = 1; col < csvMatrix[0].length; col++) {
-	 		// add a separate line for each column (aka measurement)
-	 		var series = { data: [], name: String};
-
-	 		for (var row = 1; row < csvMatrix.length-1; row++) {
-	 			// convert x value into unix dateformat
-	 			var time = moment(csvMatrix[row][0]);
-
-	 			// convert dateformat into unix seconds
-	 			var seconds = time._d.getTime()/1000;
-
-	 			// push parsed values into var series	
-	 			series.data.push( { x: seconds, y: parseFloat(csvMatrix[row][col]) });	 			
-
-	 		}
-	 		// add name attribute to series
-	 		series.name = csvMatrix[0][col];
-	 		result.push(series);
-	 	}
- 	} else {
- 		for (var col = 1; col < csvMatrix[0].length; col++) {
-	 		// add a separate line for each column (aka measurement)
-	 		var series = { data: [], name: String};
-
-	 		for (var row = 1; row < csvMatrix.length-1; row++) {
-	 		
-	 			// push parsed values into var series
-	 			series.data.push( { x: parseFloat(csvMatrix[row][0]), y: parseFloat(csvMatrix[row][col]) });	 			
-
-	 		}
-	 		// add name attribute to series
-	 		series.name = csvMatrix[0][col];
-	 		result.push(series);
-	 	}
- 	}
+		    for(var col = 1; col < csvMatrix[0].length; col++){
+		    	var series = {label: String, data: []};
+		    	series.label = csvMatrix[0][col].substring(1, csvMatrix[0][col].length-1);
+		    	for(var row = 1; row < csvMatrix.length-1; row++){
+		    		var time = moment(csvMatrix[row][0]);
+		    		var milliseconds = time._d.getTime();
+		    		var point = [milliseconds, parseFloat(csvMatrix[row][col])];
+		    		series.data.push(point);
+		    	}
+		    	result.push(series);
+		    }
+		} else {
+			for(var col = 1; col < csvMatrix[0].length; col++){
+		    	var series = {label: String, data: []};
+		    	series.label = csvMatrix[0][col].substring(1, csvMatrix[0][col].length-1);
+		    	for(var row = 1; row < csvMatrix.length-1; row++){
+		    		
+		    		var point = [parseFloat(csvMatrix[row][0]), parseFloat(csvMatrix[row][col])];
+		    		series.data.push(point);
+		    	}
+		    	result.push(series);
+		    }
+		}
  	return result;
  }

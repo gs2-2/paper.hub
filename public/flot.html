@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>My test</title>
+	<link rel="stylesheet" href="vendor/jquery-ui/themes/smoothness/jquery-ui.css">
+	<script language="javascript" type="text/javascript" src="vendor/jquery/dist/jquery.min.js"></script>
+	<script language="javascript" type="text/javascript" src="vendor/jquery-ui/jquery-ui.min.js"></script>
+	<script language="javascript" type="text/javascript" src="js/flot.js/jquery.flot.min.js"></script>
+	<script language="javascript" type="text/javascript" src="js/flot.js/jquery.flot.time.min.js"></script>
+	<script language="javascript" type="text/javascript" src="js/flot.js/jquery.flot.navigate.min.js"></script>
+	<script language="javascript" type="text/javascript" src="js/flot.js/jquery.flot.selection.min.js"></script>
+	<script language="javascript" type="text/javascript" src="vendor/moment/moment.js"></script>
+
+	<script type="text/javascript">
+
+	$(function() {
+
+		
+		// create example datasets
+		var datasets = [{"label":"rural","data":[[2001,21.1],[2002,22.3],[2003,24.4],[2004,20.1],[2005,20.6],[2006,21.1],[2007,19.4],[2008,18.8],[2009,19.3],[2010,19.9]]},{"label":"urban","data":[[2001,28.1],[2002,29.3],[2003,32.8],[2004,27.3],[2005,27.6],[2006,29.2],[2007,26.9],[2008,25.8],[2009,26.9],[2010,26.7]]},{"label":"traffic","data":[[2001,32.1],[2002,33.8],[2003,35.8],[2004,31.1],[2005,31.6],[2006,33.1],[2007,31.1],[2008,30.3],[2009,29.8],[2010,29.4]]}];
+
+		
+		// add checkboxes for each series
+		$.each(datasets, function(key, val){
+			$('#lineSelector').append("<br/><input type='checkbox' name='" + key + "' checked='checked' id='id" + key + "'></input>" + "<label for='id" + key + "'>" + val.label + "</label>");
+		});
+
+		// on click update graph and only show selected series
+		$('#lineSelector').find('input').click(plotSelection);
+
+		var options = {
+					xaxis: {mode: 'time'},
+					grid: {hoverable: true},
+					series: {
+						lines: {show: true},
+						points: {show: true}
+					},
+					zoom: {interactive: true},
+					selection: {mode: "x"}
+				};
+
+		    
+		
+		// draw graph
+		function plotSelection(){
+			var data = [];
+
+			// check which series are selected
+			$('#lineSelector').find('input:checked').each(function(){
+				var key = $(this).attr('name');
+				if (key && datasets[key]){
+					data.push(datasets[key]);
+				}
+			});
+
+			// if series exist, plot them
+			if(data.length > 0){
+				var plot = $.plot('#placeholder', data, options);
+			}
+
+			$( "#slider" ).slider({
+		      range: true,
+		      min: plot.getData()[0].data[0][0],
+		      max: plot.getData()[0].data[9][0],
+		      values: [ plot.getData()[0].data[0][0], plot.getData()[0].data[9][0] ],
+		      slide: function( event, ui ) {
+	        	 //change zoom here
+	        	 options.xaxis.min = ui.value[0];
+	        	 options.xaxis.max = ui.value[1];
+	        	plot = $.plot('#placeholder', data, options);
+	        	/*
+	        	var x = plot.getXAxes();
+	        	
+	        	x[0].datamin = ui.value[0];
+	        	x[0].datamax = ui.value[1]; 
+
+	        	console.log(x[0].datamax);
+	        	plot.setupGrid();
+	        	plot.draw();
+	        	plot.clearSelection();
+*/
+	        }
+				
+			
+		      
+		    });
+			// add tooltip
+			$('<div id="tooltip"></div>').css({
+				position: 'absolute',
+				display: 'none',
+				border: '1px solid #fdd',
+				padding: '2px',
+				'background-color' : '#fee',
+				opacity: 0.80
+			}).appendTo('body');
+
+			// add tooltip hover functionality
+			$('#placeholder').bind('plothover', function(event, pos, item){
+				if(item){
+					var x = item.datapoint[0].toFixed(2),
+					y = item.datapoint[1].toFixed(2);
+					x = parseInt(x);
+					var date = moment(x).format('MMM Do YYYY HH:mm:ss');
+					$('#tooltip').html('<b>' + item.series.label + '</b><br>' + date.toString() + '<br> y: ' + y).css({top: item.pageY+5, left: item.pageX+5}).fadeIn(200);
+				} else {
+					$('#tooltip').hide();
+				}
+			});
+
+			$('#placeholder').bind('plotselected', function(event, ranges){
+				
+				plot = $.plot(placeholder, data,
+                          $.extend(true, {}, options, {
+                              xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to }
+                          }));
+
+				//$('#selection').text(ranges.xaxis.from.toFixed(1) + ' ' + ranges.xaxis.to.toFixed(1) + 'data: ' + JSON.stringify(plot.getData()));
+				//console.log(plot.getData().length);
+				//console.log(plot.getData());
+
+				var auswahl = [];
+				for (var i=0; i< plot.getData().length; i++){
+					var line = {data: []};
+					for (var j=0; j<plot.getData()[i].data.length; j++){
+						if((plot.getData()[i].data[j][0] > ranges.xaxis.from) && (plot.getData()[i].data[j][0] < ranges.xaxis.to)){
+							line.data.push(plot.getData()[i].data[j]); 
+							
+
+						}
+					}
+					auswahl.push(line);
+
+				}
+
+				var sum = [];
+				$.each(auswahl, function(index, value){
+					sum.push(0);
+					for(var k=0; k < auswahl[index].data.length; k++){
+						sum[index] += value.data[k][1];
+					}
+				});
+				//$('#selection').text(JSON.stringify(auswahl));
+				for(var l=0; l<plot.getData().length; l++){
+
+					$('#statistics').append('<br>' + plot.getData()[l].label + ': ' + sum[l].toFixed(2));
+				}
+			});
+
+		}
+
+		plotSelection();
+
+
+		
+
+	});
+
+	</script>
+</head>
+<body>
+		<div id="outer" style="width: 1100px; height: 600px; border-style: solid">
+		<div id="placeholder" style="width: 900px; height: 500px"></div>
+		<div id="slider" style="width: 840px; height: 10px; left: 30px"></div>
+		<p id="lineSelector" style="float:right; width:135px; height: 80px"></p>
+		<p id="statistics" style="float:right; width: 135px; height: 50px"></p>
+		</div>
+		
+		<div id="selection"></div>
+		<div id="result"></div>
+</body>
+</html>
