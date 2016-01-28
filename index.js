@@ -220,11 +220,24 @@ app.post('/addPaper', latexUpload, loggedIn, function(req, res) {
 	function moveUploadToPaper(paperID, callback) {
 
 		var fileList = [];
+		var originalname;
+		var isIn = false;
+
+		//check for the tex file if it is uploaded twice
+		if(req.files['files']) { 
+			for(var i = 0; i < req.files['files'].length; i++) {
+				originalname = req.files['files'][i].originalname;
+				if(originalname == req.files['latexDocument'][0].originalname) {
+					isIn = true;
+				}
+			}
+		}
 		// move each file (the latex doc + the utility files) to the paper dir
-		if (req.files['files'] && req.files['files'].indexOf(req.files['latexDocument'][0]) != -1) {
+		if (isIn) {
 			fileList = req.files['files'];
 		}
 		else if (req.files['files']) {
+			fileList = req.files['files'];
 			fileList.push(req.files['latexDocument'][0]);
 		}
 		else {
