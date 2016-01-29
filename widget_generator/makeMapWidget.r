@@ -2,11 +2,11 @@
 # Multiple datasets can be added to one map in the following formats:
 #     GeoJSON
 #     R sp objects as RData files
-#     GeoTIFF raster files (supporting only one layer / grayscale)
+#     GeoTIFF raster files (up to 4MB)
 # Datasets are expected to have the correct file extension (.json, .tif)
 #
 # Run the script from the commandline as follows:
-#     Rscript makeMapWidget.r --output <path> --input <JSON-array of input-paths>
+#     Rscript makeMapWidget.r --output <path> --input <comma separated list of input-paths>
 #
 # external dependencies for GeoTIFF support are: libgdal-dev libproj-dev (Ubuntu 14)
 
@@ -25,8 +25,15 @@ makeMap <- function(inputs, output) {
   # extensions of each file
   fileExts  <- tolower(file_ext(inputs))
 
-   # create map
-  map <- leaflet()
+  # create map with some basemaps
+  map <- leaflet() %>%
+    addTiles(group = "OpenStreetMap") %>%
+    addProviderTiles("Stamen.TonerLite", group = "Toner") %>%
+    addProviderTiles("CartoDB.Positron", group = "Positron") %>%
+	# OpenTopoMap needs to be added manually, as the included https URL doesnt work (SSC).
+    addTiles("http://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+      attribution = 'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+      group = "OpenTopoMap")
 
   # add layers depending on file extension
   for (i in 1:length(inputs)) {
@@ -41,6 +48,13 @@ makeMap <- function(inputs, output) {
     else if (fileExts[i] %in% c('rdata', 'sp'))
       map <- spLayer(map, inputs[i])
   }
+  
+  # add layer control
+  map <- map %>% addLayersControl(
+    baseGroups = c("OpenStreetMap", "OpenTopoMap", "Toner", "Positron"),
+    overlayGroups = c("dataset"),
+    options = layersControlOptions(collapsed = TRUE)
+  )
 
   # write leaflet map to html file, specified in CLI argument "output"
   saveWidget(map, file = output, selfcontained = FALSE, libdir = 'mapwidget_deps')
@@ -88,21 +102,7 @@ addSingleLayerRaster <- function(map, rasterbrick, doProjection) {
     }
 
     # apply colorpalette & transform image & add layer to a layerControl & return the map
-    map <- leaflet() %>%
-	addRasterImage(img, colors = palette, opacity = 1, project = doProjection, group = "geoTIFF") %>%
-	# Base groups
-    	addTiles(group = "OSM (default)") %>%
-    	addProviderTiles("Stamen.Toner", group = "Toner") %>%
-    	addProviderTiles("Stamen.TonerLite", group = "Toner Lite") %>%
-	    addProviderTiles("CartoDB.Positron", group = "Positron") %>%
-	    addProviderTiles("OpenTopoMap", group = "TopoMap") %>%
-
-        # Layers control
-        addLayersControl(
-          baseGroups = c("OSM (default)", "Toner", "Toner Lite", "Positron", "TopoMap"),
-          overlayGroups = c("geoTIFF"),
-          options = layersControlOptions(collapsed = TRUE)
-    )
+    map <- map %>% addRasterImage(img, colors = palette, opacity = 1, project = doProjection, group = "dataset")
 }
 
 #' @describe adds a RasterBrick with 3 or more layers to the map
@@ -127,20 +127,7 @@ addMultiLayerRaster <- function(map, rasterbrick, doProjection) {
     palette <- readRDS('./RGB_colorRamp_8bit.rds')
 
     # apply colorpalette & transform image & add layer to a layerControl & return the map
-    map <- leaflet() %>%
-	addRasterImage(img, colors = palette, opacity = 1, project = doProjection, group = "geoTIFF") %>%
-	# Base groups
-    	addTiles(group = "OSM (default)") %>%
-    	addProviderTiles("Stamen.Toner", group = "Toner") %>%
-    	addProviderTiles("Stamen.TonerLite", group = "Toner Lite") %>%
-        addProviderTiles("CartoDB.Positron", group = "Positron") %>%
-	    addProviderTiles("OpenTopoMap", group = "TopoMap") %>%
-        # Layers control
-        addLayersControl(
-          baseGroups = c("OSM (default)", "Toner", "Toner Lite", "Positron", "TopoMap"),
-          overlayGroups = c("geoTIFF"),
-          options = layersControlOptions(collapsed = TRUE)
-        )
+    map <- map %>% addRasterImage(img, colors = palette, opacity = 1, project = doProjection, group = "dataset")
 }
 
 #' @describe adds GeoJSON vector data file to the map
@@ -148,20 +135,7 @@ addMultiLayerRaster <- function(map, rasterbrick, doProjection) {
 #' @return   the modified map object (with the geoJSON added to an layerControl)
 geoJSONLayer <- function(map, path) {
   jsonString <- readLines(path) %>% paste(collapse = "\n")
-  map <- leaflet() %>%
-    addGeoJSON(jsonString, group = "geoJSON") %>%
-    # Base groups
-    addTiles(group = "OSM (default)") %>%
-    addProviderTiles("Stamen.Toner", group = "Toner") %>%
-    addProviderTiles("Stamen.TonerLite", group = "Toner Lite") %>%
-    addProviderTiles("CartoDB.Positron", group = "Positron") %>%
-    addProviderTiles("OpenTopoMap", group = "TopoMap") %>%
-    # Layers control
-    addLayersControl(
-       baseGroups = c("OSM (default)", "Toner", "Toner Lite", "Positron", "TopoMap"),
-       overlayGroups = c("geoJSON"),
-       options = layersControlOptions(collapsed = TRUE)
-    )
+  map <- map %>% addGeoJSON(jsonString, group = "dataset")
 }
 
 #' @describe adds a sp object in an RData file to the map
@@ -175,22 +149,7 @@ spLayer <- function(map, path) {
   # handle the various types (SpatialLines, -Points, -Polygons)
   # seperately. for conversion, alternatively use this package?
   # https://cran.r-project.org/web/packages/geojsonio/geojsonio.pdf
-  map <- leaflet() %>%
-    addGeoJSON(spToGeoJSON(spObj), group = "spObject") %>%
-    fitBounds(lng1 = bounds[1], lat1 = bounds[2], lng2 = bounds[3], lat2 = bounds[4]) %>%
-    # Base groups
-    addTiles(group = "OSM (default)") %>%
-    addProviderTiles("Stamen.Toner", group = "Toner") %>%
-    addProviderTiles("Stamen.TonerLite", group = "Toner Lite") %>%
-    addProviderTiles("CartoDB.Positron", group = "Positron") %>%
-    addProviderTiles("OpenTopoMap", group = "TopoMap") %>%
-    # Layers control
-    addLayersControl(
-       baseGroups = c("OSM (default)", "Toner", "Toner Lite", "Positron", "TopoMap"),
-       overlayGroups = c("spObject"),
-       options = layersControlOptions(collapsed = TRUE)
-    )
-
+  map <- map %>% addGeoJSON(spToGeoJSON(spObj), group = "dataset")
 }
 
 #' @describe loads an RData file and returns the first object in it
