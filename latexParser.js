@@ -15,8 +15,14 @@ var async  = require('async');
 * @param outPath path, where to save the new file
 */
 var xml2html = function (inPath, outPath, callback) {
-	var cmd = 'latexmlpost --dest=' + outPath + ' ' + inPath;
 
+	var stylingpath 	= __dirname+'/styling.js';
+	var jquerypath		= __dirname+'/public/vendor/jquery/dist/jquery.js';
+	var mathjaxpath		= "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML";	
+	
+	// Alternative if MathJax should be used.
+ 	//var cmd = 'latexmlpost --dest=' + outPath +' --javascript='+ jquerypath +' --javascript='+mathjaxpath +' --javascript="' +stylingpath+ '"' + ' '+ inPath;
+	var cmd = 'latexmlpost --dest=' + outPath +' --format=html4'+' --javascript='+ jquerypath +' --javascript="' +stylingpath+ '"' + ' '+ inPath;
 	cp.exec(cmd, function(err, stdout, stderr) {
 		if(err) return callback(err);
 		callback(null);
