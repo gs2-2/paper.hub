@@ -12,10 +12,11 @@ var cp = require('child_process');
  * @param outPath  absolute path to the output HTML file
  * @param callback function that is called after execution of the script with param 'error'
  */
-exports.map = function (inPaths, outPath, callback) {
+exports.map = function (inPath, outPath, callback) {
 
 	var cmd = 'Rscript ' + __dirname + '/makeMapWidget.r'
-		+ ' --input "' + inPaths.toString() + '" --output ' + outPath;
+		+ ' --input ' + inPath + ' --output ' + outPath
+        + ' --template ' + __dirname + '/mapTemplate.html';
 
 	cp.exec(cmd, function (err, stdout, stderr) {
 		if (err) return callback(err);
