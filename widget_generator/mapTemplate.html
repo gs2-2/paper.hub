@@ -3,22 +3,11 @@
 <html>
 <head>
     <link rel="stylesheet" href="/vendor/leaflet/dist/leaflet.css">
-    <style>
-        html, body, #map {
-            margin: 0;
-            height: 100%;
-        }
-        
-        .leaflet-popup-content-wrapper {
-            border-radius: 4px;
-        }
+    <link rel="stylesheet" href="/css/MarkerCluster.Default.css">
+    <link rel="stylesheet" href="/css/mapWidget.css">
 
-        .leaflet-popup-content-wrapper .leaflet-popup-content {
-            margin: 3px;
-        }
-    </style>
-
-    <script src="/vendor/leaflet/dist/leaflet-src.js" charset="utf-8"></script>
+    <script src="/vendor/leaflet/dist/leaflet.js" charset="utf-8"></script>
+    <script src="/js/leaflet.markercluster.js" charset="utf-8"></script>
     <script src="/js/mapWidget.js" charset="utf-8"></script>
 </head>
 
@@ -27,9 +16,8 @@
 
     <script type="text/javascript">
         var dataset = %DATA%;
-        var type = '%TYPE%';
         
-        var widget = new MapWidget().addLayer(dataset, type);
+        var widget = new MapWidget().addGeoJson(dataset);
     </script>
 </body>
-</html> 
+</html>

@@ -1,0 +1,28 @@
+html, body, #map {
+    margin: 0;
+    height: 100%;
+}
+
+.leaflet-popup-content-wrapper {
+    border-radius: 4px;
+}
+
+.leaflet-popup-content-wrapper .leaflet-popup-content {
+    padding-right: 7px;
+    margin: 3px;
+}
+
+.statsview {
+    padding: 6px 8px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    color: #777;
+    background: white;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+.statsview h4 {
+    text-align: right;
+    margin: 0 0 5px 0;
+    color: #000;
+}

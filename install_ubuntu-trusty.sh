@@ -24,7 +24,7 @@ set -o pipefail
 
 # installation-script dependencies
 apt-get update
-apt-get install -y build-essential curl openssl
+apt-get install -y build-essential curl openssl default-jdk
 
 # add external repositories: mongoDB 3.x, nodeJS 4.x, R cran
 apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10 # mongo repo
@@ -59,14 +59,15 @@ cd ..
 rm -rf LaTeXML-0.8.1*
 
 # install additional R packages
-Rscript -e "install.packages(c('rgdal', 'raster', 'xts', 'zoo', 'sp', 'R.utils'), lib='/usr/local/lib/R/site-library', repos='https://cran.rstudio.com')"
+R CMD javareconf
+Rscript -e "install.packages(c('rgdal', 'raster', 'mapview', 'htmlwidgets', 'xts', 'zoo', 'sp', 'R.utils'), lib='/usr/local/lib/R/site-library', repos='https://cran.rstudio.com')"
 
 # install node dependencies
 npm install
 npm install -g bower
 bower install --allow-root
 
-echo "\nInstallation of paper.hub complete!"
+echo "Installation of paper.hub complete!"
 echo "Start the server via npm start"
 echo "You now need to copy a SSL certificate into the current folder."
 echo "To generate a self signed certificate, you may use the following commands:"
