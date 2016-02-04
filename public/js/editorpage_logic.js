@@ -28,7 +28,7 @@ function addClickListeners(iframe) {
 	var visualCounter = 0;
 
 	// add click listeners to all paragraphs in the paper iframe
-	$(iframe).contents().find('.ltx_para')
+	$(iframe).contents().find('.ltx_para').not('li > div')
 		.css('cursor', 'pointer')
 		.css('user-select', 'none')
 		.hover(
