@@ -41,30 +41,4 @@ function downloadPaper() {
 	window.open('/downloadPaper/' + paperID);
 }
 
-$('#paper-frame').ready(function() {
-	var elements = $('paper-frame').find('widget');
-	console.log(elements);
 
-	$.each(elements, function(index, element) {
-		console.log('in each');
-		new Waypoint({
-			element: this,
-			handler: function(direction) {
-				var previousWaypoint = this.previous();
-				var nextWaypoint = this.next();
-				var srcValue = $(this.element).getAttribute('src')
-				console.log(srcValue);
-
-				console.log(this.element.src);
-				$(this.element).attr('src', '/data/widgets/' + srcValue + '.html');
-				console.log(this.element.src);
-
-				if(nextWaypoint) {
-					$(nextWaypoint.element).attr('src', 'data/widgets/' + nextWaypoint.element.getAttribute('src') + '.html');
-				}
-			},
-			offset: '30%',
-			context: $('#paper-frame')
-		});
-	});
-})

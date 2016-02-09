@@ -34,5 +34,23 @@ $( document ).ready(function() {
     // Remove scroll bar if any
 	$("body").css("overflow","hidden");
 
+    $.each(['widget'], function(i, classname) {
+
+        var $elements = $('.' + classname);
+
+        $elements.each(function() {
+            new Waypoint({
+                element: this,
+                handler: function(direction) {
+                    var srcValue = $(this.element).attr('src');
+
+                    $(this.element).attr('src', '/data/widgets/' + srcValue + '.html');
+                },
+                offset: '150%',
+                context: window.parent,
+                group: classname
+            });
+        });  
+    })
 	    
 });
