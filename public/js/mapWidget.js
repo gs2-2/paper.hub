@@ -36,6 +36,12 @@ function MapWidget(mapElement) {
         
         L.markerClusterGroup().addLayer(dataset).addTo(_layers);
         _map.fitBounds(_layers.getBounds());
+        
+        // sort features array by first property, to save processing time when calculating statistics
+        _features.sort(function(a, b) {
+            return a.properties[Object.keys(a.properties)[0]] -
+                b.properties[Object.keys(b.properties)[0]];
+        });
         return this;
     };
     
@@ -52,17 +58,23 @@ function MapWidget(mapElement) {
                 attribution: _osmAttribution
             }),
             OpenTopoMap: L.tileLayer('http://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-				attribution:
+            attribution:
                     'Map data: ' + _osmAttribution + 
                     ', <a href="http://viewfinderpanoramas.org">SRTM</a> | ' +
                     'Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> ' +
                     '(<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
             }),
             Toner: L.tileLayer('http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {
-				attribution:
-					'Map tiles by <a href="http://stamen.com">Stamen Design</a>, ' +
-					'<a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; ' +
-					'Map data ' + _osmAttribution
+            attribution:
+                'Map tiles by <a href="http://stamen.com">Stamen Design</a>, ' +
+                '<a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; ' +
+                'Map data ' + _osmAttribution
+            }),
+            Positron: L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
+            }),
+            DarkMatter: L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',{
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
             })
         };
         
@@ -82,7 +94,7 @@ function MapWidget(mapElement) {
                     /* push each property to the data object */
                     for(var prop in _features[i].properties) {
                         if ( !(data[prop] instanceof Array) ) data[prop] = [];
-                        data[prop].push(_features[i].properties[prop]);
+                        data[prop][data[prop].length] = _features[i].properties[prop];
                     }
                 }
             }
@@ -112,8 +124,7 @@ function MapStatistics(map) {
     this.update = function(data) {
         var stats = {};
         for (var prop in data) {
-            //stats[prop] = getStatistics(data[prop]);
-            //stats[prop] = { median: 34, min: 6 };
+            stats[prop] = statsSpatial(data[prop]);
         }
         _statsview.update(stats);
         return this;
@@ -129,16 +140,35 @@ function MapStatistics(map) {
         };
 
         _statsview.update = function (results) {
-            var htmlString = '';
+            var htmlStrings = {
+                head: '<tr><th></th>',
+                mean: '<tr><th>mean</th>',
+                min : '<tr><th>min</th>',
+                max : '<tr><th>max</th>',
+                variance: '<tr><th>variance</th>',
+                stdDev: '<tr><th>stdDev</th>',
+                qnt1: '<tr><th>.25quant</th>',
+                qnt2: '<tr><th>.50quant</th>',
+                qnt3: '<tr><th>.75quant</th>'
+            };
+            
             for (var prop in results) {
-                htmlString += '<tr><th>' + prop
-                    + '</th><td>' + results[prop].median + '</td><td>' + results[prop].min
-                    + '</td><td>' + results[prop].max    + '</td><td>' + results[prop].quartile1
-                    + '</td></tr>';
+                htmlStrings.head += ('<th>' + prop + '</th>');
+                htmlStrings.mean += ('<td>' + results[prop].mean + '</td>');
+                htmlStrings.min  += ('<td>' + results[prop].min + '</td>');
+                htmlStrings.max  += ('<td>' + results[prop].max + '</td>');
+                htmlStrings.variance += ('<td>' + results[prop].variance + '</td>');
+                htmlStrings.stdDev += ('<td>' + results[prop].standardDev + '</td>');
+                htmlStrings.qnt1 += ('<td>' + results[prop].quantiles.quarter + '</td>');
+                htmlStrings.qnt2 += ('<td>' + results[prop].quantiles.half + '</td>');
+                htmlStrings.qnt3 += ('<td>' + results[prop].quantiles.threequarter + '</td>');
             }
-            this._div.innerHTML = '<h4>Statistics</h4><table><tr><td></td>'
-                + '<th>median</th><th>min</th><th>max</th><th>.25qt</th></tr>'
-                + htmlString + '</table>';
+            
+            var fullHtmlString = '<h4>Statistics</h4><table>';
+            for (var str in htmlStrings) {
+                fullHtmlString += (htmlStrings[str] + '</tr>');
+            }
+            this._div.innerHTML = fullHtmlString + '</table>';
         };
         
         _statsview.addTo(map);

@@ -51,12 +51,12 @@ geoTIFFLayer <- function(path) {
   if (nlayers(tif) == 3) {
       return( viewRGB(tif, 1,2,3, 
         maxpixels = 6000000,
-        map.types = c('OpenStreetMap', 'OpenTopoMap', 'Stamen.Toner'))
+        map.types = c('OpenStreetMap', 'OpenTopoMap', 'Stamen.Toner', 'CartoDB.Positron', 'CartoDB.DarkMatter'))
       )
   } else {
     return( mapview(tif,
       maxpixels = 6000000,
-      map.types = c('OpenStreetMap', 'OpenTopoMap', 'Stamen.Toner'))
+      map.types = c('OpenStreetMap', 'OpenTopoMap', 'Stamen.Toner', 'CartoDB.Positron', 'CartoDB.DarkMatter'))
     )
   }
 }
