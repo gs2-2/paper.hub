@@ -8,9 +8,13 @@
 	<script language="javascript" type="text/javascript" src="vendor/jquery-ui/jquery-ui.min.js"></script>
 	<script language="javascript" type="text/javascript" src="js/flot.js/jquery.flot.min.js"></script>
 	<script language="javascript" type="text/javascript" src="js/flot.js/jquery.flot.time.min.js"></script>
+
 	<script language="javascript" type="text/javascript" src="js/flot.js/jquery.flot.navigate.min.js"></script>
+
 	<script language="javascript" type="text/javascript" src="js/flot.js/jquery.flot.selection.min.js"></script>
+		<script language="javascript" type="text/javascript" src="js/flot.js/jquery.flot.stack.min.js"></script>
 	<script language="javascript" type="text/javascript" src="vendor/moment/moment.js"></script>
+	<script language="javascript" type="text/javascript" src="js/statistics.js"></script>
 
 	<script type="text/javascript">
 
@@ -30,14 +34,16 @@
 		$('#lineSelector').find('input').click(plotSelection);
 
 		var options = {
-					xaxis: {mode: 'time'},
-					grid: {hoverable: true},
+					xaxis: {
+						mode: 'time',
+					},
+					grid: {hoverable: true, borderWidth: 0.5},
 					series: {
 						lines: {show: true},
 						points: {show: true}
 					},
-					zoom: {interactive: true},
-					selection: {mode: "x"}
+					zoom: {interactive: false},
+					pan: {interactive: true}
 				};
 
 		    
@@ -56,9 +62,44 @@
 
 			// if series exist, plot them
 			if(data.length > 0){
-				var plot = $.plot('#placeholder', data, options);
-			}
 
+				//plot data
+				var plot = $.plot('#placeholder', data, options);
+				console.log(plot.getData());
+
+				//plot slider
+				var slider = $.plot('#slider', data, {
+					legend: {
+						show: false
+					},
+					xaxis: {
+						show: false
+					},
+					yaxis: {
+						show: false
+					},
+					grid: {
+						borderWidth: 0.5
+					},
+					series: {
+						lines: {
+							show: true,
+							lineWidth: 1
+						},
+						shadowSize: 0
+					},
+					selection: {
+						mode: "x"
+					}
+				});
+
+				//plot histogramm
+				var histogramm = $.plot('#histo', data, {
+					legend: {show: false},
+					grid: {borderWidth: 0.5}
+				});
+			}
+/*
 			$( "#slider" ).slider({
 		      range: true,
 		      min: plot.getData()[0].data[0][0],
@@ -79,12 +120,13 @@
 	        	plot.setupGrid();
 	        	plot.draw();
 	        	plot.clearSelection();
-*/
-	        }
 				
+	        }
+		
 			
 		      
 		    });
+*/
 			// add tooltip
 			$('<div id="tooltip"></div>').css({
 				position: 'absolute',
@@ -108,7 +150,7 @@
 				}
 			});
 
-			$('#placeholder').bind('plotselected', function(event, ranges){
+			$('#slider').bind('plotselected', function(event, ranges){
 				
 				plot = $.plot(placeholder, data,
                           $.extend(true, {}, options, {
@@ -120,6 +162,7 @@
 				//console.log(plot.getData());
 
 				var auswahl = [];
+				console.log(plot.getData());
 				for (var i=0; i< plot.getData().length; i++){
 					var line = {data: []};
 					for (var j=0; j<plot.getData()[i].data.length; j++){
@@ -130,24 +173,22 @@
 						}
 					}
 					auswahl.push(line);
+					console.log(auswahl);
 
 				}
 
-				var sum = [];
+				$('#row').empty();
 				$.each(auswahl, function(index, value){
-					sum.push(0);
-					for(var k=0; k < auswahl[index].data.length; k++){
-						sum[index] += value.data[k][1];
-					}
-				});
-				//$('#selection').text(JSON.stringify(auswahl));
-				for(var l=0; l<plot.getData().length; l++){
+						var stats = statsTime(sortIt(value.data));
+					
 
-					$('#statistics').append('<br>' + plot.getData()[l].label + ': ' + sum[l].toFixed(2));
-				}
+					$('#row').append('<tr><td>'+plot.getData()[index].label+'</td><td>'+stats.mean+'</td><td>'+stats.variance+'</td><td>'+stats.standardDev+'</td><td>'+stats.quantiles.quarter+'</td><td>'+stats.min+'</td><td>'+stats.max+'</td></tr>');
+				
+				});
+
 			});
 
-		}
+		};
 
 		plotSelection();
 
@@ -156,17 +197,30 @@
 
 	});
 
+	
+
 	</script>
 </head>
 <body>
-		<div id="outer" style="width: 1100px; height: 600px; border-style: solid">
-		<div id="placeholder" style="width: 900px; height: 500px"></div>
-		<div id="slider" style="width: 840px; height: 10px; left: 30px"></div>
-		<p id="lineSelector" style="float:right; width:135px; height: 80px"></p>
-		<p id="statistics" style="float:right; width: 135px; height: 50px"></p>
-		</div>
 		
-		<div id="selection"></div>
-		<div id="result"></div>
+		<div id="placeholder" style="width: 100%; height: 400px"></div>
+		<div id="slider" style="width: 96.5%; left: 2%; height: 50px"></div>
+		<div id="lineSelector" style="position: absolute; right: 0%; top: 72%; width:135px; height: 80px"></div>
+		<div id="statistics" style="position: absolute; left: 2.7%; width: 20%; height: 20%">
+			
+			<table>
+			<thead>
+			<tr><th>Series</th><th>Mean</th><th>Variance</th><th>StdDev</th><th>Quantiles</th><th>Min</th><th>Max</th></tr>
+			</thead>
+			<tbody id="row">
+			</tbody>
+			</table>
+
+			
+		</div>
+		<div id="histo" style="width: 40%; height: 140px; left: 50%"></div>
+		
+		
+		
 </body>
 </html>
