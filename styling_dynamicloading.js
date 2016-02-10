@@ -47,7 +47,7 @@ $( document ).ready(function() {
                     $(this.element).attr('src', '/data/widgets/' + srcValue + '.html');
                     this.disable();
                 },
-                offset: '150%',
+                offset: '200%',
                 context: window.parent,
                 group: classname
             });
