@@ -45,6 +45,7 @@ $( document ).ready(function() {
                     var srcValue = $(this.element).attr('src');
 
                     $(this.element).attr('src', '/data/widgets/' + srcValue + '.html');
+                    this.disable();
                 },
                 offset: '150%',
                 context: window.parent,
