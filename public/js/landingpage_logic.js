@@ -43,6 +43,19 @@ $(document).ready(function() {
 		}
 	});
 
+
+	/**
+	 * @desc delete validation hints and input when cancel button is pressed
+	 */
+	$('#cancelButton').on('click', function(){ //todo tuts nicht, einfache lösung unten alles reinkopieren
+		$('#latexDocument').css('background-color', 'white').val('');
+		$('#files').val('');
+		$('#title').css('background-color', 'white').val('');
+		$('#abstract').val('');
+		$('#author').css('background-color', 'white').val('');
+		$('#errorMessage').css('display', 'none');
+	});
+
 });
 
 
@@ -107,19 +120,6 @@ function escapeHtml(string) {
     });
 }
 
-
-/**
- * @desc delete validation hints and input when cancel button is pressed
- */
-$('#cancelButton').click(function(){
-    $('#latexDocument').css('background-color', 'white').val('');
-    $('#files').val('');
-    $('#title').css('background-color', 'white').val('');
-    $('#abstract').val('');
-    $('#author').css('background-color', 'white').val('');
-    $('#errorMessage').css('display', 'none');
-});
-
 /**
  * @desc  loads the given paper page, when a tablerow was clicked
  * @param tablerow from the paper-table
@@ -127,3 +127,16 @@ $('#cancelButton').click(function(){
 function loadPaper(tablerow) {
 	window.location = '/paper/' + $(tablerow).data('id');
 }
+
+/**
+ * @desc prevent second scrollbar while uploadModal is shown
+ */
+onhashchange = function() {
+	var newHash = window.location.hash;
+	if (newHash == '#openLoginModal' || '#openUploadModal') {
+		$('body').css('overflow', 'hidden');
+	}
+	if (newHash == '#close') {
+		$('body').css('overflow', '');
+	}
+};

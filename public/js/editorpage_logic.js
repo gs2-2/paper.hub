@@ -1,6 +1,7 @@
 'use strict';
 
 var paperID, paperFrame;
+var showClosingMessage = "Data you have entered may not be saved.";
 
 $(document).ready(function() {
 	paperID    = window.location.pathname.split('/').pop();
@@ -79,6 +80,7 @@ function addClickListeners(iframe) {
  * @desc replaces the visualization selector elements with iframes pointing to the visualizations
  */
 function uploadDatasets() {
+	showClosingMessage = '';
 	// iterate over all visualization placeholders in the iframe and submit them using ajax
 	var forms = paperFrame.contentWindow.document.forms,
 		widgetIDs = [],
@@ -153,6 +155,7 @@ function uploadDatasets() {
  * @desc delete the uploaded files (and redirect to the landingpage)
  */
 function deleteFiles(){
+	showClosingMessage = '';
 	$.ajax({
 		type: 'DELETE',
 		url: '/deletePaper/' + paperID,
@@ -165,3 +168,11 @@ function deleteFiles(){
 		}
 	});
 }
+
+/**
+ * @desc show warning message if user wants to leave the page without submitting or pressing the correct cancel-button
+ */
+$(window).on('beforeunload', function() {
+	if(showClosingMessage != '')
+		return showClosingMessage;
+});

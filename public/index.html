@@ -24,6 +24,10 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/index.css">
 
+    <!-- JS includes
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <script src="vendor/jquery/dist/jquery.min.js" charset="utf-8"></script>
+    <script src="js/landingpage_logic.js" charset="utf-8"></script>
 
     <!-- Favicon
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -39,7 +43,7 @@
     <div class="navbar">
         <div style="overflow:auto;">
             <div class="logo">
-                <img src="img/paperhub_logo2.svg" width="auto" height="47px">
+                <img src="img/paperhub_logo2.svg" width="210px" height="50px">
             </div>
             <a id="login-btn" class="button" href="#openLoginModal">Login</a>
         </div>
@@ -106,7 +110,7 @@
                 </table>
                 
                 <div id="errorMessage" style="background-color: rgba(186, 0, 0, 0.56); border-radius: 8px; padding: 5px; margin-bottom: 5px; margin-right: 3%; display: none">Please add required information and data.</div>
-                <div id="successMessage" style="background-color: rgba(111, 229, 69, 0.56); border-radius: 8px; padding: 5px; margin-bottom: 5px; margin-right: 3%; display: none">Please wait, data is being uploaded.<img src="img/loadingSymbol.svg" alt="" height="35px" width="auto"></div>
+                <div id="successMessage" style="background-color: rgba(111, 229, 69, 0.56); border-radius: 8px; padding: 5px; margin-bottom: 5px; margin-right: 3%; display: none">Please wait, data is being uploaded.<img src="img/loadingSymbol.svg" alt="" height="35px" width="35px"></div>
 
                 <a id="cancelButton" href="#close" title="Cancel" class="button cancel" style="background-color: white">Cancel</a>
                 <input class="button" type="submit" value="Upload" style="float:right; background-color: #eeeeee"/>
@@ -149,12 +153,6 @@
 </div>
 
 <!-- todo: faq?-->
-
-
-<!-- JS includes
-–––––––––––––––––––––––––––––––––––––––––––––––––– -->
-<script src="vendor/jquery/dist/jquery.min.js" charset="utf-8"></script>
-<script src="js/landingpage_logic.js" charset="utf-8"></script>
 
 </body>
 </html>
