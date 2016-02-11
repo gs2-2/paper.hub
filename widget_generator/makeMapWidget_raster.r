@@ -51,12 +51,12 @@ geoTIFFLayer <- function(path) {
   if (nlayers(tif) == 3) {
       return( viewRGB(tif, 1,2,3, 
         maxpixels = 6000000,
-        map.types = c('OpenStreetMap', 'OpenTopoMap', 'Stamen.Toner', 'CartoDB.Positron', 'CartoDB.DarkMatter'))
+        map.types = c('CartoDB.Positron', 'CartoDB.DarkMatter', 'Esri.NatGeoWorldMap', 'OpenStreetMap', 'Stamen.Toner',  'NASAGIBS.ViirsEarthAtNight2012'))
       )
   } else {
     return( mapview(tif,
       maxpixels = 6000000,
-      map.types = c('OpenStreetMap', 'OpenTopoMap', 'Stamen.Toner', 'CartoDB.Positron', 'CartoDB.DarkMatter'))
+      map.types = c('CartoDB.Positron', 'CartoDB.DarkMatter', 'Esri.NatGeoWorldMap', 'OpenStreetMap', 'Stamen.Toner',  'NASAGIBS.ViirsEarthAtNight2012'))
     )
   }
 }
