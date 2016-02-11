@@ -18,6 +18,7 @@
     "skeleton": "~2.0.4",
     "async": "~1.5.2",
     "jquery-form": "~3.46.0",
-    "waypoints": "~4.0.0"
+    "waypoints": "~4.0.0",
+    "leaflet": "~0.7.7"
   }
 }
