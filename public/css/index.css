@@ -17,6 +17,10 @@ body{
     border-bottom: 0px solid #E1E1E1;
 }
 
+.tableHover:hover {
+    background-color: #dfe2e7;
+}
+
 
 /** baseboard **/
 .baseboard {
@@ -27,30 +31,11 @@ body{
     border-color: #6a6e70;
     bottom : 0;
     padding: 5px 20px 8px 20px;
-    background-color: #E6E6E6;
+    background-color: #dfe2e7;
     color: black;
     overflow: auto;
 }
-/*  Upload-button with nice style, but without upload info
-#button-file {
-    color: #fff;
-    font-weight: bold;
-    border: 1px #999 solid;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    -o-border-radius: 3px;
-    border-radius: 3px;
-    filter:progid:DXImageTransform.Microsoft.Gradient(StartColorStr='#bb0000ff', EndColorStr='#990000ff');
-    background: #ededed;
-    padding: 10px 5px;
-}
-#button-file:active {
-    filter:progid:DXImageTransform.Microsoft.Gradient(StartColorStr='#990000ff', EndColorStr='#bb0000ff');
-    background: darkgrey;
-}
-#button-file:hover {
-    cursor: pointer;
-}*/
+
 
 
 

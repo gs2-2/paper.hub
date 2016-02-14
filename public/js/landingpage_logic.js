@@ -10,7 +10,7 @@ $(document).ready(function() {
 		success: function(papers, textStatus) {
 			// fill the table with publications
 			for (var i = 0; i < papers.length; i++) {
-				var rowHtml = '<tr onclick="loadPaper(this)" data-id="'
+				var rowHtml = '<tr onclick="loadPaper(this)" class="tableHover" data-id="'
 					+ papers[i]._id + '"><td>'
 					+ papers[i].title + '</td><td>'
 					+ papers[i].author + '</td><td>'
