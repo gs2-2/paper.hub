@@ -97,7 +97,7 @@
 
 		var options = {
 					xaxis: {
-						mode: 'time',
+						//mode: 'time',
 					},
 					grid: {hoverable: true, borderWidth: 0.5},
 					series: {
@@ -106,7 +106,7 @@
 					},
 
 					zoom: {interactive: false},
-					pan: {interactive: true},
+					pan: {interactive: false},
 					colors: munin
 				};
 
@@ -115,6 +115,7 @@
 		// draw graph
 		function plotSelection(){
 			var data = [];
+			
 
 			// check which series are selected
 			$('#lineSelector').find('input:checked').each(function(){
@@ -130,6 +131,11 @@
 				//plot data
 				var plot = $.plot('#placeholder', data, options);
 				console.log(plot.getData());
+
+
+				
+
+
 
 				//plot slider
 				var slider = $.plot('#slider', data, {
@@ -157,40 +163,9 @@
 					}
 				});
 
-				//plot histogramm
-				var histogramm = $.plot('#histo', data, {
-					legend: {show: false},
-					grid: {borderWidth: 0.5}
-				});
-			}
-/*
-			$( "#slider" ).slider({
-		      range: true,
-		      min: plot.getData()[0].data[0][0],
-		      max: plot.getData()[0].data[9][0],
-		      values: [ plot.getData()[0].data[0][0], plot.getData()[0].data[9][0] ],
-		      slide: function( event, ui ) {
-	        	 //change zoom here
-	        	 options.xaxis.min = ui.value[0];
-	        	 options.xaxis.max = ui.value[1];
-	        	plot = $.plot('#placeholder', data, options);
-	        	/*
-	        	var x = plot.getXAxes();
-	        	
-	        	x[0].datamin = ui.value[0];
-	        	x[0].datamax = ui.value[1]; 
-
-	        	console.log(x[0].datamax);
-	        	plot.setupGrid();
-	        	plot.draw();
-	        	plot.clearSelection();
 				
-	        }
-		
-			
-		      
-		    });
-*/
+			}
+
 			// add tooltip
 			$('<div id="tooltip"></div>').css({
 				position: 'absolute',
@@ -221,11 +196,8 @@
                               xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to }
                           }));
 
-				//$('#selection').text(ranges.xaxis.from.toFixed(1) + ' ' + ranges.xaxis.to.toFixed(1) + 'data: ' + JSON.stringify(plot.getData()));
-				//console.log(plot.getData().length);
-				//console.log(plot.getData());
 
-				var auswahl = [];
+				var selection = [];
 				console.log(plot.getData());
 				for (var i=0; i< plot.getData().length; i++){
 					var line = {data: []};
@@ -236,19 +208,13 @@
 
 						}
 					}
-					auswahl.push(line);
-					console.log(auswahl);
+					selection.push(line);
+					console.log(selection);
 
 				}
 
-				$('#row').empty();
-				$.each(auswahl, function(index, value){
-						var stats = statsTime(sortIt(value.data));
-					
-
-					$('#row').append('<tr><td>'+plot.getData()[index].label+'</td><td>'+stats.mean+'</td><td>'+stats.variance+'</td><td>'+stats.standardDev+'</td><td>'+stats.quantiles.quarter+'</td><td>'+stats.min+'</td><td>'+stats.max+'</td></tr>');
+				getStats(selection);
 				
-				});
 
 			});
 
@@ -259,6 +225,57 @@
 				options: options,
 				data: data
 			});
+		
+
+			/*
+			* @Desc calls statsTime() and puts result into table
+			* @Param selection, data in actual viewport
+			*/
+			function getStats(selection){
+				$('#row').empty();
+
+				var histoSeries = [];
+				
+				/*
+				$.each(selection, function(index, value){
+					var stats = statsTime(sortIt(value.data));
+					var histoStats = prepareHistoTime(sortIt(value.data));
+					histoSeries.push(histoStats);
+					$('#row').append('<tr><td>'+plot.getData()[index].label+'</td><td>'+stats.mean+'</td><td>'+stats.variance+'</td><td>'+stats.standardDev+'</td><td>'+stats.quantiles.quarter+'</td><td>'+stats.quantiles.half+'</td><td>'+stats.quantiles.threequarter+'</td><td>'+stats.min+'</td><td>'+stats.max+'</td></tr>');
+				
+				});
+				*/
+
+
+				$.each(selection, function(index, value){
+					var stats = prepHistoTime(sortIt(value.data));
+					histoSeries.push(stats);
+				});
+
+				
+				var histogramm = $.plot('#histo', histoSeries, {
+					legend: {show: false},
+					grid: {borderWidth: 0.5},
+					series: {
+						lines: {show: false},
+						bars: {
+							show: true,
+							barWidth: 0.5,
+							lineWidth: 1
+
+						},
+						stack: 0
+					},
+					colors: munin
+				});
+				
+
+				//console.log(histoSeries);
+			}
+
+
+
+
 		}
 
 
@@ -283,7 +300,9 @@
 			
 			<table>
 			<thead>
-			<tr><th>Series</th><th>Mean</th><th>Variance</th><th>StdDev</th><th>Quantiles</th><th>Min</th><th>Max</th></tr>
+			<tr><th colspan="">Series</th><th colspan="1">Mean</th><th colspan="1">Variance</th><th colspan="1">StdDev</th><th colspan="3">Quantiles</th><th colspan="2">Min</th><th colspan="2">Max</th></tr>
+			<tr><th></th><th></th><th></th><th></th><th>25%</th><th>50%</th><th>75%</th><th></th><th></th></tr>
+
 			</thead>
 			<tbody id="row">
 			</tbody>

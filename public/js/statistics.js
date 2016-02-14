@@ -99,9 +99,12 @@ function statsTime (unsorted){
 */
 function sortIt(unsorted){
 	// sort by y-value
+	
+	
 	for (var n = unsorted.length; n>1; n=n-1){
+	
 		for (var i=0; i<n-1; i++){
-			//sorted.push([0,0]);
+			
 			//if first item is bigger than second item, switch position
 			if(unsorted[i][1] > unsorted[i+1][1]){
 
@@ -110,10 +113,12 @@ function sortIt(unsorted){
 				unsorted[i][1] = unsorted[i+1][1];
 				unsorted[i+1][1] = tmp;
 
+				
+
 			}
 		}
 	}
-
+	console.log(unsorted);
 	return unsorted;
 }
 
@@ -124,19 +129,21 @@ function sortIt(unsorted){
 * @Return histData, Array of Arrays, containing each value and its number of appearance
 */
 function prepareHistoTime(sorted){
-	var histData = [];//create new Array with number of appearance of sorted values
-	histData.push(sorted[0]);
-	histData[0][1] = 1;
-	for (var j=1; j < sorted.length; j++){
-		if(sorted[j][0] == sorted[j-1][0]){
-			histData[histData.length-1][0] += 1;
+	var histo = [];
+	histo.push([sorted[0][1], 1]);
+	for(var i=0; i<sorted.length-1; i++){
+		
+
+		if(sorted[i][1] != sorted[i+1][1]){
+			histo.push([sorted[i+1][1], 1]);
 		} else {
-			histData.push(sorted[j]);
-			sorted[j][1] = 1;
+			histo[histo.length-1][1] += 1; 
 		}
+		
 	}
-	
-	return histData;
+
+	console.log(histo);
+	return histo;
 }
 
 
@@ -172,11 +179,13 @@ function statsSpatial (unsorted){
 	var threeqrt;
 	for(var i=0; i<sorted.length; i++){
 
+		
+
 		//calculating mean
 		sum += sorted[i];
 
 		//calculating variance
-		sumsqr = sumsqr + Math.pow(sorted[i][0], 2);
+		sumsqr = sumsqr + Math.pow(sorted[i], 2);
 
 
 	}
@@ -230,15 +239,17 @@ function prepareHistoSpatial(unsorted){
 	var sorted = unsorted.sort(function(a,b){return a-b});
 	var histData = [];//create new Array with number of appearance of sorted values
 	histData.push([sorted[0], 1]);
-	histData[0][1] = 1;
-	for (var j=1; j < sorted.length; j++){
-		if(sorted[j][0] == sorted[j-1][0]){
-			histData[histData.length-1][0] += 1;
+	
+	for (var j=0; j < sorted.length-1; j++){
+		if(sorted[j] == sorted[j+1]){
+			histData[histData.length-1][1] += 1;
 		} else {
-			histData.push(sorted[j]);
-			sorted[j][1] = 1;
+			histData.push([sorted[j+1], 1]);
+
 		}
 	}
 	
 	return histData;
 }
+
+
