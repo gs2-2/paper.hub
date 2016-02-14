@@ -95,6 +95,7 @@ function validateForm() {
         $('#errorMessage').css('display', 'none');
         $('#successMessage').css('display', 'block');
 
+		// hide cancelButton and submitButton
 		$('#cancelButton').css('display', 'none');
 		$('#submitButton').css('display', 'none');
 

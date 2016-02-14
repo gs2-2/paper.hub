@@ -23,6 +23,18 @@ $(document).ready(function() {
 				textStatus, errorThrown);
 		}
 	});
+
+	// fit the size of the iframe
+	$("#paper-frame").load(function() {
+		$(this).height( $(this).contents().find("html").height() );
+	});
+});
+
+/**
+ * @desc fit the height of the paperFrame when the size of the window has changed
+ */
+$(window).resize(function() {
+	$("#paper-frame").height( $("#paper-frame").contents().find("html").height() );
 });
 
 /**
