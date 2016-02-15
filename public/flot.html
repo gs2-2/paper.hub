@@ -189,20 +189,29 @@
 				}
 			});
 
+
+			//functionality for slider
 			$('#slider').bind('plotselected', function(event, ranges){
 				
+
+				// change zoom of plot
 				plot = $.plot(placeholder, data,
                           $.extend(true, {}, options, {
                               xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to }
                           }));
 
 
+				// create variable selection and push selected data into it
 				var selection = [];
 				console.log(plot.getData());
 				for (var i=0; i< plot.getData().length; i++){
 					var line = {data: []};
 					for (var j=0; j<plot.getData()[i].data.length; j++){
-						if((plot.getData()[i].data[j][0] > ranges.xaxis.from) && (plot.getData()[i].data[j][0] < ranges.xaxis.to)){
+
+
+						//ranges.xaxis.from contains most left x-value of drawn selection
+						//ranges.xaxis.to contains most right x-value of drawn selection
+						if((plot.getData()[i].data[j][0] >= ranges.xaxis.from) && (plot.getData()[i].data[j][0] <= ranges.xaxis.to)){
 							line.data.push(plot.getData()[i].data[j]); 
 							
 
@@ -229,11 +238,17 @@
 
 				var histoSeries = [];
 				
-				
+				//iterate over selection, calculate statistics and put result into table
 				$.each(selection, function(index, value){
+
+					// get statistics
 					var stats = statsTime(sortIt(value.data));
+
+					//get histogramm Data
 					var histoStats = prepareHistoTime(sortIt(value.data));
 					histoSeries.push(histoStats);
+
+					// fill table
 					$('#row').append('<tr><td>'+plot.getData()[index].label+'</td><td>'+stats.mean+'</td><td>'+stats.variance+'</td><td>'+stats.standardDev+'</td><td>'+stats.quantiles.quarter+'</td><td>'+stats.quantiles.half+'</td><td>'+stats.quantiles.threequarter+'</td><td>'+stats.min+'</td><td>'+stats.max+'</td></tr>');
 				
 				});
@@ -245,6 +260,7 @@
 					histoSeries.push(stats);
 				});*/
 
+				// set plot options for histogramm
 				var histoOptions = {
 					legend: {show: false},
 					grid: {borderWidth: 0.5},
@@ -260,19 +276,21 @@
 					},
 					colors: munin
 				};
+
+				//plot histogramm
 				var histogramm = $.plot('#histo', histoSeries, histoOptions);
 				
 
 				//console.log(histoSeries);
-			var controls = new colorControls({
-				element: document.querySelector('form'),
-				plot: plot,
-				histgram: histo,
-				histOptions: histoOptions,
-				histData: histoSeries,
-				options: options,
-				data: data
-			});
+				var controls = new colorControls({
+					element: document.querySelector('form'),
+					plot: plot,
+					histgram: histo,
+					histOptions: histoOptions,
+					histData: histoSeries,
+					options: options,
+					data: data
+				});
 			}
 
 
