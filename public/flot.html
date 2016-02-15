@@ -219,13 +219,6 @@
 			});
 
 
-			var controls = new colorControls({
-				element: document.querySelector('form'),
-				plot: plot,
-				options: options,
-				data: data
-			});
-		
 
 			/*
 			* @Desc calls statsTime() and puts result into table
@@ -236,7 +229,7 @@
 
 				var histoSeries = [];
 				
-				/*
+				
 				$.each(selection, function(index, value){
 					var stats = statsTime(sortIt(value.data));
 					var histoStats = prepareHistoTime(sortIt(value.data));
@@ -244,16 +237,15 @@
 					$('#row').append('<tr><td>'+plot.getData()[index].label+'</td><td>'+stats.mean+'</td><td>'+stats.variance+'</td><td>'+stats.standardDev+'</td><td>'+stats.quantiles.quarter+'</td><td>'+stats.quantiles.half+'</td><td>'+stats.quantiles.threequarter+'</td><td>'+stats.min+'</td><td>'+stats.max+'</td></tr>');
 				
 				});
-				*/
+				
 
-
+/*
 				$.each(selection, function(index, value){
 					var stats = prepareHistoTime(sortIt(value.data));
 					histoSeries.push(stats);
-				});
+				});*/
 
-				
-				var histogramm = $.plot('#histo', histoSeries, {
+				var histoOptions = {
 					legend: {show: false},
 					grid: {borderWidth: 0.5},
 					series: {
@@ -267,10 +259,20 @@
 						stack: 0
 					},
 					colors: munin
-				});
+				};
+				var histogramm = $.plot('#histo', histoSeries, histoOptions);
 				
 
 				//console.log(histoSeries);
+			var controls = new colorControls({
+				element: document.querySelector('form'),
+				plot: plot,
+				histgram: histo,
+				histOptions: histoOptions,
+				histData: histoSeries,
+				options: options,
+				data: data
+			});
 			}
 
 
@@ -278,6 +280,7 @@
 
 		}
 
+		
 
 		plotSelection();
 		

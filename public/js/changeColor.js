@@ -12,6 +12,9 @@ var colorControls = function(args) {
 		this.plot = args.plot;
 		this.options = args.options;
 		this.data = args.data;
+		this.histData = args.histData;
+		this.histOptions = args.histOptions;
+		this.histogram = args.histogram;
 		this.settings = this.serialize();
 
 		//define three selectable color-schemes, form rickshaw exmaple page
@@ -95,20 +98,28 @@ var colorControls = function(args) {
 
 				//set the config for the updated series
 				this.options.colors = colorwheel;
+				this.histOptions.colors = colorwheel;
 			}
 			else if(this.settings.color == 'Munin') {
 				
 				//set the config for the updated series
 				this.options.colors = munin;
+				this.histOptions.colors = munin;
 			}
 			else if(this.settings.color == 'Spectrum14') {
 				
 				//set the config for the updated series
 				this.options.colors = spectrum14;
+				this.histOptions.colors = spectrum14;
 			}
 			this.plot = $.plot('#placeholder', this.data, this.options);
 			this.plot.setupGrid();
 			this.plot.draw();
+			console.log(this.histOptions);
+			console.log(this.histData);
+			this.histogram = $.plot('#histo', this.histData, this.histOptions);
+			this.histogram.setupGrid();
+			this.histogram.draw();
 		}.bind(this), false);
 	};
 
