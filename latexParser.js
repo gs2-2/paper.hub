@@ -16,14 +16,12 @@ var async  = require('async');
 */
 var xml2html = function (inPath, outPath, callback) {
 
-	var jquerypath		= __dirname + '/public/vendor/jquery/dist/jquery.js';
-	var waypointspath 	= __dirname + '/public/vendor/waypoints/lib/jquery.waypoints.min.js';
-	var stylingpath 	= __dirname + '/paperInclude.js';
-	var mathjaxpath		= "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML";	
+	var jquerypath    = __dirname + '/public/vendor/jquery/dist/jquery.js';
+	var waypointspath = __dirname + '/public/vendor/waypoints/lib/jquery.waypoints.min.js';
+	var jsIncludePath = __dirname + '/paperInclude.js';
 	
-	// Alternative if MathJax should be used.
- 	//var cmd = 'latexmlpost --dest=' + outPath +' --javascript='+ jquerypath +' --javascript='+mathjaxpath +' --javascript="' +stylingpath+ '"' + ' '+ inPath;
-	var cmd = 'latexmlpost --dest='    + outPath +' --format=html4'+' --javascript='+ jquerypath +' --javascript=' + waypointspath + ' --javascript="' +stylingpath+ '"' + ' '+ inPath;
+	var cmd = 'latexmlpost --dest=' + outPath +' --format=html4'+' --javascript='+ jquerypath 
+		+ ' --javascript=' + waypointspath + ' --javascript="' + jsIncludePath + '" "' + inPath + '"';
 	cp.exec(cmd, function(err, stdout, stderr) {
 		if(err) return callback(err);
 		callback(null);
@@ -36,7 +34,7 @@ var xml2html = function (inPath, outPath, callback) {
 * @param outPath path, where to save the new file
 */
 var latex2xml = function (inPath, outPath, callback) {
-	var cmd = 'latexml --dest=' + outPath + ' ' + inPath;
+	var cmd = 'latexml --dest=' + outPath + ' "' + inPath + '"';
 
 	cp.exec(cmd, function(err, stdout, stderr) {
 		if(err) return callback(err);
