@@ -23,10 +23,14 @@
     <link rel="stylesheet" href="/vendor/skeleton/css/skeleton.css">
     <link rel="stylesheet" href="/css/style.css">
 
-
     <!-- Favicon
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    
+    <!-- JS includes
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <script src="/vendor/jquery/dist/jquery.min.js" charset="utf-8"></script>
+    <script src="/js/paperpage_logic.js" charset="utf-8"></script>
 </head>
 <body>
 
@@ -38,7 +42,7 @@
 <div class="navbar">
     <div style="overflow:auto;">
         <div class="logo">
-            <a href="/"><img src="/img/paperhub_logo2.svg" width="auto" height="47px"></a>
+            <a href="/"><img src="/img/paperhub_logo2.svg" width="210px" height="50px"></a>
         </div>
             <a class="button" href="#" onclick="downloadPaper()">Download Paper</a>
     </div>
@@ -49,7 +53,6 @@
 <div class="container">
 
     <!-- Metadaten-->
-    <!-- todo: metadaten einladen und darstellen -->
     <div class="row">
         <div class="column" style="margin-top: 75px">
             <h4 style="font-weight: 500" id="title"></h4>
@@ -66,11 +69,6 @@
     </div>
 
 </div>
-
-<!-- JS includes
-–––––––––––––––––––––––––––––––––––––––––––––––––– -->
-<script src="/vendor/jquery/dist/jquery.min.js" charset="utf-8"></script>
-<script src="/js/paperpage_logic.js" charset="utf-8"></script>
 
 </body>
 </html>

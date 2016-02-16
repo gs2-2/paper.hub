@@ -15,8 +15,13 @@ var async  = require('async');
 * @param outPath path, where to save the new file
 */
 var xml2html = function (inPath, outPath, callback) {
-	var cmd = 'latexmlpost --dest=' + outPath + ' ' + inPath;
 
+	var jquerypath    = __dirname + '/public/vendor/jquery/dist/jquery.js';
+	var waypointspath = __dirname + '/public/vendor/waypoints/lib/jquery.waypoints.min.js';
+	var jsIncludePath = __dirname + '/paperInclude.js';
+	
+	var cmd = 'latexmlpost --dest=' + outPath +' --format=html4'+' --javascript='+ jquerypath 
+		+ ' --javascript=' + waypointspath + ' --javascript="' + jsIncludePath + '" "' + inPath + '"';
 	cp.exec(cmd, function(err, stdout, stderr) {
 		if(err) return callback(err);
 		callback(null);
@@ -29,7 +34,7 @@ var xml2html = function (inPath, outPath, callback) {
 * @param outPath path, where to save the new file
 */
 var latex2xml = function (inPath, outPath, callback) {
-	var cmd = 'latexml --dest=' + outPath + ' ' + inPath;
+	var cmd = 'latexml --dest=' + outPath + ' "' + inPath + '"';
 
 	cp.exec(cmd, function(err, stdout, stderr) {
 		if(err) return callback(err);

@@ -40,3 +40,5 @@ function iframeResize(iframe){
 function downloadPaper() {
 	window.open('/downloadPaper/' + paperID);
 }
+
+

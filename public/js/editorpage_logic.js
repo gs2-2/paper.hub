@@ -1,6 +1,7 @@
 'use strict';
 
 var paperID, paperFrame;
+var showClosingMessage = "Data you have entered may not be saved.";
 
 $(document).ready(function() {
 	paperID    = window.location.pathname.split('/').pop();
@@ -28,7 +29,7 @@ function addClickListeners(iframe) {
 	var visualCounter = 0;
 
 	// add click listeners to all paragraphs in the paper iframe
-	$(iframe).contents().find('.ltx_para')
+	$(iframe).contents().find('.ltx_para').not('li > div')
 		.css('cursor', 'pointer')
 		.css('user-select', 'none')
 		.hover(
@@ -79,6 +80,7 @@ function addClickListeners(iframe) {
  * @desc replaces the visualization selector elements with iframes pointing to the visualizations
  */
 function uploadDatasets() {
+	showClosingMessage = '';
 	// iterate over all visualization placeholders in the iframe and submit them using ajax
 	var forms = paperFrame.contentWindow.document.forms,
 		widgetIDs = [],
@@ -129,8 +131,7 @@ function uploadDatasets() {
 				    id  = widgetIDs[i],
 				    div = $(forms[i].parentElement);
 
-				div.replaceWith('<iframe style="margin-top: 15px" width="100%" height="420px" src="'
-					+ '/data/widgets/' + id + '.html"></iframe>'
+				div.replaceWith('<iframe class="widget" style="margin-top: 15px" width="100%" height="420px" src="' + id + '"></iframe>'
 						// add a caption below the visualisation
 					+ '<div style="margin-left: 60px; margin-bottom: 15px">'
 					+ $(forms[i]).find('input[name="caption"]').fieldValue()[0] + '</div>');
@@ -154,6 +155,7 @@ function uploadDatasets() {
  * @desc delete the uploaded files (and redirect to the landingpage)
  */
 function deleteFiles(){
+	showClosingMessage = '';
 	$.ajax({
 		type: 'DELETE',
 		url: '/deletePaper/' + paperID,
@@ -166,3 +168,11 @@ function deleteFiles(){
 		}
 	});
 }
+
+/**
+ * @desc show warning message if user wants to leave the page without submitting or pressing the correct cancel-button
+ */
+$(window).on('beforeunload', function() {
+	if(showClosingMessage != '')
+		return showClosingMessage;
+});

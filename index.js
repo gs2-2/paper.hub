@@ -94,7 +94,7 @@ app.get('/paper/:id', function(req, res) {
 
 	//get the id from the request
 	var id = req.params.id;
-
+	
 	//send the html file
 	res.sendFile(__dirname + '/public/paper.html');
 });
@@ -107,8 +107,17 @@ app.get('/editor/:id', loggedIn, function(req, res) {
 	//get the id from the request
 	var id = req.params.id;
 
-	//send the html file in the response
-	res.sendFile(__dirname + '/public/editor.html');
+	// Check if you are the author and eligible to edit the paper
+	publications.findById(id, function(err, doc) {
+        if (err) return res.sendStatus(500);
+    	if (req.user.providerID != doc.authorID){
+			// if you're not the author of the paper you'll get a 403.
+	        res.sendStatus(403);
+	    } else {
+	    	res.sendFile(__dirname + '/public/editor.html');
+	    }
+    });
+
 });
 
 /* return metadata about all stored papers */
@@ -143,7 +152,7 @@ app.get('/getPaperMetadata/:id', function(req, res) {
 * @desc Delete the DB-content of the publication
 */
 app.delete('/deletePaper/:id', loggedIn, function(req, res) {
-
+		
 	//save the id from the URL
 	var id = req.params.id,
 	    widgets;
@@ -153,6 +162,11 @@ app.delete('/deletePaper/:id', loggedIn, function(req, res) {
         function(done) {
             publications.findById(id, function(err, doc) {
                 if(err) return done(err);
+                // if you're not the author of the paper you'll get a 403.
+                if(req.user.providerID != doc.authorID) {
+                	res.sendStatus(403);
+                	return done('requesting user & paper author dont match');
+            	}
                 widgets = doc.widgets || [];
                 done(null);
             });
@@ -169,7 +183,7 @@ app.delete('/deletePaper/:id', loggedIn, function(req, res) {
                     if (err) return done(err);
                 });
             };
-                        
+
             // remove the document form the DB
             publications.remove({_id: id}, done);
         },
@@ -188,6 +202,7 @@ app.post('/addPaper', latexUpload, loggedIn, function(req, res) {
 		title:    req.body.title,
 		abstract: req.body.abstract,
 		author:   req.body.author,
+		authorID: req.user.providerID,
 		publicationDate: new Date(),
 		widgets: [] //insert widgets, when they are generated after the upload
 	});
@@ -203,12 +218,30 @@ app.post('/addPaper', latexUpload, loggedIn, function(req, res) {
 	 */
 	function moveUploadToPaper(paperID, callback) {
 
-		var fileList;
+		var fileList = [];
+		var originalname;
+		var isIn = false;
+
+		//check for the tex file if it is uploaded twice
+		if(req.files['files']) { 
+			for(var i = 0; i < req.files['files'].length; i++) {
+				originalname = req.files['files'][i].originalname;
+				if(originalname == req.files['latexDocument'][0].originalname) {
+					isIn = true;
+				}
+			}
+		}
 		// move each file (the latex doc + the utility files) to the paper dir
-		if(req.files['files']) {
+		if (isIn) {
 			fileList = req.files['files'];
 		}
-		fileList.push(req.files['latexDocument'][0]);
+		else if (req.files['files']) {
+			fileList = req.files['files'];
+			fileList.push(req.files['latexDocument'][0]);
+		}
+		else {
+			fileList.push(req.files['latexDocument'][0]);
+		}
 
 		async.each(fileList, function(file, cb) {
 			fs.move(file.path, texPath + file.filename, {clobber: true}, cb);
@@ -249,7 +282,7 @@ app.post('/updatePaperHTML/:id/', loggedIn, htmlUpload, function(req, res){
 		async.apply(util.zipPaper, config.dataDir.papers, paperId)
 	],
 	function (err, results) {
-		if (err) res.status(500).send('unable to update the paper: %s', err);
+		if (err) return res.status(500).send('unable to update the paper: %s', err);
 		res.send(paperId);
 	});
 });
@@ -281,8 +314,6 @@ app.get('/downloadPaper/:id/', function(req, res){
 			res.status(404).send('File not found');
 		}
 	});
-
-
 });
 
 
@@ -311,20 +342,17 @@ app.post('/addDataset', loggedIn, widgetUpload, function(req, res) {
 	* @desc Helper function, that calls the script to parse the given file to a widget
 	*/
 	function useWidgetScript(file, callback) {
-
-		if(uploadedWidget.widgetType == 'map') {
-			widgets.map(movePath + filename, config.dataDir.widgets + '/' + widgetID + '.html', 'area', function(err) {
-				if(err) console.log(err);
-			});
+		if (uploadedWidget.widgetType == 'map') {
+			widgets.map(movePath + file, config.dataDir.widgets + '/' + widgetID + '.html', callback);
+		} else if (uploadedWidget.widgetType == 'timeseries') {
+			widgets.timeseries(
+				movePath + file,
+				config.dataDir.widgets + '/' + widgetID + '.html',
+				callback
+			);
+		} else {
+			return callback('filetype not available for %s', file);
 		}
-		else if(uploadedWidget.widgetType == 'timeseries') {
-			widgets.timeseries(movePath + filename, config.dataDir.widgets + '/' + widgetID + '.html');
-		}
-		else {
-			console.error('The file can not be parsed to a widget');
-			return callback('Error filetype not available');
-		}
-		callback(null);
 	};
 
 	//perform task in an asynchronous series, one after another
@@ -336,7 +364,6 @@ app.post('/addDataset', loggedIn, widgetUpload, function(req, res) {
 		//save the DB entry for the file.
 		async.apply(uploadedWidget.save),
 		//save the widget in the widgets-array of the publication
-		//async.apply(publications.update, {_id: req.body.publication}, {$push: {'widgets': widgetID}}, {})
 		function(callback) {
 			publications.update( {_id: req.body.publication}, {$push: {'widgets': widgetID}}, {}, callback);
 		}
@@ -363,19 +390,5 @@ function loggedIn(req, res, next) {
 		res.redirect('/');
     }
 }
-
-//-----------Delete-------------------------------
-app.get('/testR2Graph', function(req, res){
-	
-	var inpath = __dirname + '/data/papers/Meaningful/fig-8-zoo.Rdata';
-	//var inpath = __dirname + '/data/papers/test01-zeitreihenbeispiel/data/fig01.Rdata';
-	var outpath = __dirname + '/data/widgets/fig1xtsflot3.html';
-	widgets.timeseries(inpath, outpath, function(error, result){
-		if (error) console.log(error);
-		res.send(result);
-	});
-});
-
-//--------------------------------------------
 
 
