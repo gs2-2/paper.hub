@@ -219,11 +219,10 @@
 			// add tooltip hover functionality
 			$('#placeholder').bind('plothover', function(event, pos, item){
 				if(item){
-					var x = item.datapoint[0].toFixed(2),
+					var x = item.datapoint[0].toFixed(0),
 					y = item.datapoint[1].toFixed(2);
 					x = parseInt(x);
-					var date = moment(x).format('MMM Do YYYY HH:mm:ss');
-					$('#tooltip').html('<b>' + item.series.label + '</b><br>' + date.toString() + '<br> y: ' + y).css({top: item.pageY+5, left: item.pageX+5}).fadeIn(200);
+					$('#tooltip').html('<b>' + item.series.label + '</b><br> x: ' + x + '<br> y: ' + y).css({top: item.pageY+5, left: item.pageX+5}).fadeIn(200);
 				} else {
 					$('#tooltip').hide();
 				}

@@ -7,9 +7,9 @@
 * @Return stats, object containing statistics
 */
 function stats(unsorted){
-	console.log(unsorted);
-	var sorted = unsorted.sort(function(a,b){return a-b});
-	console.log(sorted);
+	//var sorted = unsorted.sort(function(a,b){return a-b});
+	var sorted = unsorted.slice(0);
+	sorted.sort(function(a,b){return a-b});
 	var stats = {
 		mean: 0.0,
 		variance: 0.0,
@@ -24,7 +24,6 @@ function stats(unsorted){
 	};
 
 	var sum = 0;
-	var sumsqr = 0;
 	var min = sorted[0];
 	var max = sorted[sorted.length-1];
 	var quart;
@@ -37,8 +36,6 @@ function stats(unsorted){
 		//calculating mean
 		sum += sorted[i];
 
-		//calculating variance
-		sumsqr = sumsqr + Math.pow(sorted[i], 2);
 
 
 	}
@@ -57,11 +54,23 @@ function stats(unsorted){
 	var mean = sum/sorted.length;
 	stats.mean = mean.toFixed(2);
 
+
+
+
+	var	i = sorted.length,
+		v = 0;
+ 
+	while( i-- ){
+		v += Math.pow( (sorted[ i ] - mean), 2 );
+	}
+
+	v /= sorted.length;
+
+
 	//set variance
 	console.log(sorted.length);
-	var variance = (sumsqr/sorted.length) - Math.pow(stats.mean, 2);
-	stats.variance = variance.toFixed(2);
-
+	
+	stats.variance = v.toFixed(2);
 	//set standardDev
 	stats.standardDev = Math.sqrt(stats.variance).toFixed(2);
 

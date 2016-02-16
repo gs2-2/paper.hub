@@ -76,7 +76,6 @@ exports.timeseries = function (inPath, outPath, callback) {
 			// check if xts or zoo template is needed and change path according to cases
 			var templatePath;
 			if (isXts){
-				//templatePath = '/xtsTemplate.txt';
 				templatePath = '/xtsTemplate.txt';
 			} else {
 				templatePath = '/zooTemplate.txt';
@@ -98,7 +97,7 @@ exports.timeseries = function (inPath, outPath, callback) {
 		var addedValues = graphTemplate.replace('InsertValueHere', JSON.stringify(jsonData));
 		// save HTML
 		fs.writeFile(outPath, addedValues, callback);
-		callback(null);
+		//callback(null);
 	});
 }
 

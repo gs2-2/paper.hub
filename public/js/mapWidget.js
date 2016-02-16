@@ -118,11 +118,11 @@ function MapStatistics(map) {
     /* takes an data object like { measure1: [values], measure2: [values], ... }
        & calculates statistics on them */
     this.update = function(data) {
-        var stats = {};
+        var statistics = {};
         for (var prop in data) {
-            stats[prop] = statsSpatial(data[prop]);
+            statistics[prop] = stats(data[prop]);
         }
-        _statsview.update(stats);
+        _statsview.update(statistics);
         return this;
     };
     
