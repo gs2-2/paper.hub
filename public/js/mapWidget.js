@@ -22,7 +22,6 @@ function MapWidget(mapElement) {
         }
                 
         /* add a geojson layer to the map */
-        var containsStatistics = false;
         var dataset = L.geoJson(data, {
             onEachFeature: function(feature, layer) {
                 if (feature.properties) {
@@ -31,13 +30,11 @@ function MapWidget(mapElement) {
                         properties: feature.properties,
                         bounds: layer.getBounds ? layer.getBounds() : layer.getLatLng()
                     });
-                    containsStatistics = true;
                 }
             }
         });
         
         L.markerClusterGroup().addLayer(dataset).addTo(_layers);
-        if (containsStatistics) _stats.addTo(_map);
         _map.fitBounds(_layers.getBounds());
         
         // sort features array by first property, to save processing time when calculating statistics
@@ -60,12 +57,11 @@ function MapWidget(mapElement) {
             Positron: L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
                 attribution: _osmAttribution + ' contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
             }),
-            DarkMatter: L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',{
+            DarkMatter: L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
                 attribution: _osmAttribution + ' contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
             }),
-            ESRIGeoWorldMap: L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', {
-                attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC',
-                maxZoom: 16
+            OpenStreetMap_HOT: L.tileLayer('http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+                attribution: _osmAttribution + ', Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'
             }),
             OpenStreetMap: L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
                 attribution: _osmAttribution
@@ -75,16 +71,7 @@ function MapWidget(mapElement) {
                     'Map tiles by <a href="http://stamen.com">Stamen Design</a>, ' +
                     '<a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; ' +
                     'Map data ' + _osmAttribution
-            }),
-            NASAGIBS_ViirsEarthAtNight2012: L.tileLayer('http://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
-                attribution: 'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System (<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
-                bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
-                minZoom: 1,
-                maxZoom: 8,
-                format: 'jpg',
-                time: '',
-                tilematrixset: 'GoogleMapsCompatible_Level'
-            }),
+            })
         };
         
         /* add controls */
@@ -179,15 +166,9 @@ function MapStatistics(map) {
             }
             this._div.innerHTML = fullHtmlString + '</table>';
         };
-    }
-    
-    this.addTo = function(map) {
+        
         _statsview.addTo(map);
-    };
-    
-    this.removeFrom = function(map) {
-        _statsview.removeFrom(map);
-    };
+    }
 
     _initialize(map);
     return this;
