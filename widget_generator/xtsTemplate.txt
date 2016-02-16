@@ -3,28 +3,24 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>My test</title>
-	<link rel="stylesheet" href="/vendor/jquery-ui/themes/smoothness/jquery-ui.css">
 
-	<link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+	
 
     <!-- CSS
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <link rel="stylesheet" href="/vendor/skeleton/css/normalize.css">
     <link rel="stylesheet" href="/vendor/skeleton/css/skeleton.css">
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/index.css">
+ 
+
 
 
 
 	<script language="javascript" type="text/javascript" src="/vendor/jquery/dist/jquery.min.js"></script>
-	<script language="javascript" type="text/javascript" src="/vendor/jquery-ui/jquery-ui.min.js"></script>
 	<script language="javascript" type="text/javascript" src="/js/flot.js/jquery.flot.min.js"></script>
 	<script language="javascript" type="text/javascript" src="/js/flot.js/jquery.flot.time.min.js"></script>
-
-	<script language="javascript" type="text/javascript" src="/js/flot.js/jquery.flot.navigate.min.js"></script>
-
 	<script language="javascript" type="text/javascript" src="/js/flot.js/jquery.flot.selection.min.js"></script>
-		<script language="javascript" type="text/javascript" src="/js/flot.js/jquery.flot.stack.min.js"></script>
+	<script language="javascript" type="text/javascript" src="/js/flot.js/jquery.flot.stack.min.js"></script>
 	<script language="javascript" type="text/javascript" src="/vendor/moment/moment.js"></script>
 	<script language="javascript" type="text/javascript" src="/js/statistics.js"></script>
 
