@@ -121,10 +121,8 @@
 						lines: {show: true},
 						points: {show: true}
 					},
-
-					//zoom: {interactive: false},
-					//pan: {interactive: false},
-					colors: munin
+					colors: munin,
+					selection: {mode: 'y'}
 				};
 
 		    
@@ -132,7 +130,7 @@
 		// draw graph
 		function plotSelection(){
 			var data = [];
-			
+			var xValue = {};
 
 			// check which series are selected
 			$('#lineSelector').find('input:checked').each(function(){
@@ -197,6 +195,21 @@
 				
 			}
 
+
+			//add yaxis scale
+			$('#placeholder').bind('plotselected', function(event, ranges){
+				
+			
+				// change zoom of plot
+				plot = $.plot(placeholder, data,
+                          $.extend(true, {}, options, {
+                          	
+                             yaxis: {min: ranges.yaxis.from, max: ranges.yaxis.to}
+                          }));
+				});
+
+
+
 			// add tooltip
 			$('<div id="tooltip"></div>').css({
 				position: 'absolute',
@@ -224,11 +237,13 @@
 			//functionality for slider
 			$('#slider').bind('plotselected', function(event, ranges){
 				
-				console.log(ranges.xaxis.from);
+				xValue.min = ranges.xaxis.from;
+				xValue.max = ranges.xaxis.to;
 				// change zoom of plot
 				plot = $.plot(placeholder, data,
                           $.extend(true, {}, options, {
-                              xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to }
+                              xaxis: xValue,
+                              yaxis: {min: 0, max: 100}
                           }));
 
 
@@ -336,6 +351,10 @@
 						$('#tooltipHisto').hide();
 					}
 				});
+
+
+				
+
 
 				//console.log(histoSeries);
 				var controls = new colorControls({

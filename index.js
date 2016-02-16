@@ -367,11 +367,10 @@ function loggedIn(req, res, next) {
 //-----------Delete-------------------------------
 app.get('/testR2Graph', function(req, res){
 	
-	//var inpath = __dirname + '/data/papers/Meaningful/fig-8-zoo.Rdata';
-	var inpath = __dirname + '/data/papers/test01-zeitreihenbeispiel/data/fig01.Rdata';
-	var outpath = __dirname + '/data/widgets/fig1xtsflot2.html';
-	var type = 'area';
-	widgets.timeseries(inpath, outpath, type, function(error, result){
+	var inpath = __dirname + '/data/papers/Meaningful/fig-8-zoo.Rdata';
+	//var inpath = __dirname + '/data/papers/test01-zeitreihenbeispiel/data/fig01.Rdata';
+	var outpath = __dirname + '/data/widgets/fig1xtsflot3.html';
+	widgets.timeseries(inpath, outpath, function(error, result){
 		if (error) console.log(error);
 		res.send(result);
 	});

@@ -32,7 +32,7 @@ exports.map = function (inPaths, outPath, callback) {
  * @param type 	   one of the following ['area', 'line', 'bar', 'scatterplot']
  * @param callback function that is called after execution of the script with param 'error'
  */
-exports.timeseries = function (inPath, outPath, type, callback) {
+exports.timeseries = function (inPath, outPath, callback) {
 	// will contain the data from inPath as json
 	var jsonData = [];
 	// will contain the exit code from Rscript
@@ -70,9 +70,9 @@ exports.timeseries = function (inPath, outPath, type, callback) {
 			var templatePath;
 			if (isXts){
 				//templatePath = '/xtsTemplate.txt';
-				templatePath = '/zooTemplate2.txt';
+				templatePath = '/xtsTemplate.txt';
 			} else {
-				templatePath = '/zooTemplate2.txt';
+				templatePath = '/zooTemplate.txt';
 			}
 
 			fs.readFile(__dirname + templatePath, function(err, data){
