@@ -37,10 +37,12 @@
 		// create example datasets
 		var datasets = [{"label":"rural","data":[[2001,20.1],[2002,22.3],[2003,24.4],[2004,20.1],[2005,20.6],[2006,21.1],[2007,19.4],[2008,18.8],[2009,19.3],[2010,19.9]]},{"label":"urban","data":[[2001,28.1],[2002,29.3],[2003,32.8],[2004,27.3],[2005,27.6],[2006,29.2],[2007,26.9],[2008,25.8],[2009,26.9],[2010,26.7]]},{"label":"traffic","data":[[2001,32.1],[2002,33.8],[2003,35.8],[2004,31.1],[2005,31.6],[2006,33.1],[2007,31.1],[2008,30.3],[2009,29.8],[2010,29.4]]}];
 
+		// add headline
+		$('#lineSelector').append("<p style='text-align: center; margin-bottom: 0'>Select series</p>");
 		
 		// add checkboxes for each series
 		$.each(datasets, function(key, val){
-			$('#lineSelector').append("<input type='checkbox' name='" + key + "' checked='checked' id='id" + key + "'></input>" + "<label for='id" + key + "'>" + val.label + "</label>");
+			$('#lineSelector').append("<input type='checkbox' name='" + key + "' checked='checked' id='id" + key + "'></input>" + "<label style='text-align: right; display: inline-block; padding-right: 0.5em;' for='id" + key + "'>" + val.label + "</label>");
 		});
 
 		// on click update graph and only show selected series
@@ -370,10 +372,25 @@
 		
 		<div id="placeholder" style="width: 100%; height: 400px"></div>
 		<div id="slider" style="width: 96.5%; left: 2%; height: 50px"></div>
-		<div id="lineSelector" style="position: absolute; right: 0%; top: 80%; width:10%; height: 10%"></div>
-		<div id="statistics" style="position: absolute; left: 2.7%; width: 20%; height: 20%">
+		<div id="lineSelector" style="width: 48%; height: 3em; float: left; padding-left: 2%; text-align: center;"></div>
+		<div id="color_chooser" style="width: 48%; height: 3em; float: right; padding-left: 2%;">
+			<form id="color_form" class="rickshaw_legend" style="height: 30px, width: 60px">
+				<p style="text-align: center; margin-bottom: 0">Select color</p>
+				<div id="renderer_form" class="toggler" style="text-align: center">
+					<input type="radio" name="color" id="munin" value="Munin" checked>
+					<label for="munin" style="text-align: right; padding-right: 0.5em; display: inline-block">Munin</label>
+					<input type="radio" name="color" id="colorwheel" value="Colorwheel">
+					<label for="colorwheel" style="text-align: right; padding-right: 0.5em; display: inline-block">Colorwheel</label>
+					<input type="radio" name="color" id="spectrum14" value="Spectrum14">
+					<label for="spectrum14" style="text-align: right; padding-right: 0.5em; display: inline-block">Spectrum14</label>
+				</div>
+			</form>
+		</div>
+		
+		
+		<div id="statistics" style="width: 100%; display: inline-block; padding-left: 2%;">
 			
-			<table>
+			<table style="float: left; padding-left: 2%">
 			<thead>
 			<tr>
 				<th colspan="1">Series</th><th colspan="1">Mean</th>
@@ -386,26 +403,10 @@
 			</tbody>
 			</table>
 
-			
-		</div>
-		<div id="histo" style="width: 40%; height: 140px; left: 50%"></div>
-		
-		
-		
+			<div id="histo" style="float: right; width: 44%; height: 220px; padding-left: 2% !important; padding-right: 2% !important"></div>
 
-		<div id="color_chooser">
-			<form id="color_form" class="rickshaw_legend" style="height: 60px, width: 60px">
-				<h6>Choose color</h6>
-				<div id="renderer_form" class="toggler">
-					<input type="radio" name="color" id="munin" value="Munin" checked>
-					<label for="munin">Munin</label><br/>
-					<input type="radio" name="color" id="colorwheel" value="Colorwheel">
-					<label for="colorwheel">Colorwheel</label><br/>
-					<input type="radio" name="color" id="spectrum14" value="Spectrum14">
-					<label for="spectrum14">Spectrum14</label>
-				</div>
-			</form>
 		</div>
+		
 
 </body>
 </html>
