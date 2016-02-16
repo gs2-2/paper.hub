@@ -68,7 +68,7 @@ function stats(unsorted){
 
 
 	//set variance
-	console.log(sorted.length);
+	
 	
 	stats.variance = v.toFixed(2);
 	//set standardDev
@@ -87,7 +87,6 @@ function stats(unsorted){
 	stats.max = max.toFixed(2);
 
 	// return
-	console.log(sorted);
 	return stats;
 }
 

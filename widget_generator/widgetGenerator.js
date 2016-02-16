@@ -53,8 +53,7 @@ exports.timeseries = function (inPath, outPath, callback) {
 				+ ' --input "' + inPath + '" --output ' + inPath + '.csv';
 			cp.exec(cmd, {}, function(error){
 				console.log(error.code);
-				console.log('type: ' + typeof error.code);
-				if (error && error.code == 12) {isXts = false; console.log('is here');}
+				if (error && error.code == 12) {isXts = false;}
 				else if (error && error.code == 11) isXts = true;
 				else if (error && error.code ==13) done('invalid data type of file: ' + inPath);
 				else return done(error);
@@ -97,7 +96,6 @@ exports.timeseries = function (inPath, outPath, callback) {
 		var addedValues = graphTemplate.replace('InsertValueHere', JSON.stringify(jsonData));
 		// save HTML
 		fs.writeFile(outPath, addedValues, callback);
-		//callback(null);
 	});
 }
 

@@ -72,4 +72,3 @@ createCSV <- function(inputPath, outputPath){
 
 args <- commandArgs(asValues = TRUE)
 createCSV(args$input, args$output)
-#createCSV('/home/jan/Dokumente/paper.hub/data/papers/Meaningful/fig-8-zoo.Rdata', '/home/jan/Dokumente/paper.hub/data/widgets/test.csv')

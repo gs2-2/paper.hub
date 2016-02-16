@@ -245,7 +245,6 @@
 
 				// create variable selection and push selected data into it
 				var selection = [];
-				console.log(plot.getData());
 				for (var i=0; i< plot.getData().length; i++){
 					var line = {data: []};
 					for (var j=0; j<plot.getData()[i].data.length; j++){
@@ -260,7 +259,6 @@
 						}
 					}
 					selection.push(line);
-					console.log(selection);
 
 				}
 
@@ -348,7 +346,6 @@
 					}
 				});
 
-				//console.log(histoSeries);
 				var controls = new colorControls({
 					element: document.querySelector('form'),
 					plot: plot,
