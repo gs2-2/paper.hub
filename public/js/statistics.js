@@ -97,9 +97,31 @@ function stats(unsorted){
 * @Return histData, Array of Arrays, containing each value and its number of appearance
 */
 function prepareHisto(unsorted){
-	var sorted = unsorted.sort(function(a,b){return a-b});
-	var histData = [];//create new Array with number of appearance of sorted values
-	histData.push([sorted[0], 1]);
+	var sorted = unsorted.slice();
+    sorted.sort(function(a,b){return a-b;});
+    var min = sorted[0];
+    var max = sorted[sorted.length - 1];
+    var intervals = new Array(20);
+    var intervalSize = ((max - min) + 1) / intervals.length;
+    
+    for (var i = 0; i < intervals.length; i ++) {
+        var intervalMin = min + i * intervalSize;
+        var intervalMax = min + (i+1) * intervalSize;
+        intervals[i] = [intervalMin, 0];
+        
+        for(var j = sorted.length - 1; j > 0; j--) {
+            if (sorted[j] < intervalMax && sorted[j] >= intervalMin) {
+                intervals[i][1] = intervals[i][1] +  1;
+                //sorted.pop();
+            }
+        }
+    }
+    
+    console.log(intervals);
+    
+    
+    
+	/*histData.push([sorted[0], 1]);
 	
 	for (var j=0; j < sorted.length-1; j++){
 		if(sorted[j] == sorted[j+1]){
@@ -108,9 +130,9 @@ function prepareHisto(unsorted){
 			histData.push([sorted[j+1], 1]);
 
 		}
-	}
+	}*/
 	
-	return histData;
+	return intervals;
 }
 
 

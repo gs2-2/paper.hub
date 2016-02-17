@@ -119,10 +119,12 @@ function MapStatistics(map) {
        & calculates statistics on them */
     this.update = function(data) {
         var statistics = {};
+        var histograms = [];
         for (var prop in data) {
             statistics[prop] = stats(data[prop]);
+            histograms[histograms.length] = prepareHisto(data[prop]);
         }
-        _statsview.update(statistics);
+        _statsview.update(statistics, histograms);
         return this;
     };
     
@@ -135,7 +137,7 @@ function MapStatistics(map) {
             return this._div;
         };
 
-        _statsview.update = function (results) {
+        _statsview.update = function (statistics, histogramData) {
             var htmlStrings = {
                 head: '<tr><th></th>',
                 mean: '<tr><th>mean</th>',
@@ -148,23 +150,42 @@ function MapStatistics(map) {
                 qnt3: '<tr><th>.75quant</th>'
             };
             
-            for (var prop in results) {
+            for (var prop in statistics) {
                 htmlStrings.head += ('<th>' + prop + '</th>');
-                htmlStrings.mean += ('<td>' + results[prop].mean + '</td>');
-                htmlStrings.min  += ('<td>' + results[prop].min + '</td>');
-                htmlStrings.max  += ('<td>' + results[prop].max + '</td>');
-                htmlStrings.variance += ('<td>' + results[prop].variance + '</td>');
-                htmlStrings.stdDev += ('<td>' + results[prop].standardDev + '</td>');
-                htmlStrings.qnt1 += ('<td>' + results[prop].quantiles.quarter + '</td>');
-                htmlStrings.qnt2 += ('<td>' + results[prop].quantiles.half + '</td>');
-                htmlStrings.qnt3 += ('<td>' + results[prop].quantiles.threequarter + '</td>');
+                htmlStrings.mean += ('<td>' + statistics[prop].mean + '</td>');
+                htmlStrings.min  += ('<td>' + statistics[prop].min + '</td>');
+                htmlStrings.max  += ('<td>' + statistics[prop].max + '</td>');
+                htmlStrings.variance += ('<td>' + statistics[prop].variance + '</td>');
+                htmlStrings.stdDev += ('<td>' + statistics[prop].standardDev + '</td>');
+                htmlStrings.qnt1 += ('<td>' + statistics[prop].quantiles.quarter + '</td>');
+                htmlStrings.qnt2 += ('<td>' + statistics[prop].quantiles.half + '</td>');
+                htmlStrings.qnt3 += ('<td>' + statistics[prop].quantiles.threequarter + '</td>');
             }
             
             var fullHtmlString = '<h4>Statistics</h4><table>';
             for (var str in htmlStrings) {
                 fullHtmlString += (htmlStrings[str] + '</tr>');
             }
-            this._div.innerHTML = fullHtmlString + '</table>';
+            
+            fullHtmlString += '</table><br><h4>Histogram</h4>' +
+                '<div id="histogram" style="height: 100px; width: 100%;"></div>';
+            
+            this._div.innerHTML = fullHtmlString;
+
+            // initialize a new flot graph with histogram data.
+            // timeout needed to wait for dom element creation :^(
+            setTimeout(function() {
+                $.plot('#histogram', histogramData, {
+                    legend: { show: false },
+                    grid: { hoverable: true, borderWidth: 0.5 },
+                    series: {
+                        lines: { show: false },
+                        bars: { show: true, barWidth: 0.5, lineWidth: 1 },
+                        stack: 0
+                    },
+                    colors: ['#0000ff']
+                });
+            }, 25);
         };
         
         _statsview.addTo(map);
