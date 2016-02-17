@@ -20,8 +20,8 @@ var xml2html = function (inPath, outPath, callback) {
 	var waypointspath = __dirname + '/public/vendor/waypoints/lib/jquery.waypoints.min.js';
 	var jsIncludePath = __dirname + '/paperInclude.js';
 	
-	var cmd = 'latexmlpost --dest=' + outPath +' --format=html4'+' --javascript='+ jquerypath 
-		+ ' --javascript=' + waypointspath + ' --javascript="' + jsIncludePath + '" "' + inPath + '"';
+	var cmd = 'latexmlpost --dest=' + outPath +' --format=html4'+' --javascript='+ jquerypath +
+      ' --javascript=' + waypointspath + ' --javascript="' + jsIncludePath + '" "' + inPath + '"';
 	cp.exec(cmd, function(err, stdout, stderr) {
 		if(err) return callback(err);
 		callback(null);

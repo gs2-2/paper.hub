@@ -54,4 +54,4 @@ exports.zipPaper = function(parentPath, id, callback){
 		// write zip to target path
 		zip.writeToFile(zippath, callback);
 	});
-}
+};

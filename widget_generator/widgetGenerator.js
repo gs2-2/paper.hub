@@ -19,12 +19,12 @@ exports.map = function (inPath, outPath, callback) {
     if(['tif', 'tiff', 'geotiff'].indexOf(fileExt) != -1)
         rScript = '/makeMapWidget_raster.r';
 
-	var cmd = 'Rscript ' + __dirname + rScript
-		+ ' --input ' + inPath + ' --output ' + outPath
-        + ' --template ' + __dirname + '/mapTemplate.html';
+	var cmd = 'Rscript ' + __dirname + rScript + 
+      ' --input ' + inPath + ' --output ' + outPath + 
+      ' --template ' + __dirname + '/mapTemplate.html';
 
 	cp.exec(cmd, function (err, stdout, stderr) {
 		if (err) return callback(err);
 		callback(null);
 	});
-}
+};

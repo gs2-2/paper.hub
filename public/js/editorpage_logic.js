@@ -60,14 +60,14 @@ function addClickListeners(iframe) {
 		$('<p><b>Please choose what type of visualization you want to create.</b></p>')
 			.css('margin-top', '0')
 			.appendTo(form);
-		$('<p>Accepted formats are GeoTIFF (<code>.tif</code>), GeoJSON '
-			+ '(<code>.json</code>) as well as R <code>SP-, zoo- & xts</code>'
-			+ '-Objects (<code>.Rdata</code>). Please make sure the files have the '
-			+ 'correct extensions.</p>').appendTo(form);
-		$('<p>visualization type: <select name="type"><option>map</option>'
-			+ '<option>timeseries</option></select></p>').appendTo(form);
-		$('<p>dataset: <input name="dataset" type="file" accept=".tif,.tiff,'
-			+ '.geojson,.json,.geojson,.Rdata"/></p>').appendTo(form);
+		$('<p>Accepted formats are GeoTIFF (<code>.tif</code>), GeoJSON ' + 
+      '(<code>.json</code>) as well as R <code>SP-, zoo- & xts</code>' + 
+      '-Objects (<code>.Rdata</code>). Please make sure the files have the ' + 
+      'correct extensions.</p>').appendTo(form);
+		$('<p>visualization type: <select name="type"><option>map</option>' + 
+      '<option>timeseries</option></select></p>').appendTo(form);
+		$('<p>dataset: <input name="dataset" type="file" accept=".tif,.tiff,' + 
+      '.geojson,.json,.geojson,.Rdata"/></p>').appendTo(form);
 		$('<p>optional caption: <input name="caption" type="text"/></p>').appendTo(form);
 		$('<button type="button">remove this visualization</button>')
 			.click(function() { $(this).parent().parent().remove(); })
@@ -94,7 +94,7 @@ function uploadDatasets() {
 	// validation
 	for(var form = 0; form < forms.length; form++) {
 		var val = forms[form].elements[1].value; // value of file input
-		if (val == ""){
+		if (val === ""){
 			$(forms[form]).css('background-color', '#CD5C5C');
 			valid = false;
 		} else {
@@ -108,8 +108,8 @@ function uploadDatasets() {
         // insert loading symbol
         $('#message')
             .removeClass('error').addClass('success')
-            .html('Please wait, data is being uploaded.<br>'
-            + '<img src="/img/loadingSymbol.svg" alt="" height="35px" width="auto">');
+            .html('Please wait, data is being uploaded.<br>' + 
+                  '<img src="/img/loadingSymbol.svg" alt="" height="35px" width="auto">');
         
 		// submit all form using ajax, one by one
 		async.eachSeries(forms, function(form, done) {
@@ -131,15 +131,15 @@ function uploadDatasets() {
 			if (err) return console.error('couldnt upload all datasets: %s', JSON.stringify(err));
 
 			// replace each .vis-selector with an iframe pointing to the newly created widget
-			while (forms.length != 0) {
+			while (forms.length !== 0) {
 				var i   = forms.length - 1,
 				    id  = widgetIDs[i],
 				    div = $(forms[i].parentElement);
 
-				div.replaceWith('<iframe class="widget" style="margin-top: 15px" width="100%" height="420px" src="' + id + '"></iframe>'
+				div.replaceWith('<iframe class="widget" style="margin-top: 15px" width="100%" height="420px" src="' + id + '"></iframe>' +
 						// add a caption below the visualisation
-					+ '<div style="margin-left: 60px; margin-bottom: 15px">'
-					+ $(forms[i]).find('input[name="caption"]').fieldValue()[0] + '</div>');
+					'<div style="margin-left: 60px; margin-bottom: 15px">' + 
+          $(forms[i]).find('input[name="caption"]').fieldValue()[0] + '</div>');
 			}
 
 			// remove added style on paragraphs
@@ -165,7 +165,7 @@ function deleteFiles(){
 		type: 'DELETE',
 		url: '/deletePaper/' + paperID,
 		success: function(res){
-			window.location = "/"
+			window.location = "/";
 		},
 		error: function(xhr, textStatus, errorThrown) {
 			console.error('%s: unable to get paper data: %s',
@@ -178,6 +178,6 @@ function deleteFiles(){
  * @desc show warning message if user wants to leave the page without submitting or pressing the correct cancel-button
  */
 $(window).on('beforeunload', function() {
-	if(showClosingMessage != '')
+	if(showClosingMessage !== '')
 		return showClosingMessage;
 });

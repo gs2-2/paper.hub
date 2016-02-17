@@ -10,11 +10,11 @@ $(document).ready(function() {
 		success: function(papers, textStatus) {
 			// fill the table with publications
 			for (var i = 0; i < papers.length; i++) {
-				var rowHtml = '<tr onclick="loadPaper(this)" class="tableHover" data-id="'
-					+ papers[i]._id + '"><td>'
-					+ papers[i].title + '</td><td>'
-					+ papers[i].author + '</td><td>'
-					+ papers[i].publicationDate.substr(0, 10) + '</td><tr>';
+				var rowHtml = '<tr onclick="loadPaper(this)" class="tableHover" data-id="' +
+            papers[i]._id + '"><td>' +
+						papers[i].title + '</td><td>' +
+						papers[i].author + '</td><td>' +
+						papers[i].publicationDate.substr(0, 10) + '</td><tr>';
 				$('#paper-table').append(rowHtml);
 			}
 			if (papers.length === 0) {
@@ -37,8 +37,8 @@ $(document).ready(function() {
 				$('#login-btn').text('Log Out');
 				$('#login-btn').attr('href', '/logout');
 				// add an "add paper" button
-				$('#login-btn').after('<a id="addpaper-btn"'
-					+ 'class="button" href="#openUploadModal">Add Paper</a>');
+				$('#login-btn').after('<a id="addpaper-btn"' +
+					'class="button" href="#openUploadModal">Add Paper</a>');
 			}
 		}
 	});
@@ -47,7 +47,7 @@ $(document).ready(function() {
 	/**
 	 * @desc delete validation hints and input when cancel button is pressed
 	 */
-	$('#cancelButton').on('click', function(){ //todo tuts nicht, einfache lösung unten alles reinkopieren
+	$('#cancelButton').on('click', function(){ 
 		$('#latexDocument').css('background-color', 'white').val('');
 		$('#files').val('');
 		$('#title').css('background-color', 'white').val('');
@@ -69,19 +69,19 @@ function validateForm() {
 	var authorValue = document.forms["form"]["author"].value;
 	var abstractValue = document.forms["form"]["abstract"].value;
     var showErrorMessage = false;
-	if (latexDocumentValue == null || latexDocumentValue.trim() == "") {
+	if (latexDocumentValue === null || latexDocumentValue.trim() === "") {
 		$('#latexDocument').css('background-color', 'rgba(229, 0, 0, 0.3)');
         showErrorMessage = true;
 	} else {
         $('#latexDocument').css('background-color', 'white');
     }
-	if (titleValue == null || titleValue.trim() == "") {
+	if (titleValue === null || titleValue.trim() === "") {
 		$('#title').css('background-color', 'rgba(229, 0, 0, 0.3)');
         showErrorMessage = true;
 	} else {
         $('#title').css('background-color', 'white');
     }
-	if (authorValue == null || authorValue.trim() == "") {
+	if (authorValue === null || authorValue.trim() === "") {
 		$('#author').css('background-color', 'rgba(229, 0, 0, 0.3)');
         showErrorMessage = true;
 	} else {

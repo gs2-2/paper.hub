@@ -1,19 +1,19 @@
 /*
-	Styling Javascript for paper iframes	
+    Styling Javascript for paper iframes    
 */
-	
-	
+    
+    
 $( document ).ready(function() {
-	
-	// Attach font as stylesheet
+    
+    // Attach font as stylesheet
     $('head').append('<link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">');
-	
-	$("body").css({'font-family':'"Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif'});
-	
-	// Don't show Errors
+    
+    $("body").css({'font-family':'"Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif'});
+    
+    // Don't show Errors
     $(".ltx_ERROR").css("display","none");
 
-	// Center tables
+    // Center tables
     $(".ltx_tabular").css("margin-left","auto");
     $(".ltx_tabular").css("margin-right","auto");
     
@@ -32,7 +32,7 @@ $( document ).ready(function() {
     $("img").css("height","auto");
     
     // Remove scroll bar if any
-	$("body").css("overflow","hidden");
+    $("body").css("overflow","hidden");
 
     $.each(['widget'], function(i, classname) {
 
@@ -52,6 +52,6 @@ $( document ).ready(function() {
                 group: classname
             });
         });  
-    })
-	    
+    });
+        
 });
