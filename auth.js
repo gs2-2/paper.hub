@@ -32,8 +32,7 @@ module.exports = function(app, mongo, express){
 	passport.use(new GitHubStrategy({
 		clientID: oauth_keys.GITHUB_CLIENT_ID,
 		clientSecret: oauth_keys.GITHUB_CLIENT_SECRET,
-		callbackURL: 'https://' + config.hostname + ':' + config.httpsPort
-			+ '/auth/github/callback/'
+		callbackURL: 'https://' + config.hostname + ':' + config.httpsPort + '/auth/github/callback/'
 	},
 	function(accessToken, refreshToken, profile, done) {
 		//First we need to check if the user logs in for the first time
@@ -68,8 +67,7 @@ module.exports = function(app, mongo, express){
 	passport.use(new GoogleStrategy({
 		clientID: oauth_keys.GOOGLE_CLIENT_ID,
 		clientSecret: oauth_keys.GOOGLE_CLIENT_SECRET,
-		callbackURL: 'https://' + config.hostname + ':' + config.httpsPort
-			+ '/auth/google/callback/'
+		callbackURL: 'https://' + config.hostname + ':' + config.httpsPort + '/auth/google/callback/'
 	},
 	function(accessToken, refreshToken, profile, done) {
 
@@ -83,8 +81,7 @@ module.exports = function(app, mongo, express){
 
 				// Fix if a user has a Google Account but no real name
 				var userName = 'Unbekannter Benutzer via Google';
-				if(profile.displayName){userName = profile.displayName};
-	// 				if(profile.displayName){userName = profile.emails[0].value};	//Alternative, falls E-Mail anstatt "Unbekannter Autor" gesetzt werden soll
+ 				if(profile.displayName) userName = profile.displayName;
 
 				user = new mongo.models.users({
 					name: userName,
@@ -109,8 +106,7 @@ module.exports = function(app, mongo, express){
 	passport.use(new LinkedInStrategy({
 		clientID: oauth_keys.LINKEDIN_KEY,
 		clientSecret: oauth_keys.LINKEDIN_SECRET,
-		callbackURL: 'https://' + config.hostname + ':' + config.httpsPort
-			+ '/auth/linkedin/callback/',
+		callbackURL: 'https://' + config.hostname + ':' + config.httpsPort + '/auth/linkedin/callback/',
 		scope: ['r_emailaddress', 'r_basicprofile']
 	}, function(accessToken, refreshToken, profile, done) {
 		mongo.models.users.findOne({

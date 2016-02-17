@@ -164,7 +164,7 @@ function deleteFiles(){
 	$.ajax({
 		type: 'DELETE',
 		url: '/deletePaper/' + paperID,
-		success: function(res, bla){
+		success: function(res){
 			window.location = "/"
 		},
 		error: function(xhr, textStatus, errorThrown) {

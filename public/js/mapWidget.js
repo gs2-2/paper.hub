@@ -8,7 +8,7 @@ function MapWidget(mapElement) {
     
     /**
      * @desc    add a layer to the map
-     * @param   an object literal in GeoJSON format
+     * @param   data an object literal in GeoJSON format
      * @returns the mapwidget instance, allowing function chaining
      */
     this.addGeoJson = function(data) {
@@ -112,8 +112,7 @@ function MapWidget(mapElement) {
  * @param map the map object to add the control to
  */
 function MapStatistics(map) {
-    var _statsview,
-        _map = map;
+    var _statsview;
     
     /* takes an data object like { measure1: [values], measure2: [values], ... }
        & calculates statistics on them */

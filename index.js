@@ -66,10 +66,10 @@ mongo.connect(
 //set the destination of the upload and the file-rename function
 var storage = multer.diskStorage({
 	destination: function(req, file, cb) {
-		cb(null, config.uploadDir)
+		cb(null, config.uploadDir);
 	},
 	filename: function(req, file, cb) {
-		cb(null, file.originalname)
+		cb(null, file.originalname);
 	}
 });
 
@@ -92,9 +92,6 @@ var htmlUpload = bodyParser.urlencoded({ extended: true, limit: '4mb' });
 * @desc Send the HTML file of the specified paper.
 */
 app.get('/paper/:id', function(req, res) {
-
-	//get the id from the request
-	var id = req.params.id;
 	
 	//send the html file
 	res.sendFile(__dirname + '/public/paper.html');
@@ -183,7 +180,7 @@ app.delete('/deletePaper/:id', loggedIn, function(req, res) {
                 fs.remove(config.dataDir.widgets + '/' + widgets[i], function(err) {
                     if (err) return done(err);
                 });
-            };
+            }
 
             // remove the document form the DB
             publications.remove({_id: id}, done);
@@ -335,7 +332,7 @@ app.post('/addDataset', loggedIn, widgetUpload, function(req, res) {
 		widgetType: req.body.type
 	});
 
-	var widgetID = uploadedWidget._id
+	var widgetID = uploadedWidget._id;
 	var filename = req.file.filename;
 	var movePath = config.dataDir.papers + '/' + req.body.publication + '/datasets/';
 
@@ -356,7 +353,7 @@ app.post('/addDataset', loggedIn, widgetUpload, function(req, res) {
 		} else {
 			return callback('filetype not available for %s', file);
 		}
-	};
+	}
 
 	//perform task in an asynchronous series, one after another
 	async.series([
@@ -372,8 +369,8 @@ app.post('/addDataset', loggedIn, widgetUpload, function(req, res) {
 		}
 	],
 	function(err, results) {
-		if(err) return console.error('Could not save the new widget:\n%s', err)
-		res.send(widgetID)
+		if(err) return console.error('Could not save the new widget:\n%s', err);
+		res.send(widgetID);
 		console.log('Widget %s (%s) successfully created and saved.', filename, widgetID);
 	});
 });
