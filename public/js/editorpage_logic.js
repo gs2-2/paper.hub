@@ -10,11 +10,13 @@ $(document).ready(function() {
 	// load the paper into the iframe
 	$(paperFrame).attr('src', '/data/papers/' + paperID + '/html/' + paperID + '.html');
 
-	// fit the size of the iframe
-	$("#paper-frame").load(function() {
-		$(this).height( $(this).contents().find("html").height() );
-	});
 });
+
+// Fit the size of the iframe when the whole content was loaded
+$(window).load(function(){
+	iframeResize(paperFrame);
+});
+
 
 /**
  * @desc fit the height of the paperFrame to its inner dimensions
