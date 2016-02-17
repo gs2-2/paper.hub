@@ -8,6 +8,7 @@
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <link rel="stylesheet" href="/vendor/skeleton/css/normalize.css">
     <link rel="stylesheet" href="/vendor/skeleton/css/skeleton.css">
+    <link rel="stylesheet" href="/css/timeseriesStyles.css">
 
     <script language="javascript" type="text/javascript" src="/vendor/jquery/dist/jquery.min.js"></script>
     <script language="javascript" type="text/javascript" src="/js/flot.js/jquery.flot.min.js"></script>
@@ -258,7 +259,7 @@
                         histoSeries.push(histoStats);
 
                         // fill table
-                        $('#row').append('<tr><td style="font-size: 8pt">' + plot.getData()[index].label + '</td><td style="font-size: 8pt">' + statistics.mean + '</td><td style="font-size: 8pt">' + statistics.variance + '</td><td style="font-size: 8pt">' + statistics.standardDev + '</td><td style="font-size: 8pt">' + statistics.quantiles.quarter + '</td><td style="font-size: 8pt">' + statistics.quantiles.half + '</td><td style="font-size: 8pt">' + statistics.quantiles.threequarter + '</td><td style="font-size: 8pt">' + statistics.min + '</td><td style="font-size: 8pt">' + statistics.max + '</td></tr>');
+					    $('#row').append('<tr><td class="table1" style="font-size: 8pt">'+plot.getData()[index].label+'</td><td class="table1" style="font-size: 8pt">'+statistics.mean+'</td><td class="table1" style="font-size: 8pt">'+statistics.variance+'</td><td class="table1" style="font-size: 8pt">'+statistics.standardDev+'</td><td class="table2" style="font-size: 8pt">'+statistics.quantiles.quarter+'</td><td class="table2" style="font-size: 8pt">'+statistics.quantiles.half+'</td><td class="table2" style="font-size: 8pt">'+statistics.quantiles.threequarter+'</td><td class="table1" style="font-size: 8pt">'+statistics.min+'</td><td class="table1" style="font-size: 8pt">'+statistics.max+'</td></tr>');
 
                     });
                     
@@ -362,9 +363,9 @@
             <th colspan="1">Series</th><th colspan="1">Mean</th>
             <th colspan="1">Variance</th><th colspan="1">StdDev</th>
             <th colspan="3" style="position: relative; text-align: center">Quantiles<br/>
-                <span style="position: absolute; left: calc(0% + 2em); text-align: center">25%</span>
-                <span style="position: absolute; left: calc(50% - 1em); text-align: center">50%</span>
-                <span style="position: absolute; right: calc(0% + 1.5em); text-align: center">75%</span>
+                <span style="position: absolute; left: calc(0% + 13px); text-align: center" >25%</span>
+                <span style="position: absolute; left: calc(50% - 10px); text-align: center">50%</span>
+                <span style="position: absolute; right: calc(0% + 13px); text-align: center">75%</span>
             </th>
             <th colspan="1">Min</th><th colspan="1">Max</th>
         </tr>
