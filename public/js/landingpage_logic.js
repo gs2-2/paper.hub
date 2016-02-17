@@ -10,7 +10,7 @@ $(document).ready(function() {
 		success: function(papers, textStatus) {
 			// fill the table with publications
 			for (var i = 0; i < papers.length; i++) {
-				var rowHtml = '<tr onclick="loadPaper(this)" data-id="'
+				var rowHtml = '<tr onclick="loadPaper(this)" class="tableHover" data-id="'
 					+ papers[i]._id + '"><td>'
 					+ papers[i].title + '</td><td>'
 					+ papers[i].author + '</td><td>'
@@ -95,7 +95,11 @@ function validateForm() {
         $('#errorMessage').css('display', 'none');
         $('#successMessage').css('display', 'block');
 
-        // escape htmlCode in the textFields
+		// hide cancelButton and submitButton
+		$('#cancelButton').css('display', 'none');
+		$('#submitButton').css('display', 'none');
+
+		// escape htmlCode in the textFields
         document.forms["form"]["title"].value = escapeHtml(titleValue);
         document.forms["form"]["author"].value = escapeHtml(authorValue);
         document.forms["form"]["abstract"].value = escapeHtml(abstractValue);

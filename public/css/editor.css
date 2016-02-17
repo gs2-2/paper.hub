@@ -132,6 +132,8 @@ nav{
     #smallDisplay{
         margin-top: 120px;
         display: block;
+    }
+    #smallDisplay > p{
         background-color: rgba(139, 0, 0, 0.63);
         -webkit-box-shadow: 0 0 3px 5px rgba(139, 0, 0, 0.63);
         -moz-box-shadow: 0 0 3px 5px rgba(139, 0, 0, 0.63);
@@ -143,6 +145,12 @@ nav{
 @media (min-width: 550px){
     #smallDisplay{
         display: none;
+    }
+    #paper{
+        display: default;
+    }
+    nav{
+        display: default;
     }
 }
 
