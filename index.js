@@ -14,8 +14,6 @@ var express = require('express');
 var multer  = require('multer');
 var fs      = require('fs-extra');
 var bodyParser = require('body-parser');
-
-
 var app = express();
 var publications = mongo.models.publications;
 var widget = mongo.models.widget;
@@ -62,6 +60,7 @@ mongo.connect(
 		});
 	}
 );
+
 
 //set the destination of the upload and the file-rename function
 var storage = multer.diskStorage({
@@ -340,14 +339,12 @@ app.post('/addDataset', loggedIn, widgetUpload, function(req, res) {
 	* @desc Helper function, that calls the script to parse the given file to a widget
 	*/
 	function useWidgetScript(file, callback) {
-
 		if (uploadedWidget.widgetType == 'map') {
 			widgets.map(movePath + file, config.dataDir.widgets + '/' + widgetID + '.html', callback);
 		} else if (uploadedWidget.widgetType == 'timeseries') {
 			widgets.timeseries(
 				movePath + file,
 				config.dataDir.widgets + '/' + widgetID + '.html',
-				'line',
 				callback
 			);
 		} else {
@@ -390,3 +387,5 @@ function loggedIn(req, res, next) {
 		res.redirect('/');
     }
 }
+
+

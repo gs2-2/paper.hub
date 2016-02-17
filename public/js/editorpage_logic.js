@@ -136,10 +136,10 @@ function uploadDatasets() {
 				    id  = widgetIDs[i],
 				    div = $(forms[i].parentElement);
 
-				div.replaceWith('<iframe class="widget" style="margin-top: 15px" width="100%" height="420px" src="' + id + '"></iframe>' +
-						// add a caption below the visualisation
+				div.replaceWith('<iframe class="widget" style="margin-top:15px; border:none" width="100%"  height="500px" src="' + id + '"></iframe>' +
+					// add a caption below the visualisation
 					'<div style="margin-left: 60px; margin-bottom: 15px">' + 
-          $(forms[i]).find('input[name="caption"]').fieldValue()[0] + '</div>');
+				$(forms[i]).find('input[name="caption"]').fieldValue()[0] + '</div>');
 			}
 
 			// remove added style on paragraphs

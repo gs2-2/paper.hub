@@ -1,0 +1,381 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <!-- CSS
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link rel="stylesheet" href="/vendor/skeleton/css/normalize.css">
+    <link rel="stylesheet" href="/vendor/skeleton/css/skeleton.css">
+    <link rel="stylesheet" href="/css/timeseriesStyles.css">
+
+    <script language="javascript" type="text/javascript" src="/vendor/jquery/dist/jquery.min.js"></script>
+    <script language="javascript" type="text/javascript" src="/vendor/Flot/jquery.flot.js"></script>
+    <script language="javascript" type="text/javascript" src="/vendor/Flot/jquery.flot.time.js"></script>
+    <script language="javascript" type="text/javascript" src="/vendor/Flot/jquery.flot.selection.js"></script>
+    <script language="javascript" type="text/javascript" src="/vendor/Flot/jquery.flot.stack.js"></script>
+    <script language="javascript" type="text/javascript" src="/vendor/moment/moment.js"></script>
+    <script language="javascript" type="text/javascript" src="/js/statistics.js"></script>
+
+    <script type="text/javascript" src="/js/changeColor.js"></script>
+    <script type="text/javascript">
+
+        $(function() {
+
+            // create example datasets
+            var datasets = InsertValueHere;
+
+            // add headline
+            $('#lineSelector').append("<p style='display: inline-block; padding-right: 2em; margin-bottom: 0'>Select series</p>");
+
+            // add checkboxes for each series
+            $.each(datasets, function(key, val){
+                $('#lineSelector').append("<input type='checkbox' name='" + key + "' checked='checked' id='id" + key + "'></input>" + "<label style='text-align: right; display: inline-block; padding-right: 0.5em;' for='id" + key + "'>" + val.label + "</label>");
+            });
+
+            // on click update graph and only show selected series
+            $('#lineSelector').find('input').click(plotSelection);
+
+            var munin = [
+                '#00cc00',
+                '#0066b3',
+                '#ff8000',
+                '#ffcc00',
+                '#330099',
+                '#990099',
+                '#ccff00',
+                '#ff0000',
+                '#808080',
+                '#008f00',
+                '#00487d',
+                '#b35a00',
+                '#b38f00',
+                '#6b006b',
+                '#8fb300',
+                '#b30000',
+                '#bebebe',
+                '#80ff80',
+                '#80c9ff',
+                '#ffc080',
+                '#ffe680',
+                '#aa80ff',
+                '#ee00cc',
+                '#ff8080',
+                '#666600',
+                '#ffbfff',
+                '#00ffcc',
+                '#cc6699',
+                '#999900'
+            ];
+            var colorwheel = [
+                '#b5b6a9',
+                '#858772',
+                '#785f43',
+                '#96557e',
+                '#4682b4',
+                '#65b9ac',
+                '#73c03a',
+                '#cb513a'
+            ].reverse();
+
+            var spectrum14 = [
+                '#ecb796',
+                '#dc8f70',
+                '#b2a470',
+                '#92875a',
+                '#716c49',
+                '#d2ed82',
+                '#bbe468',
+                '#a1d05d',
+                '#e7cbe6',
+                '#d8aad6',
+                '#a888c2',
+                '#9dc2d3',
+                '#649eb9',
+                '#387aa3'
+            ].reverse();
+
+            var options = {
+                xaxis: {
+                    mode: 'time'
+                },
+                yaxis: {
+                    autoscaleMargin: 0.02
+                },
+                grid: {hoverable: true, borderWidth: 0.5},
+                series: {
+                    lines: {show: true},
+                    points: {show: true}
+                },
+                colors: munin,
+                selection: {mode: 'y'}
+            };
+
+            // draw graph
+            function plotSelection(){
+                var data = [];
+                var xValue = {};
+
+                // check which series are selected
+                $('#lineSelector').find('input:checked').each(function(){
+                    var key = $(this).attr('name');
+                    if (key && datasets[key]){
+                        data.push(datasets[key]);
+                    }
+                });
+
+                // if series exist, plot them
+                if(data.length > 0){
+
+                    //plot data
+                    var plot = $.plot('#placeholder', data, options);
+
+                    var allDataSelected = [];
+                    for (var i=0; i<plot.getData().length; i++){
+                        var allDataLines = {data: []};
+                        for(var j=0; j<plot.getData()[i].data.length; j++){
+                            allDataLines.data.push(plot.getData()[i].data[j][1]);
+                        }
+                        allDataSelected.push(allDataLines);
+                    }
+
+                    getStats(allDataSelected);
+
+                    //plot slider
+                    var slider = $.plot('#slider', data, {
+                        legend: {
+                            show: false
+                        },
+                        xaxis: {
+                            show: false
+                        },
+                        yaxis: {
+                            show: false
+                        },
+                        grid: {
+                            borderWidth: 0.5
+                        },
+                        series: {
+                            lines: {
+                                show: true,
+                                lineWidth: 1
+                            },
+                            shadowSize: 0
+                        },
+                        selection: {
+                            mode: "x"
+                        }
+                    });
+
+                }
+
+                //add yaxis scale
+                $('#placeholder').bind('plotselected', function(event, ranges){
+
+                    // change zoom of plot
+                    plot = $.plot(placeholder, data,
+                            $.extend(true, {}, options, {
+
+                                yaxis: {min: ranges.yaxis.from, max: ranges.yaxis.to}
+                            }));
+                });
+
+                // add tooltip
+                $('<div id="tooltip"></div>').css({
+                    position: 'absolute',
+                    display: 'none',
+                    border: '1px solid #fdd',
+                    padding: '2px',
+                    'background-color' : '#fee',
+                    opacity: 0.80
+                }).appendTo('body');
+
+                // add tooltip hover functionality
+                $('#placeholder').bind('plothover', function(event, pos, item){
+                    if(item){
+                        var x = item.datapoint[0].toFixed(2),
+                                y = item.datapoint[1].toFixed(2);
+                        x = parseInt(x);
+                        var date = moment(x).format('MMM Do YYYY HH:mm:ss');
+                        $('#tooltip').html('<b>' + item.series.label + '</b><br>' + date.toString() + '<br> y: ' + y).css({top: item.pageY+5, left: item.pageX+5}).fadeIn(200);
+                    } else {
+                        $('#tooltip').hide();
+                    }
+                });
+
+                //functionality for slider
+                $('#slider').bind('plotselected', function(event, ranges){
+
+                    xValue.min = ranges.xaxis.from;
+                    xValue.max = ranges.xaxis.to;
+                    // change zoom of plot
+                    plot = $.plot('#placeholder', data,
+                            $.extend(true, {}, options, {
+                                xaxis: xValue,
+                                yaxis: {min: 0, max: 100}
+                            }));
+
+                    // create variable selection and push selected data into it
+                    var selection = [];
+                    console.log(plot.getData());
+                    for (var i=0; i< plot.getData().length; i++){
+                        var line = {data: []};
+                        for (var j=0; j<plot.getData()[i].data.length; j++){
+
+                            //ranges.xaxis.from contains most left x-value of drawn selection
+                            //ranges.xaxis.to contains most right x-value of drawn selection
+                            if((plot.getData()[i].data[j][0] >= ranges.xaxis.from) && (plot.getData()[i].data[j][0] <= ranges.xaxis.to)){
+                                line.data.push(plot.getData()[i].data[j][1]);
+
+                            }
+                        }
+                        selection.push(line);
+                        console.log(selection);
+
+                    }
+
+                    getStats(selection);
+
+                });
+
+                /*
+                 * @Desc calls statsTime() and puts result into table
+                 * @Param selection, data in actual viewport
+                 */
+                function getStats(selection){
+                    $('#row').empty();
+
+                    var histoSeries = [];
+
+                    //iterate over selection, calculate statistics and put result into table
+                    $.each(selection, function(index, value) {
+
+                        // get statistics
+                        var statistics = stats(value.data);
+
+                        //get histogramm Data
+                        var histoStats = prepareHisto(value.data);
+                        histoSeries.push(histoStats);
+
+                        // fill table
+					    $('#row').append('<tr><td class="table1" style="font-size: 8pt">'+plot.getData()[index].label+'</td><td class="table1" style="font-size: 8pt">'+statistics.mean+'</td><td class="table1" style="font-size: 8pt">'+statistics.variance+'</td><td class="table1" style="font-size: 8pt">'+statistics.standardDev+'</td><td class="table2" style="font-size: 8pt">'+statistics.quantiles.quarter+'</td><td class="table2" style="font-size: 8pt">'+statistics.quantiles.half+'</td><td class="table2" style="font-size: 8pt">'+statistics.quantiles.threequarter+'</td><td class="table1" style="font-size: 8pt">'+statistics.min+'</td><td class="table1" style="font-size: 8pt">'+statistics.max+'</td></tr>');
+
+                    });
+                    
+                    // set plot options for histogramm
+                    var histoOptions = {
+                        legend: {show: false},
+                        grid: {
+                            hoverable: true,
+                            borderWidth: 0.5
+                        },
+                        series: {
+                            lines: {show: false},
+                            bars: {
+                                show: true,
+                                barWidth: 0.5,
+                                lineWidth: 1
+
+                            },
+                            stack: 0
+                        },
+                        colors: munin
+                    };
+
+                    //plot histogramm
+                    var histogramm = $.plot('#histo', histoSeries, histoOptions);
+
+                    // add tooltip
+                    $('<div id="tooltipHisto"></div>').css({
+                        position: 'absolute',
+                        display: 'none',
+                        border: '1px solid #fdd',
+                        padding: '2px',
+                        'background-color' : '#fee',
+                        opacity: 0.80
+                    }).appendTo('body');
+
+                    // add tooltip hover functionality
+                    $('#histo').bind('plothover', function(event, pos, item){
+
+                        if(item){
+
+                            var x = item.datapoint[0].toFixed(2),
+                                    y = item.datapoint[1];
+
+                            $('#tooltipHisto').html('<br> <b>value:</b> ' + x + '<br> <b>#appearance:</b> ' + y).css({top: item.pageY+5, left: item.pageX+5}).fadeIn(200);
+                        } else {
+                            $('#tooltipHisto').hide();
+                        }
+                    });
+
+                    $('#histo').css('padding-right','3em');
+
+                    //console.log(histoSeries);
+                    var controls = new colorControls({
+                        element: document.querySelector('form'),
+                        plot: plot,
+                        histgram: histo,
+                        histOptions: histoOptions,
+                        histData: histoSeries,
+                        options: options,
+                        data: data
+                    });
+                }
+
+            }
+
+                plotSelection();
+
+            });
+
+    </script>
+</head>
+<body style="padding: 0; overflow-x: hidden; overflow-y: auto; height: 100%; font-family: Helvetica, Arial, sans-serif">
+
+<div id="placeholder" style="width: 100%; height: 200px"></div>
+<div id="slider" style="width: 96.5%; left: 2%; height: 50px"></div>
+<div class="row">
+    <div class="six columns" id="lineSelector" style="font-size: 8pt; width: 48%; height: 3em; float: left; padding-left: 2%; text-align: center;"></div>
+    <div class="six columns" id="color_chooser" style="width: 48%; height: 3em; float: right; padding-left: 2%;">
+
+        <form id="color_form" class="rickshaw_legend" style="height: 30px; width: auto">
+
+            <div id="renderer_form" class="toggler" style="font-size: 8pt; text-align: center; float: right; padding-right: 5em;">
+                <p style="display: inline-block; margin-bottom: 0">Select color</p>
+                <input type="radio" name="color" id="munin" value="Munin" checked>
+                <label for="munin" style="text-align: right; padding-right: 0.5em; display: inline-block">Munin</label>
+                <input type="radio" name="color" id="colorwheel" value="Colorwheel">
+                <label for="colorwheel" style="text-align: right; padding-right: 0.5em; display: inline-block">Colorwheel</label>
+                <input type="radio" name="color" id="spectrum14" value="Spectrum14">
+                <label for="spectrum14" style="text-align: right; padding-right: 0.5em; display: inline-block">Spectrum14</label>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="statistics" class="row" style="width: 100%; display: inline-block; padding-left: 2%;">
+
+    <table class="five columns" style="font-size: 8pt !important; float: left; padding-left: 2%">
+        <thead style="font-size: 8pt">
+        <tr>
+            <th colspan="1">Series</th><th colspan="1">Mean</th>
+            <th colspan="1">Variance</th><th colspan="1">StdDev</th>
+            <th colspan="3" style="position: relative; text-align: center">Quantiles<br/>
+                <span style="position: absolute; left: calc(0% + 13px); text-align: center" >25%</span>
+                <span style="position: absolute; left: calc(50% - 10px); text-align: center">50%</span>
+                <span style="position: absolute; right: calc(0% + 13px); text-align: center">75%</span>
+            </th>
+            <th colspan="1">Min</th><th colspan="1">Max</th>
+        </tr>
+        </thead>
+        <tbody id="row">
+        </tbody>
+    </table>
+
+    <div id="histo" style="float: right; width: 30%; height: 190px;"></div>
+
+</div>
+
+</body>
+</html>

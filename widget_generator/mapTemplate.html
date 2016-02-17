@@ -3,18 +3,21 @@
 <html>
 <head>
     <link rel="stylesheet" href="/vendor/leaflet/dist/leaflet.css">
-    <link rel="stylesheet" href="/css/MarkerCluster.Default.css">
+    <link rel="stylesheet" href="/vendor/leaflet.markercluster/dist/MarkerCluster.Default.css">
     <link rel="stylesheet" href="/css/mapWidget.css">
 
+    <script src="/vendor/jquery/dist/jquery.min.js" charset="utf-8"></script>
+    <script src="/vendor/Flot/jquery.flot.js"></script>
+	<script src="/vendor/Flot/jquery.flot.stack.js"></script>
     <script src="/vendor/leaflet/dist/leaflet.js" charset="utf-8"></script>
-    <script src="/js/leaflet.markercluster.js" charset="utf-8"></script>
+    <script src="/vendor/leaflet.markercluster/dist/leaflet.markercluster.js" charset="utf-8"></script>
     <script src="/js/statistics.js" charset="utf-8"></script>
-    <script src="/js/mapWidget.js" charset="utf-8"></script>
 </head>
 
 <body>
     <div id="map"></div>
 
+    <script src="/js/mapWidget.js" charset="utf-8"></script>
     <script type="text/javascript">
         var dataset = %DATA%;
         

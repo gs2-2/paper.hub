@@ -62,6 +62,7 @@ rm -rf LaTeXML-0.8.1*
 R CMD javareconf
 Rscript -e "install.packages(c('rgdal', 'raster', 'mapview', 'htmlwidgets', 'xts', 'zoo', 'sp', 'R.utils'), lib='/usr/local/lib/R/site-library', repos='https://cran.rstudio.com')"
 
+
 # install node dependencies
 npm install
 npm install -g bower
