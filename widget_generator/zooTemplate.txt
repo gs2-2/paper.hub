@@ -3,27 +3,20 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>My test</title>
-
-
 	
+	<!-- CSS
+	–––––––––––––––––––––––––––––––––––––––––––––––––– -->
+	<link rel="stylesheet" href="/vendor/skeleton/css/normalize.css">
+	<link rel="stylesheet" href="/vendor/skeleton/css/skeleton.css">
+	<link rel="stylesheet" href="/css/timeseriesStyles.css">
 
-    <!-- CSS
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <link rel="stylesheet" href="/vendor/skeleton/css/normalize.css">
-    <link rel="stylesheet" href="/vendor/skeleton/css/skeleton.css">
-    <link rel="stylesheet" href="/css/timeseriesStyles.css">
-
-
-
-
-
-	<script language="javascript" type="text/javascript" src="/vendor/jquery/dist/jquery.min.js"></script>
-	<script language="javascript" type="text/javascript" src="/js/flot.js/jquery.flot.min.js"></script>
-	<script language="javascript" type="text/javascript" src="/js/flot.js/jquery.flot.time.min.js"></script>
-	<script language="javascript" type="text/javascript" src="/js/flot.js/jquery.flot.selection.min.js"></script>
-	<script language="javascript" type="text/javascript" src="/js/flot.js/jquery.flot.stack.min.js"></script>
-	<script language="javascript" type="text/javascript" src="/vendor/moment/moment.js"></script>
-	<script language="javascript" type="text/javascript" src="/js/statistics.js"></script>
+	<script type="text/javascript" src="/vendor/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="/vendor/Flot/jquery.flot.js"></script>
+	<script type="text/javascript" src="/vendor/Flot/jquery.flot.time.js"></script>
+	<script type="text/javascript" src="/vendor/Flot/jquery.flot.selection.js"></script>
+	<script type="text/javascript" src="/vendor/Flot/jquery.flot.stack.js"></script>
+	<script type="text/javascript" src="/vendor/moment/moment.js"></script>
+	<script type="text/javascript" src="/js/statistics.js"></script>
 
 	<script type="text/javascript" src="/js/changeColor.js"></script>
 	<script type="text/javascript">

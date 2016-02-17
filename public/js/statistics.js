@@ -29,64 +29,39 @@ function stats(unsorted){
 	var quart;
 	var half;
 	var threeqrt;
-	for(var i=0; i<sorted.length; i++){
-
-		
-
-		//calculating mean
-		sum += sorted[i];
-
-
-
+    // calc sum of all values (for the mean)
+	for(var j=0; j < sorted.length; j++){
+		sum += sorted[j];
 	}
 
 	//calculating quantiles
-		//25%
-		quart = parseInt(sorted.length * 0.25);
-		//50%
-		half = parseInt(sorted.length * 0.5);
-		//75%
-		threeqrt = parseInt(sorted.length * 0.75);
-
-
+    quart = parseInt(sorted.length * 0.25);
+    half = parseInt(sorted.length * 0.5);
+    threeqrt = parseInt(sorted.length * 0.75);
 
 	//set mean
 	var mean = sum/sorted.length;
 	stats.mean = mean.toFixed(2);
 
-
-
-
-	var	i = sorted.length,
-		v = 0;
+	var	i = sorted.length, variance = 0;
  
 	while( i-- ){
-		v += Math.pow( (sorted[ i ] - mean), 2 );
+		variance += Math.pow( (sorted[i] - mean), 2 );
 	}
+	variance /= sorted.length;
 
-	v /= sorted.length;
-
-
-	//set variance
-	
-	
-	stats.variance = v.toFixed(2);
-	//set standardDev
+	//set variance & standard deviation
+	stats.variance = variance.toFixed(2);
 	stats.standardDev = Math.sqrt(stats.variance).toFixed(2);
 
 	//set quantiles
 	stats.quantiles.quarter = sorted[quart].toFixed(2);
 	stats.quantiles.half = sorted[half].toFixed(2);
 	stats.quantiles.threequarter = sorted[threeqrt].toFixed(2);
-
-
-
-	//set min
+    
 	stats.min = min.toFixed(2);
-	//set max
 	stats.max = max.toFixed(2);
 
-	// return
 	return stats;
 }
 
@@ -116,22 +91,7 @@ function prepareHisto(unsorted){
             }
         }
     }
-    
-    console.log(intervals);
-    
-    
-    
-	/*histData.push([sorted[0], 1]);
-	
-	for (var j=0; j < sorted.length-1; j++){
-		if(sorted[j] == sorted[j+1]){
-			histData[histData.length-1][1] += 1;
-		} else {
-			histData.push([sorted[j+1], 1]);
 
-		}
-	}*/
-	
 	return intervals;
 }
 

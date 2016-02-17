@@ -21,6 +21,8 @@
     "jquery-ui": "~1.11.4",
     "moment": "~2.11.1",
     "waypoints": "~4.0.0",
-    "leaflet": "~0.7.7"
+    "leaflet": "~0.7.7",
+    "Flot": "flot#^0.8.3",
+    "leaflet.markercluster": "^0.4.0"
   }
 }
