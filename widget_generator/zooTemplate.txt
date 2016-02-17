@@ -34,7 +34,7 @@
 		var datasets = InsertValueHere;
 
 		// add headline
-		$('#lineSelector').append("<p style='text-align: center; margin-bottom: 0'>Select series</p>");
+		$('#lineSelector').append("<p style='display: inline-block; padding-right: 2em; margin-bottom: 0'>Select series</p>");
 		
 		// add checkboxes for each series
 		$.each(datasets, function(key, val){
@@ -221,7 +221,6 @@
 				if(item){
 					var x = item.datapoint[0].toFixed(0),
 					y = item.datapoint[1].toFixed(2);
-					x = parseInt(x);
 					$('#tooltip').html('<b>' + item.series.label + '</b><br> x: ' + x + '<br> y: ' + y).css({top: item.pageY+5, left: item.pageX+5}).fadeIn(200);
 				} else {
 					$('#tooltip').hide();
@@ -244,6 +243,7 @@
 
 				// create variable selection and push selected data into it
 				var selection = [];
+				console.log(plot.getData());
 				for (var i=0; i< plot.getData().length; i++){
 					var line = {data: []};
 					for (var j=0; j<plot.getData()[i].data.length; j++){
@@ -258,6 +258,7 @@
 						}
 					}
 					selection.push(line);
+					console.log(selection);
 
 				}
 
@@ -288,7 +289,7 @@
 					histoSeries.push(histoStats);
 
 					// fill table
-					$('#row').append('<tr><td>'+plot.getData()[index].label+'</td><td>'+statistics.mean+'</td><td>'+statistics.variance+'</td><td>'+statistics.standardDev+'</td><td>'+statistics.quantiles.quarter+'</td><td>'+statistics.quantiles.half+'</td><td>'+statistics.quantiles.threequarter+'</td><td>'+statistics.min+'</td><td>'+statistics.max+'</td></tr>');
+					$('#row').append('<tr><td style="font-size: 8pt">'+plot.getData()[index].label+'</td><td style="font-size: 8pt">'+statistics.mean+'</td><td style="font-size: 8pt">'+statistics.variance+'</td><td style="font-size: 8pt">'+statistics.standardDev+'</td><td style="font-size: 8pt">'+statistics.quantiles.quarter+'</td><td style="font-size: 8pt">'+statistics.quantiles.half+'</td><td style="font-size: 8pt">'+statistics.quantiles.threequarter+'</td><td style="font-size: 8pt">'+statistics.min+'</td><td style="font-size: 8pt">'+statistics.max+'</td></tr>');
 				
 				});
 				
@@ -345,6 +346,11 @@
 					}
 				});
 
+
+				$('#histo').css('padding-right','3em');
+
+
+				//console.log(histoSeries);
 				var controls = new colorControls({
 					element: document.querySelector('form'),
 					plot: plot,
@@ -375,34 +381,42 @@
 
 	</script>
 </head>
-<body style="font-family: Helvetica, Arial, sans-serif">
+<body style="padding: 0px; overflow-x: hidden; overflow-y: auto; height: 100%; font-family: Helvetica, Arial, sans-serif">
 		
-		<div id="placeholder" style="width: 100%; height: 400px"></div>
+		<div id="placeholder" style="width: 100%; height: 200px"></div>
 		<div id="slider" style="width: 96.5%; left: 2%; height: 50px"></div>
-		<div id="lineSelector" style="width: 48%; height: 3em; float: left; padding-left: 2%; text-align: center;"></div>
-		<div id="color_chooser" style="width: 48%; height: 3em; float: right; padding-left: 2%;">
-			<form id="color_form" class="rickshaw_legend" style="height: 30px, width: 60px">
-				<p style="text-align: center; margin-bottom: 0">Select color</p>
-				<div id="renderer_form" class="toggler" style="text-align: center">
-					<input type="radio" name="color" id="munin" value="Munin" checked>
-					<label for="munin" style="text-align: right; padding-right: 0.5em; display: inline-block">Munin</label>
-					<input type="radio" name="color" id="colorwheel" value="Colorwheel">
-					<label for="colorwheel" style="text-align: right; padding-right: 0.5em; display: inline-block">Colorwheel</label>
-					<input type="radio" name="color" id="spectrum14" value="Spectrum14">
-					<label for="spectrum14" style="text-align: right; padding-right: 0.5em; display: inline-block">Spectrum14</label>
-				</div>
-			</form>
+		<div class="row">
+			<div class="six columns" id="lineSelector" style="font-size: 8pt; width: 48%; height: 3em; float: left; padding-left: 2%; text-align: center;"></div>
+			<div class="six columns" id="color_chooser" style="width: 48%; height: 3em; float: right; padding-left: 2%;">
+		
+				<form id="color_form" class="rickshaw_legend" style="height: 30px, width: 60px">
+					
+					<div id="renderer_form" class="toggler" style="font-size: 8pt; text-align: center; float: right; padding-right: 5em;">
+						<p style="display: inline-block; margin-bottom: 0">Select color</p>
+						<input type="radio" name="color" id="munin" value="Munin" checked>
+						<label for="munin" style="text-align: right; padding-right: 0.5em; display: inline-block">Munin</label>
+						<input type="radio" name="color" id="colorwheel" value="Colorwheel">
+						<label for="colorwheel" style="text-align: right; padding-right: 0.5em; display: inline-block">Colorwheel</label>
+						<input type="radio" name="color" id="spectrum14" value="Spectrum14">
+						<label for="spectrum14" style="text-align: right; padding-right: 0.5em; display: inline-block">Spectrum14</label>
+					</div>
+				</form>
+			</div>
 		</div>
 		
 		
-		<div id="statistics" style="width: 100%; display: inline-block; padding-left: 2%;">
+		<div id="statistics" class="row" style="width: 100%; display: inline-block; padding-left: 2%;">
 			
-			<table style="float: left; padding-left: 2%">
-			<thead>
+			<table class="five columns" style="font-size: 12pt !important; float: left; padding-left: 2%">
+			<thead style="font-size: 8pt">
 			<tr>
 				<th colspan="1">Series</th><th colspan="1">Mean</th>
 				<th colspan="1">Variance</th><th colspan="1">StdDev</th>
-				<th colspan="3" style="text-align: center">Quantiles<br>25% 50% 75%</th>
+				<th colspan="3" style="position: relative; text-align: center">Quantiles<br/>
+					<span style="position: absolute; left: calc(0% + 2em); text-align: center">25%</span>
+					<span style="position: absolute; left: calc(50% - 1em); text-align: center">50%</span>
+					<span style="position: absolute; right: calc(0% + 1.5em); text-align: center">75%</span>
+				</th>
 				<th colspan="1">Min</th><th colspan="1">Max</th>
 			</tr>
 			</thead>
@@ -410,11 +424,10 @@
 			</tbody>
 			</table>
 
-			<div id="histo" style="float: right; width: 44%; height: 220px; padding-left: 2% !important; padding-right: 2% !important"></div>
+			<div id="histo" style="float: right; width: 30%; height: 190px;"></div>
 
 		</div>
 		
 
 </body>
 </html>
-
