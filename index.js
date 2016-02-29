@@ -107,12 +107,12 @@ app.get('/editor/:id', loggedIn, function(req, res) {
 	// Check if you are the author and eligible to edit the paper
 	publications.findById(id, function(err, doc) {
         if (err) return res.sendStatus(500);
-    	if (req.user.providerID != doc.authorID){
-			// if you're not the author of the paper you'll get a 403.
-	        res.sendStatus(403);
-	    } else {
+    	//if (req.user.providerID != doc.authorID){
+		//	// if you're not the author of the paper you'll get a 403.
+	    //    res.sendStatus(403);
+	    //} else {
 	    	res.sendFile(__dirname + '/public/editor.html');
-	    }
+	    //}
     });
 
 });
@@ -160,10 +160,10 @@ app.delete('/deletePaper/:id', loggedIn, function(req, res) {
             publications.findById(id, function(err, doc) {
                 if(err) return done(err);
                 // if you're not the author of the paper you'll get a 403.
-                if(req.user.providerID != doc.authorID) {
-                	res.sendStatus(403);
-                	return done('requesting user & paper author dont match');
-            	}
+                //if(req.user.providerID != doc.authorID) {
+                //	res.sendStatus(403);
+                //	return done('requesting user & paper author dont match');
+            	//}
                 widgets = doc.widgets || [];
                 done(null);
             });
@@ -199,7 +199,7 @@ app.post('/addPaper', latexUpload, loggedIn, function(req, res) {
 		title:    req.body.title,
 		abstract: req.body.abstract,
 		author:   req.body.author,
-		authorID: req.user.providerID,
+		//authorID: req.user.providerID,
 		publicationDate: new Date(),
 		widgets: [] //insert widgets, when they are generated after the upload
 	});
@@ -380,12 +380,10 @@ app.use('/', express.static(__dirname + '/public'));
 app.use('/data', express.static(config.dataDir.path));
 
 function loggedIn(req, res, next) {
-    if (req.user) {
+    //if (req.user) {
         next();
-    } else {
-		console.log('UNAUTHORIZED REQUEST TO %s FROM %s!', req.originalUrl, req.ip);
-		res.redirect('/');
-    }
+    //} else {
+	//	console.log('UNAUTHORIZED REQUEST TO %s FROM %s!', req.originalUrl, req.ip);
+	//	res.redirect('/');
+    //}
 }
-
-

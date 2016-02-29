@@ -203,11 +203,11 @@ module.exports = function(app, mongo, express){
 
 	// Can be used to check for the Login status of the current user
 	app.get('/getAuthStatus', function(req,res){
-		if(req.user){
+		//if(req.user){
 			res.send('Auth successful');
-		}else{
-			res.send('Auth unsuccessful');
-		}
+		//}else{
+		//	res.send('Auth unsuccessful');
+		//}
 	});
 
 
