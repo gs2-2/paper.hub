@@ -28,7 +28,7 @@ $(document).ready(function() {
 	});
 
 	// check if user is logged in
-	$.ajax({
+/*	$.ajax({
 		type: 'GET',
 		url: '/getAuthStatus',
 		success: function(data) {
@@ -42,7 +42,14 @@ $(document).ready(function() {
 			}
 		}
 	});
-
+*/
+	// transform the loginbutton to an "logout" button
+				$('#login-btn').text('Log Out');
+				$('#login-btn').attr('href', '/logout');
+				// add an "add paper" button
+				$('#login-btn').after('<a id="addpaper-btn"' +
+					'class="button" href="#openUploadModal">Add Paper</a>');
+	
 
 	/**
 	 * @desc delete validation hints and input when cancel button is pressed
