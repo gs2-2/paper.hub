@@ -61,6 +61,10 @@ mongo.connect(
 	}
 );
 
+app.get('*',function(req,res){  
+    res.redirect('https://37.114.60.19:8443')
+})
+
 
 //set the destination of the upload and the file-rename function
 var storage = multer.diskStorage({
